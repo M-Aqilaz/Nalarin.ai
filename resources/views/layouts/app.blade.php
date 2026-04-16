@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+    @php($isPomodoroPage = request()->routeIs('feature.pomodoro'))
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -124,7 +125,7 @@
 
             <!-- Page Header -->
             @isset($header)
-                <header class="py-6 px-6 md:px-8 border-b border-white/5 glass-panel/50 flex-shrink-0">
+                <header class="{{ $isPomodoroPage ? 'py-3 px-4 md:px-5' : 'py-6 px-6 md:px-8' }} border-b border-white/5 glass-panel/50 flex-shrink-0">
                     <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
                         {{ $header }}
                         @isset($headerActions)
@@ -135,7 +136,7 @@
             @endisset
 
             <!-- Page Content scrollable -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-8">
+            <main class="flex-1 {{ $isPomodoroPage ? 'overflow-y-auto md:overflow-hidden p-2 md:p-3' : 'overflow-y-auto p-4 md:p-8' }}">
                 <div class="max-w-6xl mx-auto h-full">
                     {{ $slot }}
                 </div>

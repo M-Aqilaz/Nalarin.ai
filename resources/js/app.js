@@ -28,7 +28,6 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('pomodoroTimer', () => ({
         storageKey: POMODORO_STORAGE_KEY,
         cycleTarget: 4,
-        circleCircumference: 2 * Math.PI * 45,
         durations: {
             focus: 25,
             shortBreak: 5,
@@ -93,12 +92,6 @@ document.addEventListener('alpine:init', () => {
             return ((totalSeconds - this.remainingSeconds) / totalSeconds) * 100;
         },
 
-        get progressStrokeOffset() {
-            const normalizedPercent = Math.min(100, Math.max(0, this.progressPercent));
-
-            return this.circleCircumference * (1 - (normalizedPercent / 100));
-        },
-
         get primaryActionLabel() {
             if (this.isRunning) {
                 return 'Jeda';
@@ -111,10 +104,38 @@ document.addEventListener('alpine:init', () => {
             return Math.min(100, (this.completedFocusSessions / this.cycleTarget) * 100);
         },
 
+        get completedCycleSessions() {
+            if (this.completedFocusSessions <= 0) {
+                return 0;
+            }
+
+            const completedInCycle = this.completedFocusSessions % this.cycleTarget;
+
+            return completedInCycle === 0 ? this.cycleTarget : completedInCycle;
+        },
+
         get sessionsUntilLongBreak() {
             const completedInCycle = this.completedFocusSessions % this.cycleTarget;
 
             return completedInCycle === 0 ? this.cycleTarget : this.cycleTarget - completedInCycle;
+        },
+
+        get upcomingModeLabel() {
+            if (this.mode !== 'focus') {
+                return 'Fokus';
+            }
+
+            const completedAfterCurrent = this.completedFocusSessions + 1;
+
+            return completedAfterCurrent % this.cycleTarget === 0 ? 'Istirahat Panjang' : 'Istirahat Pendek';
+        },
+
+        get timerStatusLabel() {
+            if (this.isRunning) {
+                return 'Sedang berjalan';
+            }
+
+            return this.remainingSeconds < this.durationFor(this.mode) ? 'Dijeda' : 'Siap dimulai';
         },
 
         durationFor(mode) {
