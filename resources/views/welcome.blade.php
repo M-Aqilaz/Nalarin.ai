@@ -67,7 +67,7 @@
                         <a href="#" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Testimoni</a>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('feature.upload') }}" class="px-5 py-2.5 rounded-full bg-white text-gray-950 text-sm font-semibold hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.2)]">Mulai Belajar</a>
+                        <a href="{{ route('login') }}" class="px-5 py-2.5 rounded-full bg-white text-gray-950 text-sm font-semibold hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.2)]">Mulai Belajar</a>
                     </div>
                 </div>
             </div>

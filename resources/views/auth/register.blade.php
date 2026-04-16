@@ -1,52 +1,109 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Daftar - Pelajarin.ai</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|outfit:500,600,700" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            border-radius: 50%;
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="font-inter antialiased bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center relative overflow-hidden py-12">
+    <!-- Background Blobs -->
+    <div class="blob bg-purple-600 w-96 h-96 top-[-10%] left-[-10%]"></div>
+    <div class="blob bg-blue-600 w-[30rem] h-[30rem] bottom-[-20%] right-[-10%]"></div>
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+    <div class="w-full max-w-md px-6 z-10 animate-float">
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2 mb-4 hover:scale-105 transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-purple-500/30">
+                    P
+                </div>
+                <span class="font-outfit font-bold text-3xl tracking-tight text-white">Pelajarin<span class="text-purple-400">.ai</span></span>
             </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+            <h2 class="font-outfit text-2xl font-bold text-white mt-2">Buat Akun Baru</h2>
+            <p class="text-gray-400 mt-2 text-sm">Mulai pengalaman belajar cerdasmu sekarang secara gratis.</p>
         </div>
-    </form>
-</x-guest-layout>
+
+        <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+
+            <form method="POST" action="{{ route('register') }}" class="space-y-4 relative z-10">
+                @csrf
+
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-300 mb-1.5">Nama Lengkap</label>
+                    <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" class="w-full px-5 py-3 rounded-xl bg-gray-900/50 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all shadow-inner" placeholder="Masukkan nama lengkap">
+                    @error('name')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">Alamat Email</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" class="w-full px-5 py-3 rounded-xl bg-gray-900/50 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all shadow-inner" placeholder="nama@email.com">
+                    @error('email')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+                    <input id="password" type="password" name="password" required autocomplete="new-password" class="w-full px-5 py-3 rounded-xl bg-gray-900/50 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all shadow-inner" placeholder="••••••••">
+                    @error('password')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-300 mb-1.5">Konfirmasi Password</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" class="w-full px-5 py-3 rounded-xl bg-gray-900/50 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all shadow-inner" placeholder="••••••••">
+                    @error('password_confirmation')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold text-lg shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 transition-all duration-300">
+                        Daftar
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 text-center text-sm text-gray-400 relative z-10 border-t border-white/10 pt-6">
+                Sudah punya akun? 
+                <a href="{{ route('login') }}" class="text-purple-400 hover:text-purple-300 font-bold transition-colors">Masuk di sini</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
