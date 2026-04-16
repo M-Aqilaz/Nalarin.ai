@@ -45,4 +45,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('Admin.adminDashboard');
+    })->name('admin.dashboard');
+});
+
 require __DIR__.'/auth.php';
