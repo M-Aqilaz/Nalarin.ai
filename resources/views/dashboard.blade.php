@@ -9,7 +9,7 @@
     </x-slot>
 
     <x-slot name="headerActions">
-        <a href="{{ route('feature.upload') }}" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition shadow-[0_0_15px_rgba(168,85,247,0.4)] flex items-center gap-2">
+        <a href="{{ route('feature.upload') }}" data-feature="Unggah Materi" class="track-feature px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition shadow-[0_0_15px_rgba(168,85,247,0.4)] flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Materi Baru
         </a>
@@ -123,7 +123,7 @@
 
                 </div>
 
-                <a href="{{ route('feature.chat') }}" class="w-full py-3 rounded-xl bg-white text-gray-900 font-semibold text-center hover:bg-gray-200 transition">
+                <a href="{{ route('feature.chat') }}" data-feature="AI Tutor Khusus" class="track-feature w-full py-3 rounded-xl bg-white text-gray-900 font-semibold text-center hover:bg-gray-200 transition">
                     Mulai Obrolan Baru
                 </a>
             </div>
