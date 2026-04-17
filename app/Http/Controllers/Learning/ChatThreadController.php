@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Learning;
 use App\Http\Controllers\Controller;
 use App\Models\ChatThread;
 use App\Models\Material;
-use App\Models\User;
+use App\Support\ResolvesLearningUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ChatThreadController extends Controller
 {
+    use ResolvesLearningUser;
+
     public function index(): View
     {
         $threads = ChatThread::query()
@@ -34,7 +36,7 @@ class ChatThreadController extends Controller
         ]);
 
         $thread = ChatThread::create([
-            'user_id' => $this->resolveUser()->id,
+            'user_id' => $this->resolveLearningUser()->id,
             'material_id' => $validated['material_id'] ?? null,
             'title' => $validated['title'],
         ]);
@@ -61,14 +63,5 @@ class ChatThreadController extends Controller
         $chatThread->load(['material', 'user', 'messages']);
 
         return view('chat.show', ['thread' => $chatThread]);
-    }
-
-    private function resolveUser(): User
-    {
-        return auth()->user()
-            ?? User::query()->firstOrCreate(
-                ['email' => 'test@example.com'],
-                ['name' => 'Test User', 'password' => 'password', 'role' => 'user']
-            );
     }
 }

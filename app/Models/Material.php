@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Material extends Model
 {
@@ -35,5 +36,15 @@ class Material extends Model
     public function chatThreads(): HasMany
     {
         return $this->hasMany(ChatThread::class);
+    }
+
+    public function flashcardDeck(): HasOne
+    {
+        return $this->hasOne(FlashcardDeck::class);
+    }
+
+    public function quizSet(): HasOne
+    {
+        return $this->hasOne(QuizSet::class);
     }
 }

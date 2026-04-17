@@ -16,6 +16,10 @@
                 </div>
             @endif
 
+            <div class="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 text-sm text-blue-100">
+                Tempel teks materi jika ingin hasil paling stabil. File teks, HTML, DOCX, dan sebagian PDF bisa dicoba otomatis, tetapi PDF hasil scan biasanya tetap perlu teks manual.
+            </div>
+
             <div>
                 <label for="title" class="block text-sm font-medium text-gray-300 mb-2">Judul Materi</label>
                 <input id="title" name="title" type="text" value="{{ old('title') }}" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white" required>

@@ -11,12 +11,28 @@
             <div class="rounded-2xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">{{ session('status') }}</div>
         @endif
 
+        @if (session('warning'))
+            <div class="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">{{ session('warning') }}</div>
+        @endif
+
         <section class="glass-panel rounded-2xl border border-white/5 p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div><span class="text-gray-500">Status:</span> {{ $material->status }}</div>
                 <div><span class="text-gray-500">Pemilik:</span> {{ $material->user->name }}</div>
                 <div><span class="text-gray-500">File:</span> {{ $material->original_filename ?? 'Tidak ada file' }}</div>
                 <div><span class="text-gray-500">Ukuran:</span> {{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="rounded-2xl border border-pink-500/20 bg-pink-500/10 p-4 hover:bg-pink-500/15 transition">
+                    <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcards</p>
+                    <p class="text-white font-semibold mt-2">{{ $material->flashcardDeck ? $material->flashcardDeck->card_count . ' kartu siap dipakai' : 'Belum dibuat' }}</p>
+                    <p class="text-sm text-pink-100/70 mt-1">Buka dari sidebar atau klik kartu ini untuk generate dari materi ini.</p>
+                </a>
+                <a href="{{ route('feature.quiz', ['material_id' => $material->id]) }}" class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 hover:bg-emerald-500/15 transition">
+                    <p class="text-xs uppercase tracking-[0.2em] text-emerald-200">Latihan Kuis</p>
+                    <p class="text-white font-semibold mt-2">{{ $material->quizSet ? $material->quizSet->question_count . ' soal siap dipakai' : 'Belum dibuat' }}</p>
+                    <p class="text-sm text-emerald-100/70 mt-1">Buka dari sidebar atau klik kartu ini untuk mulai generate soal.</p>
+                </a>
             </div>
             <div class="mt-6">
                 <h3 class="font-outfit text-lg font-semibold text-white mb-3">Teks Materi</h3>

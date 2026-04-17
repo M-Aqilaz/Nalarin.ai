@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FeatureUsageController;
 use App\Http\Controllers\Learning\ChatMessageController;
 use App\Http\Controllers\Learning\ChatThreadController;
+use App\Http\Controllers\Learning\FlashcardController;
 use App\Http\Controllers\Learning\MaterialController;
+use App\Http\Controllers\Learning\QuizController;
 use App\Http\Controllers\Learning\SummaryController;
 use App\Http\Controllers\ProfileController;
 use App\Models\AiSummary;
@@ -38,13 +41,15 @@ Route::post('/chat', [ChatThreadController::class, 'store'])->name('chat.store')
 Route::get('/chat/{chatThread}', [ChatThreadController::class, 'show'])->name('chat.show');
 Route::post('/chat/{chatThread}/messages', [ChatMessageController::class, 'store'])->name('chat.messages.store');
 
-Route::get('/quiz', function () {
-    return view('mock.quiz');
-})->name('feature.quiz');
+Route::get('/quiz', [QuizController::class, 'index'])->name('feature.quiz');
+Route::post('/quiz/generate', [QuizController::class, 'generate'])->name('quiz.generate');
+Route::post('/quiz/{quizSet}/start', [QuizController::class, 'start'])->name('quiz.start');
+Route::post('/quiz/{quizSet}/answer', [QuizController::class, 'answer'])->name('quiz.answer');
+Route::post('/quiz/{quizSet}/reset', [QuizController::class, 'reset'])->name('quiz.reset');
 
-Route::get('/flashcards', function () {
-    return view('mock.flashcards');
-})->name('feature.flashcards');
+Route::get('/flashcards', [FlashcardController::class, 'index'])->name('feature.flashcards');
+Route::post('/flashcards/generate', [FlashcardController::class, 'generate'])->name('flashcards.generate');
+Route::post('/flashcards/{deck}/review', [FlashcardController::class, 'review'])->name('flashcards.review');
 
 Route::get('/pomodoro', function () {
     return view('mock.pomodoro');
