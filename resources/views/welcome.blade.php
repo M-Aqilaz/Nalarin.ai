@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Pelajarin.ai - Platform Belajar AI untuk Siswa Indonesia</title>
+        <title>Nalarin.ai - Platform Belajar AI untuk Siswa Indonesia</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -59,7 +59,7 @@
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-xl">
                             P
                         </div>
-                        <span class="font-outfit font-bold text-2xl tracking-tight text-white">Pelajarin<span class="text-purple-400">.ai</span></span>
+                        <span class="font-outfit font-bold text-2xl tracking-tight text-white">Nalarin<span class="text-purple-400">.ai</span></span>
                     </div>
                     <div class="hidden md:flex space-x-8">
                         <a href="#fitur" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Fitur</a>
@@ -81,7 +81,7 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                     </span>
-                    Pelajarin.ai V2.0 Kini Tersedia
+                    Nalarin.ai V2.0 Kini Tersedia
                 </div>
                 
                 <h1 class="font-outfit text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
@@ -197,10 +197,10 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex items-center gap-2">
                     <div class="w-6 h-6 rounded bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-xs">P</div>
-                    <span class="font-outfit font-bold text-xl tracking-tight text-white">Pelajarin.ai</span>
+                    <span class="font-outfit font-bold text-xl tracking-tight text-white">Nalarin.ai</span>
                 </div>
                 <div class="text-gray-500 text-sm">
-                    &copy; {{ date('Y') }} Pelajarin.ai Clone. Built with Laravel + Tailwind.
+                    &copy; {{ date('Y') }} Nalarin.ai Clone. Built with Laravel + Tailwind.
                 </div>
                 <div class="flex space-x-6">
                     <a href="#" class="text-gray-500 hover:text-white transition">Kebijakan Privasi</a>

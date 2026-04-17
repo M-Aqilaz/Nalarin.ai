@@ -28,7 +28,7 @@
                 </div>
                 <div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-sm px-5 py-3.5 max-w-[85%]">
                     <p class="text-gray-300 text-sm leading-relaxed">
-                        Halo! Saya adalah AI Tutor Pelajarin.ai. Saya bisa membantu meringkas materi, menjelaskan rumus, atau menemani kamu belajar untuk ujian besok. Ada materi yang sedang kamu pelajari sekarang?
+                        Halo! Saya adalah AI Tutor Nalarin.ai. Saya bisa membantu meringkas materi, menjelaskan rumus, atau menemani kamu belajar untuk ujian besok. Ada materi yang sedang kamu pelajari sekarang?
                     </p>
                 </div>
             </div>
