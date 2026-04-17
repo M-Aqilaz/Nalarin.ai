@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Test User',
                 'password' => 'password',
-                'role' => 'user',   
+                'role' => 'user',       
             ]
         );
 

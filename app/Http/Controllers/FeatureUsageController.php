@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\FeatureUsage;
+use Illuminate\Http\Request;
 
 class FeatureUsageController extends Controller
 {
     public function track(Request $request)
     {
         $request->validate([
-            'feature_name' => 'required|string|max:255',
+            'feature_name' => 'required|string'
         ]);
 
-        $feature = FeatureUsage::firstOrCreate(
+        $usage = FeatureUsage::firstOrCreate(
             ['feature_name' => $request->feature_name],
             ['click_count' => 0]
         );
 
-        $feature->increment('click_count');
+        $usage->increment('click_count');
 
-        return response()->json(['status' => 'success', 'message' => 'Tracked successfully', 'click_count' => $feature->click_count]);
+        return response()->json([
+            'success' => true,
+            'click_count' => $usage->click_count
+        ]);
     }
 }
