@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
         <div>
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">
@@ -96,38 +96,78 @@
             </div>
         </div>
 
-        <!-- AI Assistant Quick Launch (Right Column) -->
+        <!-- Feature Usage Chart (Right Column) -->
         <div class="space-y-6">
             <div class="glass-panel p-6 rounded-2xl border border-white/5 bg-gradient-to-b from-gray-800/80 to-gray-900/80 relative overflow-hidden h-full flex flex-col justify-between">
-                <!-- BG Decor -->
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-purple-600/20 blur-3xl rounded-full pointer-events-none"></div>
-
                 <div>
-                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4 border border-white/10">
-                        <span class="text-2xl">🤖</span>
-                    </div>
-                    <h3 class="font-outfit font-bold text-xl text-white mb-2">Tanya AI Tutor</h3>
-                    <p class="text-sm text-gray-400 mb-6">Punya pertanyaan soal PR atau materi sekolahmu? Langsung tanya saja.</p>
+                    <h3 class="font-outfit font-bold text-xl text-white mb-2">Statistik Penggunaan Fitur</h3>
+                    <p class="text-sm text-gray-400 mb-6">Grafik fitur yang paling sering digunakan oleh user.</p>
                     
-                    <div class="space-y-2 mb-6">
-                        <button class="w-full text-left p-3 rounded-lg bg-gray-900/50 hover:bg-gray-800 transition text-sm text-gray-300 border border-transparent hover:border-gray-700">
-                            "Tolong jelaskan Hukum Newton 3"
-                        </button>
-                        <button class="w-full text-left p-3 rounded-lg bg-gray-900/50 hover:bg-gray-800 transition text-sm text-gray-300 border border-transparent hover:border-gray-700">
-                            "Apa rumus luas permukaan tabung?"
-                        </button>
-                        <button class="w-full text-left p-3 rounded-lg bg-gray-900/50 hover:bg-gray-800 transition text-sm text-gray-300 border border-transparent hover:border-gray-700">
-                            "Buatkan contoh teks eksplanasi"
-                        </button>
+                    <div class="w-full relative h-64">
+                        <canvas id="featureUsageChart"></canvas>
                     </div>
-
                 </div>
-
-                <a href="{{ route('feature.chat') }}" class="w-full py-3 rounded-xl bg-white text-gray-900 font-semibold text-center hover:bg-gray-200 transition">
-                    Mulai Obrolan Baru
-                </a>
             </div>
         </div>
 
     </div>
-</x-app-layout>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('featureUsageChart').getContext('2d');
+            
+            // Data passed from controller
+            const featuresData = @json($featureUsages);
+            
+            const labels = featuresData.map(f => f.feature_name);
+            const data = featuresData.map(f => f.click_count);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Klik',
+                        data: data,
+                        backgroundColor: 'rgba(168, 85, 247, 0.5)',
+                        borderColor: 'rgba(168, 85, 247, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.9)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</x-admin-layout>
