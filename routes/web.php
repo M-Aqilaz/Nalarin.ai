@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminDocumentController;
 use App\Http\Controllers\FeatureUsageController;
 use App\Http\Controllers\Learning\ChatMessageController;
 use App\Http\Controllers\Learning\ChatThreadController;
@@ -65,6 +67,13 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::patch('/admin/users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('admin.users.suspend');
+    Route::patch('/admin/users/{user}/activate', [AdminUserController::class, 'activate'])->name('admin.users.activate');
+
+    Route::get('/admin/documents', [AdminDocumentController::class, 'index'])->name('admin.documents.index');
+    Route::delete('/admin/documents/{document}', [AdminDocumentController::class, 'destroy'])->name('admin.documents.destroy');
 });
 
 require __DIR__.'/auth.php';
