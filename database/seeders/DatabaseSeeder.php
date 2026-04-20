@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(LearningFeatureSeeder::class);
+        $this->call(TesterDemoSeeder::class);
     }
 }
