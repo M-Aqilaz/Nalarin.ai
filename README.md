@@ -6,6 +6,17 @@
 
 Nalarin.ai adalah platform pembelajaran berbasis AI yang membantu pengguna mengubah materi belajar menjadi pengalaman belajar yang lebih aktif, terstruktur, dan interaktif. Aplikasi ini menggabungkan ringkasan materi, chat tutor, flashcards, kuis, pomodoro, serta fitur sosial seperti group chat kelas dan study matching.
 
+## Why Nalarin.ai
+
+Belajar sering gagal bukan karena materi terlalu sulit, tetapi karena alurnya terputus-putus. Pengguna harus membaca, merangkum, mencari latihan, menjaga fokus, lalu mencari teman belajar secara terpisah. Nalarin.ai menyatukan alur tersebut ke dalam satu produk:
+
+- memahami materi lebih cepat
+- mengulang konsep penting dengan lebih terstruktur
+- menjaga ritme belajar dengan tools fokus
+- membuka ruang belajar sosial yang relevan
+
+Dengan pendekatan ini, Nalarin.ai tidak hanya menjadi tools AI, tetapi menjadi ekosistem belajar yang lebih lengkap dan layak dikembangkan sebagai produk komersial.
+
 ## Visi Produk
 
 Nalarin.ai dirancang untuk menjadi teman belajar digital yang tidak hanya membantu memahami materi, tetapi juga membantu pengguna menjaga ritme belajar, mengulang konsep penting, dan menemukan teman belajar baru.
@@ -21,6 +32,19 @@ Nalarin.ai dirancang untuk menjadi teman belajar digital yang tidak hanya memban
 - Group chat kelas untuk belajar bersama
 - Study matching untuk menemukan partner belajar
 - Dashboard admin untuk pemantauan sistem
+
+## Gambaran Pengalaman Pengguna
+
+Alur utama pengguna dirancang sederhana:
+
+1. Upload materi atau tempel teks belajar
+2. Baca ringkasan awal untuk memahami inti materi
+3. Lanjutkan diskusi lewat chat tutor AI
+4. Ulangi materi dengan flashcards dan kuis
+5. Gunakan pomodoro untuk menjaga fokus
+6. Masuk ke room kelas atau cari partner belajar lewat study matching
+
+Dengan pola ini, pengguna tidak hanya membaca materi, tetapi diarahkan ke siklus belajar yang lebih aktif.
 
 ## Stack Teknologi
 
@@ -45,6 +69,21 @@ Nalarin.ai dirancang untuk menjadi teman belajar digital yang tidak hanya memban
   Definisi skema database.
 - `database/seeders`
   Seeder untuk data demo dan pengujian.
+
+## Preview Modul
+
+- `Landing page`
+  Menjelaskan value proposition, pricing, dan CTA produk.
+- `Dashboard user`
+  Merangkum progres belajar, kuota fitur, dan akses cepat ke modul utama.
+- `AI learning tools`
+  Ringkasan, tutor, flashcards, dan kuis dari materi yang diunggah.
+- `Study management`
+  Pomodoro untuk menjaga fokus sesi belajar.
+- `Social learning`
+  Group chat kelas dan study matching.
+- `Admin panel`
+  Monitoring statistik penggunaan, user, dan materi.
 
 ## Cara Menjalankan Project
 
@@ -76,6 +115,31 @@ php artisan serve
 npm run dev
 ```
 
+## Setup Production Singkat
+
+Untuk deployment production, minimal siapkan:
+
+- environment `.env` production yang benar
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- database MySQL production
+- storage yang dapat diakses untuk file upload
+- proses build frontend:
+
+```bash
+npm run build
+```
+
+- cache konfigurasi Laravel:
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+- web server seperti Nginx atau Apache yang mengarah ke folder `public/`
+
 ## Akun Demo
 
 Seeder demo menyiapkan beberapa akun untuk pengujian:
@@ -103,6 +167,15 @@ password
 - Menambahkan event/activity feed admin berbasis data real
 - Menambahkan realtime chat untuk room dan study matching
 - Memperkuat audit, test coverage, dan readiness production
+
+## Roadmap Singkat
+
+- `Phase 1`
+  Menstabilkan fondasi fitur belajar dan admin.
+- `Phase 2`
+  Memperkuat fitur sosial, realtime chat, dan quality of life pengguna.
+- `Phase 3`
+  Menambahkan monetisasi yang lebih matang, analitik, dan kesiapan production penuh.
 
 ## License
 
