@@ -107,6 +107,8 @@ Perubahan utama dalam sesi ini mencakup:
 ## Notes
 
 - File ini mencerminkan kondisi perubahan saat ini, bukan histori langkah demi langkah.
+- Pasca-merge, konflik utama sudah dibersihkan; modul admin `users` dan `documents` sudah diaktifkan kembali dengan backend yang disesuaikan ke arsitektur aktif proyek.
+- Artefak pull yang tidak dipakai lagi seperti `Document` model, migration `documents`, dan seeder legacy sudah dibersihkan.
 - Jika Anda ingin, saya bisa buat versi kedua yang berisi:
   - file + alasan perubahan per file
   - urutan perubahan kronologis
