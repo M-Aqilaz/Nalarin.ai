@@ -38,7 +38,7 @@ class StudyMatch extends Model
 
     public function messages(): HasMany
     {
-        return $this->hasMany(StudyMatchMessage::class)->latest();
+        return $this->hasMany(StudyMatchMessage::class)->orderBy('id');
     }
 
     public function involves(User $user): bool

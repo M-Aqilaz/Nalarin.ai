@@ -15,7 +15,17 @@ class ChatThread extends Model
         'user_id',
         'material_id',
         'title',
+        'ai_status',
+        'ai_error',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -29,6 +39,6 @@ class ChatThread extends Model
 
     public function messages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class, 'thread_id')->latest();
+        return $this->hasMany(ChatMessage::class, 'thread_id')->orderBy('id');
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Learning\FlashcardController;
 use App\Http\Controllers\Learning\MaterialController;
 use App\Http\Controllers\Learning\QuizController;
 use App\Http\Controllers\Learning\SummaryController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudyMatchingController;
@@ -61,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat', [ChatThreadController::class, 'index'])->name('feature.chat');
     Route::post('/chat', [ChatThreadController::class, 'store'])->name('chat.store');
     Route::get('/chat/{chatThread}', [ChatThreadController::class, 'show'])->name('chat.show');
+    Route::get('/chat/{chatThread}/messages', [ChatMessageController::class, 'index'])->name('chat.messages.index');
     Route::post('/chat/{chatThread}/messages', [ChatMessageController::class, 'store'])->name('chat.messages.store');
 
     Route::get('/quiz', [QuizController::class, 'index'])->name('feature.quiz');
@@ -82,6 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/rooms/{room}', [StudyRoomController::class, 'show'])->name('rooms.show');
     Route::post('/rooms/{room}/join', [StudyRoomController::class, 'join'])->name('rooms.join');
     Route::post('/rooms/{room}/leave', [StudyRoomController::class, 'leave'])->name('rooms.leave');
+    Route::get('/rooms/{room}/messages', [StudyRoomMessageController::class, 'index'])->name('rooms.messages.index');
+    Route::post('/rooms/{room}/typing', [StudyRoomMessageController::class, 'typing'])->name('rooms.typing');
     Route::post('/rooms/{room}/messages', [StudyRoomMessageController::class, 'store'])->name('rooms.messages.store');
 
     Route::get('/matchmaking', [StudyMatchingController::class, 'index'])->name('matchmaking.index');
@@ -89,6 +93,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/matchmaking/search', [StudyMatchingController::class, 'search'])->name('matchmaking.search');
     Route::post('/matchmaking/cancel', [StudyMatchingController::class, 'cancel'])->name('matchmaking.cancel');
     Route::get('/matches/{match}', [StudyMatchingController::class, 'show'])->name('matches.show');
+    Route::get('/matches/{match}/messages', [StudyMatchingController::class, 'messages'])->name('matches.messages.index');
+    Route::post('/matches/{match}/typing', [StudyMatchingController::class, 'typing'])->name('matches.typing');
     Route::post('/matches/{match}/messages', [StudyMatchingController::class, 'sendMessage'])->name('matches.messages.store');
     Route::post('/matches/{match}/end', [StudyMatchingController::class, 'end'])->name('matches.end');
     Route::post('/matches/{match}/block', [StudyMatchingController::class, 'block'])->name('matches.block');
@@ -97,6 +103,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 
     Route::post('/track-feature', [FeatureUsageController::class, 'track'])->name('feature.track');
 });

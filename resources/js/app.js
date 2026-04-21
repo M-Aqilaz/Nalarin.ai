@@ -1,6 +1,7 @@
 import './bootstrap';
 
 import Alpine from 'alpinejs';
+import { registerRealtimeChat } from './realtime-chat';
 
 const POMODORO_STORAGE_KEY = 'pelajarin-pomodoro-state-v1';
 
@@ -25,6 +26,8 @@ const formatDateKey = (date = new Date()) => {
 window.Alpine = Alpine;
 
 document.addEventListener('alpine:init', () => {
+    registerRealtimeChat(Alpine);
+
     Alpine.data('pomodoroTimer', () => ({
         storageKey: POMODORO_STORAGE_KEY,
         cycleTarget: 4,

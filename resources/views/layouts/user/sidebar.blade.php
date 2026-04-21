@@ -1,3 +1,4 @@
+@php($unreadNotificationCount = Auth::user()->unreadNotifications()->count())
 <aside class="w-64 glass-panel border-r border-white/5 flex flex-col h-full hidden md:flex shrink-0 z-20">
     <div class="h-20 flex items-center px-6 border-b border-white/5">
         <a href="{{ url('/') }}" class="flex items-center gap-2">
@@ -18,6 +19,12 @@
         <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Social Learning</p></div>
         <a href="{{ route('rooms.index') }}" data-feature="Group Chat Kelas" class="track-feature block px-3 py-2.5 rounded-xl {{ request()->routeIs('rooms.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">Group Chat Kelas</a>
         <a href="{{ route('matchmaking.index') }}" data-feature="Study Matching" class="track-feature block px-3 py-2.5 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">Study Matching</a>
+        <a href="{{ route('notifications.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl {{ request()->routeIs('notifications.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
+            <span>Notifikasi</span>
+            @if ($unreadNotificationCount > 0)
+                <span class="inline-flex min-w-6 items-center justify-center rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold text-white">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
+            @endif
+        </a>
         <a href="{{ route('pricing') }}" class="block px-3 py-2.5 rounded-xl {{ request()->routeIs('pricing') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">Pricing</a>
     </nav>
 

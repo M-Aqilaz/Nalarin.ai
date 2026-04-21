@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Learning;
 
+use App\Events\ThreadAiStatusUpdated;
+use App\Jobs\GenerateThreadAiReply;
 use App\Http\Controllers\Controller;
 use App\Models\ChatThread;
 use App\Models\Material;
@@ -44,6 +46,7 @@ class ChatThreadController extends Controller
             'user_id' => $request->user()->id,
             'material_id' => $validated['material_id'] ?? null,
             'title' => $validated['title'],
+            'ai_status' => 'idle',
         ]);
 
         if (! empty($validated['opening_message'])) {
@@ -52,10 +55,13 @@ class ChatThreadController extends Controller
                 'content' => $validated['opening_message'],
             ]);
 
-            $thread->messages()->create([
-                'role' => 'assistant',
-                'content' => 'Ini balasan dasar untuk fondasi awal. Nanti endpoint AI bisa menggantikan bagian ini.',
-            ]);
+            $thread->forceFill([
+                'ai_status' => 'queued',
+                'ai_error' => null,
+            ])->save();
+
+            broadcast(new ThreadAiStatusUpdated($thread->fresh()));
+            GenerateThreadAiReply::dispatch($thread->id);
         }
 
         return redirect()
@@ -66,7 +72,11 @@ class ChatThreadController extends Controller
     public function show(ChatThread $chatThread): View
     {
         abort_unless($chatThread->user_id === auth()->id(), 403);
-        $chatThread->load(['material', 'user', 'messages']);
+        $chatThread->load([
+            'material',
+            'user',
+            'messages' => fn ($query) => $query->orderBy('id'),
+        ]);
 
         return view('pages.user.chat.show', ['thread' => $chatThread]);
     }
