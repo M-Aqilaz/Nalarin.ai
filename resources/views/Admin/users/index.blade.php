@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <div class="overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-zinc-800 text-xs uppercase tracking-wider text-zinc-500 font-semibold">
@@ -77,6 +77,53 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <div class="space-y-3 md:hidden">
+            @forelse($users as $user)
+                <div class="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="font-medium text-zinc-200">{{ $user->name }}</p>
+                            <p class="text-sm text-zinc-400 mt-1 break-all">{{ $user->email }}</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }}">
+                            {{ $user->role }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 text-sm">
+                        <span class="text-zinc-500">Status</span>
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20' }}">
+                            {{ $user->is_active ? 'active' : 'suspended' }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 text-sm">
+                        <span class="text-zinc-500">Bergabung</span>
+                        <span class="text-zinc-300">{{ $user->created_at->format('d M Y') }}</span>
+                    </div>
+                    <div class="pt-2">
+                        @if($user->is_active)
+                            <form action="{{ route('admin.users.suspend', $user->id) }}" method="POST" onsubmit="return confirm('Suspend user ini?');">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition border border-transparent hover:border-red-500/30">
+                                    Suspend
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('admin.users.activate', $user->id) }}" method="POST" onsubmit="return confirm('Aktifkan kembali user ini?');">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-green-500/20 hover:text-green-400 transition border border-transparent hover:border-green-500/30">
+                                    Aktifkan
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="py-8 text-center text-zinc-500">Belum ada data user.</div>
+            @endforelse
         </div>
         
         <div class="mt-6">
