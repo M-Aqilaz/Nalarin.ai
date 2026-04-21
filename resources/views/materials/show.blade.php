@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div>
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">{{ $material->title }}</h2>
@@ -15,12 +15,12 @@
             <div class="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">{{ session('warning') }}</div>
         @endif
 
-        <section class="glass-panel rounded-2xl border border-white/5 p-6">
+        <section class="glass-panel rounded-2xl border border-white/5 p-5 md:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-                <div><span class="text-gray-500">Status:</span> {{ $material->status }}</div>
-                <div><span class="text-gray-500">Pemilik:</span> {{ $material->user->name }}</div>
-                <div><span class="text-gray-500">File:</span> {{ $material->original_filename ?? 'Tidak ada file' }}</div>
-                <div><span class="text-gray-500">Ukuran:</span> {{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
+                <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Status</span>{{ $material->status }}</div>
+                <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Pemilik</span>{{ $material->user->name }}</div>
+                <div class="rounded-2xl bg-white/5 p-4 break-all"><span class="text-gray-500 block mb-1">File</span>{{ $material->original_filename ?? 'Tidak ada file' }}</div>
+                <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Ukuran</span>{{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                 <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="rounded-2xl border border-pink-500/20 bg-pink-500/10 p-4 hover:bg-pink-500/15 transition">
@@ -36,13 +36,13 @@
             </div>
             <div class="mt-6">
                 <h3 class="font-outfit text-lg font-semibold text-white mb-3">Teks Materi</h3>
-                <div class="rounded-2xl bg-gray-900/70 border border-white/5 p-4 text-sm text-gray-300 whitespace-pre-line">{{ $material->raw_text ?: 'Belum ada teks materi.' }}</div>
+                <div class="rounded-2xl bg-gray-900/70 border border-white/5 p-4 text-sm text-gray-300 whitespace-pre-line break-words max-h-[28rem] overflow-y-auto">{{ $material->raw_text ?: 'Belum ada teks materi.' }}</div>
             </div>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <section class="glass-panel rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-5 border-b border-white/5 flex items-center justify-between">
+                <div class="p-5 border-b border-white/5 flex items-center justify-between gap-3">
                     <h3 class="font-outfit text-lg font-semibold text-white">Ringkasan</h3>
                     <a href="{{ route('feature.summary') }}" class="text-sm text-purple-400">Semua ringkasan</a>
                 </div>
@@ -59,7 +59,7 @@
             </section>
 
             <section class="glass-panel rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-5 border-b border-white/5 flex items-center justify-between">
+                <div class="p-5 border-b border-white/5 flex items-center justify-between gap-3">
                     <h3 class="font-outfit text-lg font-semibold text-white">Thread Chat</h3>
                     <a href="{{ route('feature.chat') }}" class="text-sm text-purple-400">Buka chat</a>
                 </div>

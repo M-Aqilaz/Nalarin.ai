@@ -1,4 +1,4 @@
-<x-app-layout>
+ï»¿<x-app-layout>
     <x-slot name="header">
         <div>
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">Thread Chat</h2>
@@ -15,7 +15,7 @@
                 @forelse ($threads as $thread)
                     <a href="{{ route('chat.show', $thread) }}" class="block p-4 hover:bg-white/5 transition">
                         <p class="text-white font-medium">{{ $thread->title }}</p>
-                        <p class="text-sm text-gray-400 mt-1">{{ $thread->material?->title ?? 'Tanpa materi' }} • {{ $thread->messages_count }} pesan</p>
+                        <p class="text-sm text-gray-400 mt-1">{{ $thread->material?->title ?? 'Tanpa materi' }} | {{ $thread->messages_count }} pesan</p>
                     </a>
                 @empty
                     <div class="p-4 text-sm text-gray-400">Belum ada thread chat.</div>
@@ -23,7 +23,7 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-2xl border border-white/5 p-6">
+        <section class="glass-panel rounded-2xl border border-white/5 p-5 md:p-6">
             <h3 class="font-outfit text-lg font-semibold text-white mb-5">Buat Thread Baru</h3>
             @if ($errors->any())
                 <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200 mb-4">{{ $errors->first() }}</div>

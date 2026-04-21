@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <x-slot name="header">
         <div>
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">Group Chat Kelas</h2>
@@ -11,15 +11,15 @@
             <div class="divide-y divide-white/5">
                 @forelse ($rooms as $room)
                     <div class="p-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <a href="{{ route('rooms.show', $room) }}" class="text-white font-medium">{{ $room->name }}</a>
-                                <p class="text-sm text-gray-400 mt-1">{{ $room->topic }} • {{ $room->members_count }} member • {{ $room->visibility }}</p>
-                                <p class="text-sm text-gray-500 mt-2">{{ $room->description }}</p>
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                            <div class="min-w-0">
+                                <a href="{{ route('rooms.show', $room) }}" class="text-white font-medium break-words">{{ $room->name }}</a>
+                                <p class="text-sm text-gray-400 mt-1">{{ $room->topic }} | {{ $room->members_count }} member | {{ $room->visibility }}</p>
+                                <p class="text-sm text-gray-500 mt-2 break-words">{{ $room->description }}</p>
                             </div>
-                            <form method="POST" action="{{ route('rooms.join', $room) }}">
+                            <form method="POST" action="{{ route('rooms.join', $room) }}" class="sm:shrink-0">
                                 @csrf
-                                <button type="submit" class="rounded-xl bg-purple-600 px-4 py-2 text-white text-sm">Join</button>
+                                <button type="submit" class="w-full rounded-xl bg-purple-600 px-4 py-2.5 text-white text-sm sm:w-auto">Join</button>
                             </form>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
             </div>
         </section>
 
-        <section class="glass-panel rounded-2xl border border-white/5 p-6 space-y-6">
+        <section class="glass-panel rounded-2xl border border-white/5 p-5 md:p-6 space-y-6">
             <div>
                 <h3 class="font-outfit text-lg font-semibold text-white">Buat Room Baru</h3>
                 <p class="text-sm text-gray-400 mt-1">Plan gratis dibatasi oleh quota room.</p>
