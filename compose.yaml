@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      target: app
+    image: nalarin-ai-app:latest
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - public-storage:/var/www/html/storage/app/public
+
+  web:
+    build:
+      context: .
+      target: web
+    image: nalarin-ai-web:latest
+    depends_on:
+      - app
+    ports:
+      - "${APP_PORT:-8080}:80"
+    restart: unless-stopped
+    volumes:
+      - public-storage:/var/www/html/public/storage:ro
+
+  queue:
+    image: nalarin-ai-app:latest
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    restart: unless-stopped
+    volumes:
+      - public-storage:/var/www/html/storage/app/public
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-nalarinAI}
+      MYSQL_USER: ${DB_USERNAME:-nalarin}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+  public-storage:
