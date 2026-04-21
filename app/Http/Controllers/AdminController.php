@@ -18,6 +18,6 @@ class AdminController extends Controller
             'total_ai_requests' => (int) FeatureUsage::sum('click_count'),
         ];
 
-        return view('Admin.adminDashboard', compact('featureUsages', 'stats'));
+        return view('pages.admin.dashboard', compact('featureUsages', 'stats'));
     }
 }

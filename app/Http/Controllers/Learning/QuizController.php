@@ -31,7 +31,7 @@ class QuizController extends Controller
             }
         }
 
-        return view('quizzes.index', [
+        return view('pages.user.quizzes.index', [
             'materials' => $materials,
             'selectedMaterial' => $selectedMaterial,
             'quiz' => $quiz,

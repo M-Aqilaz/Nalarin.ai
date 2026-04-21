@@ -26,7 +26,7 @@
         </style>
     </head>
     <body x-data="{ mobileNavOpen: false }" class="font-inter antialiased bg-gray-950 text-gray-100 flex h-screen overflow-hidden selection:bg-purple-500/30">
-        @include('layouts.sidebar')
+        @include('layouts.user.sidebar')
 
         <div x-cloak x-show="mobileNavOpen" class="fixed inset-0 z-40 bg-gray-950/70 backdrop-blur-sm md:hidden" @click="mobileNavOpen = false"></div>
 

@@ -13,7 +13,7 @@ class AdminDocumentController extends Controller
     {
         $documents = Material::with('user')->latest()->paginate(10);
 
-        return view('Admin.documents.index', compact('documents'));
+        return view('pages.admin.documents.index', compact('documents'));
     }
 
     public function destroy(Material $material): RedirectResponse

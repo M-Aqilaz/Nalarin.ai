@@ -8,6 +8,6 @@ class PricingController extends Controller
 {
     public function __invoke(): View
     {
-        return view('pricing');
+        return view('pages.public.pricing');
     }
 }

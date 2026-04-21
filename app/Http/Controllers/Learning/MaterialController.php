@@ -21,12 +21,12 @@ class MaterialController extends Controller
             ->latest()
             ->get();
 
-        return view('materials.index', compact('materials'));
+        return view('pages.user.materials.index', compact('materials'));
     }
 
     public function create(): View
     {
-        return view('materials.create');
+        return view('pages.user.materials.create');
     }
 
     public function store(Request $request, MaterialTextExtractor $textExtractor): RedirectResponse
@@ -91,7 +91,7 @@ class MaterialController extends Controller
 
         $material->load(['user', 'summaries', 'chatThreads.messages', 'flashcardDeck', 'quizSet']);
 
-        return view('materials.show', compact('material'));
+        return view('pages.user.materials.show', compact('material'));
     }
 
     private function buildSummary(string $text): string

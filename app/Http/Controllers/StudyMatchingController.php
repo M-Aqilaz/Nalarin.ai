@@ -18,7 +18,7 @@ class StudyMatchingController extends Controller
         $activeMatch = $matchingService->findMatchFor($user)?->load(['userOne.studyProfile', 'userTwo.studyProfile', 'messages.user']);
         $queue = $user->matchQueueEntries()->where('status', 'waiting')->latest()->first();
 
-        return view('matchmaking.index', compact('user', 'activeMatch', 'queue'));
+        return view('pages.user.matchmaking.index', compact('user', 'activeMatch', 'queue'));
     }
 
     public function updateProfile(Request $request): RedirectResponse
@@ -73,7 +73,7 @@ class StudyMatchingController extends Controller
         abort_unless($match->involves(auth()->user()), 403);
         $match->load(['userOne.studyProfile', 'userTwo.studyProfile', 'messages.user']);
 
-        return view('matchmaking.show', compact('match'));
+        return view('pages.user.matchmaking.show', compact('match'));
     }
 
     public function sendMessage(Request $request, StudyMatch $match): RedirectResponse

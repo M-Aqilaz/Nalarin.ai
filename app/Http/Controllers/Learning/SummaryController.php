@@ -16,7 +16,7 @@ class SummaryController extends Controller
             ->latest()
             ->get();
 
-        return view('summaries.index', compact('summaries'));
+        return view('pages.user.summaries.index', compact('summaries'));
     }
 
     public function show(AiSummary $summary): View
@@ -24,6 +24,6 @@ class SummaryController extends Controller
         abort_unless($summary->user_id === auth()->id(), 403);
         $summary->load(['material', 'user']);
 
-        return view('summaries.show', compact('summary'));
+        return view('pages.user.summaries.show', compact('summary'));
     }
 }

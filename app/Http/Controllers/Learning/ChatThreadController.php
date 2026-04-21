@@ -22,7 +22,7 @@ class ChatThreadController extends Controller
 
         $materials = Material::query()->where('user_id', auth()->id())->latest()->get(['id', 'title']);
 
-        return view('chat.index', compact('threads', 'materials'));
+        return view('pages.user.chat.index', compact('threads', 'materials'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -68,6 +68,6 @@ class ChatThreadController extends Controller
         abort_unless($chatThread->user_id === auth()->id(), 403);
         $chatThread->load(['material', 'user', 'messages']);
 
-        return view('chat.show', ['thread' => $chatThread]);
+        return view('pages.user.chat.show', ['thread' => $chatThread]);
     }
 }

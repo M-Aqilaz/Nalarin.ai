@@ -23,7 +23,7 @@ use App\Models\StudyRoom;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.public.welcome');
 });
 
 Route::get('/pricing', PricingController::class)->name('pricing');
@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
 
-        return view('dashboard', [
+        return view('pages.user.dashboard', [
             'materialCount' => Material::where('user_id', $user->id)->count(),
             'summaryCount' => AiSummary::where('user_id', $user->id)->count(),
             'threadCount' => ChatThread::where('user_id', $user->id)->count(),
@@ -74,7 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/flashcards/{deck}/review', [FlashcardController::class, 'review'])->name('flashcards.review');
 
     Route::get('/pomodoro', function () {
-        return view('mock.pomodoro');
+        return view('pages.user.pomodoro');
     })->name('feature.pomodoro');
 
     Route::get('/rooms', [StudyRoomController::class, 'index'])->name('rooms.index');

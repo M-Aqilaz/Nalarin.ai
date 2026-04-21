@@ -20,7 +20,7 @@ class StudyRoomController extends Controller
 
         $myRooms = $request->user()->roomMemberships()->with('room')->latest()->get();
 
-        return view('rooms.index', compact('rooms', 'myRooms'));
+        return view('pages.user.rooms.index', compact('rooms', 'myRooms'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -61,7 +61,7 @@ class StudyRoomController extends Controller
         $blockedIds = $request->user()->blockedUsers()->pluck('blocked_user_id')->all();
         $messages = $room->messages->reverse()->reject(fn ($message) => in_array($message->user_id, $blockedIds, true))->values();
 
-        return view('rooms.show', compact('room', 'messages'));
+        return view('pages.user.rooms.show', compact('room', 'messages'));
     }
 
     public function join(Request $request, StudyRoom $room): RedirectResponse

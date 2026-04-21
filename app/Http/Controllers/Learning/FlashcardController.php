@@ -33,7 +33,7 @@ class FlashcardController extends Controller
             $currentCard = $dueCards->first() ?? $deck->cards->sortBy('next_review_at')->first();
         }
 
-        return view('flashcards.index', [
+        return view('pages.user.flashcards.index', [
             'materials' => $materials,
             'selectedMaterial' => $selectedMaterial,
             'deck' => $deck,

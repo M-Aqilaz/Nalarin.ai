@@ -12,7 +12,7 @@ class AdminUserController extends Controller
     {
         $users = User::latest()->paginate(10);
 
-        return view('Admin.users.index', compact('users'));
+        return view('pages.admin.users.index', compact('users'));
     }
 
     public function suspend(User $user): RedirectResponse
