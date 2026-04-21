@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StudyMatchMessageCreated;
+use App\Events\StudyMatchTypingUpdated;
 use App\Models\StudyMatch;
 use App\Models\UserBlock;
 use App\Models\UserReport;
+use App\Notifications\StudyMatchMessageNotification;
 use App\Services\Learning\StudyMatchingService;
+use App\Support\RealtimePayloads;
+use App\Support\TypingStateStore;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -71,12 +77,45 @@ class StudyMatchingController extends Controller
     public function show(StudyMatch $match): View
     {
         abort_unless($match->involves(auth()->user()), 403);
-        $match->load(['userOne.studyProfile', 'userTwo.studyProfile', 'messages.user']);
+        $match->load([
+            'userOne.studyProfile',
+            'userTwo.studyProfile',
+            'messages' => fn ($query) => $query->with('user')->orderBy('id'),
+        ]);
 
         return view('pages.user.matchmaking.show', compact('match'));
     }
 
-    public function sendMessage(Request $request, StudyMatch $match): RedirectResponse
+    public function messages(Request $request, StudyMatch $match, TypingStateStore $typingStateStore): JsonResponse
+    {
+        abort_unless($match->involves($request->user()), 403);
+
+        $afterId = max(0, (int) $request->integer('after'));
+
+        $messages = $match->messages()
+            ->with('user')
+            ->where('id', '>', $afterId)
+            ->get()
+            ->map(fn ($message) => RealtimePayloads::matchMessage($message))
+            ->values();
+
+        return response()->json([
+            'messages' => $messages,
+            'typing_users' => $typingStateStore->active('match', $match->id, $request->user()->id),
+        ]);
+    }
+
+    public function typing(Request $request, StudyMatch $match, TypingStateStore $typingStateStore): JsonResponse
+    {
+        abort_unless($match->involves($request->user()), 403);
+        $typingStateStore->touch('match', $match->id, $request->user()->id, $request->user()->name);
+
+        broadcast(new StudyMatchTypingUpdated($match->id, $request->user()->id, $request->user()->name));
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function sendMessage(Request $request, StudyMatch $match): RedirectResponse|JsonResponse
     {
         abort_unless($match->involves($request->user()), 403);
 
@@ -84,10 +123,20 @@ class StudyMatchingController extends Controller
             'content' => ['required', 'string', 'max:4000'],
         ]);
 
-        $match->messages()->create([
+        $message = $match->messages()->create([
             'user_id' => $request->user()->id,
             'content' => $validated['content'],
         ]);
+
+        $message->load('user');
+        broadcast(new StudyMatchMessageCreated($message));
+        $match->partnerFor($request->user())?->notify(new StudyMatchMessageNotification($message));
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => RealtimePayloads::matchMessage($message),
+            ]);
+        }
 
         return redirect()->route('matches.show', $match)->with('status', 'Pesan match terkirim.');
     }

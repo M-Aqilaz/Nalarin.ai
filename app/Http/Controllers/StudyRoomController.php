@@ -57,11 +57,16 @@ class StudyRoomController extends Controller
     {
         abort_unless($this->canAccess($request->user()->id, $room), 403);
 
-        $room->load(['owner', 'members.user', 'messages.user']);
+        $room->load([
+            'owner',
+            'members.user',
+            'messages' => fn ($query) => $query->with('user')->orderBy('id'),
+        ]);
         $blockedIds = $request->user()->blockedUsers()->pluck('blocked_user_id')->all();
-        $messages = $room->messages->reverse()->reject(fn ($message) => in_array($message->user_id, $blockedIds, true))->values();
+        $messages = $room->messages->reject(fn ($message) => in_array($message->user_id, $blockedIds, true))->values();
+        $isMember = $room->members()->where('user_id', $request->user()->id)->where('status', 'active')->exists();
 
-        return view('pages.user.rooms.show', compact('room', 'messages'));
+        return view('pages.user.rooms.show', compact('room', 'messages', 'isMember'));
     }
 
     public function join(Request $request, StudyRoom $room): RedirectResponse

@@ -13,6 +13,20 @@ services:
     volumes:
       - public-storage:/var/www/html/storage/app/public
 
+  reverb:
+    image: nalarin-ai-app:latest
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: php artisan reverb:start --host=0.0.0.0 --port=${REVERB_PORT:-8081}
+    ports:
+      - "${REVERB_PORT:-8081}:${REVERB_PORT:-8081}"
+    restart: unless-stopped
+    volumes:
+      - public-storage:/var/www/html/storage/app/public
+
   web:
     build:
       context: .

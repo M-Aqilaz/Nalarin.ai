@@ -31,6 +31,7 @@ Nalarin.ai dirancang untuk menjadi teman belajar digital yang tidak hanya memban
 - Pomodoro untuk manajemen fokus belajar
 - Group chat kelas untuk belajar bersama
 - Study matching untuk menemukan partner belajar
+- Realtime chat, typing indicator, dan notification center
 - Dashboard admin untuk pemantauan sistem
 
 ## Gambaran Pengalaman Pengguna
@@ -54,6 +55,8 @@ Dengan pola ini, pengguna tidak hanya membaca materi, tetapi diarahkan ke siklus
 - Tailwind CSS
 - Vite
 - MySQL
+- Laravel Reverb
+- Laravel Queue
 
 ## Struktur Inti
 
@@ -113,7 +116,36 @@ php artisan db:seed
 ```bash
 php artisan serve
 npm run dev
+php artisan queue:work
+php artisan reverb:start
 ```
+
+`queue:work` diperlukan untuk notifikasi database dan balasan AI async. `reverb:start` diperlukan untuk realtime chat, typing indicator, dan event live lain.
+
+## Docker
+
+Project ini sudah punya setup Docker berbasis:
+
+- `app` untuk PHP-FPM Laravel
+- `web` untuk Nginx
+- `db` untuk MySQL
+- `queue` untuk worker background
+- `reverb` untuk websocket realtime
+
+Lihat detail lengkap di [DOCKER_DEPLOY.md](/C:/laragon/www/nalarin_ai/Pelajarin.ai/DOCKER_DEPLOY.md).
+
+Setup ini butuh env tambahan untuk:
+
+```env
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=
+REVERB_APP_KEY=
+REVERB_APP_SECRET=
+REVERB_PORT=8081
+OPENAI_API_KEY=
+```
+
+Jika memakai social login atau domain production, callback OAuth dan host Reverb juga harus ikut diperbarui.
 
 ## Setup Production Singkat
 
@@ -159,13 +191,14 @@ password
 - Fitur belajar utama sudah berjalan pada alur user login.
 - Modul admin `users` dan `documents` sudah aktif.
 - Halaman pomodoro masih memakai view mock yang memang dipakai langsung oleh route aktif.
-- Beberapa bagian produk masih bersifat MVP dan bisa dikembangkan lebih lanjut, terutama pada integrasi AI real-time dan event activity admin.
+- Realtime chat untuk room, study match, dan AI thread sudah aktif lewat Reverb.
+- Beberapa bagian produk masih bersifat MVP dan bisa dikembangkan lebih lanjut, terutama pada presence, unread logic yang lebih kaya, dan event activity admin.
 
 ## Tujuan Berikutnya
 
 - Menyempurnakan integrasi model AI nyata
 - Menambahkan event/activity feed admin berbasis data real
-- Menambahkan realtime chat untuk room dan study matching
+- Menambahkan read receipts, presence online, dan moderation tooling yang lebih kaya
 - Memperkuat audit, test coverage, dan readiness production
 
 ## Roadmap Singkat

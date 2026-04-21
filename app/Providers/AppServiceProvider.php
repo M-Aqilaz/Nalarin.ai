@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\AiThreadResponder;
+use App\Services\Ai\OpenAiThreadResponder;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Discord\Provider as DiscordProvider;
@@ -14,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(AiThreadResponder::class, OpenAiThreadResponder::class);
     }
 
     /**

@@ -41,6 +41,6 @@ class StudyRoom extends Model
 
     public function messages(): HasMany
     {
-        return $this->hasMany(StudyRoomMessage::class)->latest();
+        return $this->hasMany(StudyRoomMessage::class)->orderBy('id');
     }
 }

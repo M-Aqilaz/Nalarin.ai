@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     @php($isPomodoroPage = request()->routeIs('feature.pomodoro'))
+    @php($mobileUnreadNotificationCount = auth()->check() ? auth()->user()->unreadNotifications()->count() : 0)
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +24,34 @@
             ::-webkit-scrollbar { width: 6px; height: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
+            .typing-dots {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+            .typing-dots span {
+                width: 0.35rem;
+                height: 0.35rem;
+                border-radius: 9999px;
+                background: rgba(156, 163, 175, 0.95);
+                animation: typing-fade 1.2s infinite ease-in-out;
+            }
+            .typing-dots span:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+            .typing-dots span:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+            @keyframes typing-fade {
+                0%, 80%, 100% {
+                    opacity: 0.25;
+                    transform: translateY(0);
+                }
+                40% {
+                    opacity: 1;
+                    transform: translateY(-1px);
+                }
+            }
         </style>
     </head>
     <body x-data="{ mobileNavOpen: false }" class="font-inter antialiased bg-gray-950 text-gray-100 flex h-screen overflow-hidden selection:bg-purple-500/30">
@@ -54,6 +83,12 @@
                     <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Social Learning</p></div>
                     <a href="{{ route('rooms.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('rooms.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Group Chat Kelas</a>
                     <a href="{{ route('matchmaking.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Study Matching</a>
+                    <a href="{{ route('notifications.index') }}" class="flex items-center justify-between px-3 py-3 rounded-xl {{ request()->routeIs('notifications.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
+                        <span>Notifikasi</span>
+                        @if ($mobileUnreadNotificationCount > 0)
+                            <span class="inline-flex min-w-6 items-center justify-center rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold text-white">{{ $mobileUnreadNotificationCount > 99 ? '99+' : $mobileUnreadNotificationCount }}</span>
+                        @endif
+                    </a>
                     <a href="{{ route('pricing') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('pricing') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Pricing</a>
                 </nav>
 
