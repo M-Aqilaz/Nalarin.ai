@@ -8,13 +8,6 @@
         </div>
     </x-slot>
 
-    <x-slot name="headerActions">
-        <a href="{{ route('feature.upload') }}" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-sm transition shadow-[0_0_15px_rgba(168,85,247,0.4)] flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            Materi Baru
-        </a>
-    </x-slot>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -38,6 +31,8 @@
                     </div>
                 </div>
             </div>
+
+
 
             <div class="glass-panel rounded-2xl border border-white/5">
                 <div class="p-5 border-b border-white/5">
