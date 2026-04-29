@@ -55,6 +55,16 @@
                             <p class="text-sm leading-7 text-gray-200 whitespace-pre-line break-words" x-text="message.content"></p>
                         </div>
                     </template>
+
+                    <div x-cloak x-show="isAiWorking" class="mr-auto max-w-full md:max-w-3xl rounded-2xl border border-white/10 bg-gray-800/70 p-4">
+                        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">AI Tutor</p>
+                        <div class="flex items-center gap-2 text-sm leading-7 text-gray-200">
+                            <span>AI sedang mengetik</span>
+                            <span class="typing-dots" aria-hidden="true">
+                                <span></span><span></span><span></span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -65,12 +75,17 @@
                 <div>
                     <label class="block text-sm text-gray-300 mb-2">Pesan Baru</label>
                     <textarea x-model="form.content" name="content" rows="5" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white" required></textarea>
+                    @unless (auth()->user()->isPremium())
+                        <p class="mt-2 text-xs text-gray-500">
+                            Akun free dibatasi {{ config('services.openai.limits.free_per_day', 10) }} pesan AI per hari dan {{ config('services.openai.limits.free_per_minute', 4) }} pesan per menit.
+                        </p>
+                    @endunless
                 </div>
                 <div x-cloak x-show="error" class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200" x-text="error"></div>
                 <div class="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-3">
                     <a href="{{ route('feature.chat') }}" class="text-sm text-gray-400">Kembali ke daftar thread</a>
-                    <button type="submit" class="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-purple-600 px-6 py-3 text-white font-medium disabled:opacity-60" :disabled="isSubmitting">
-                        <span x-text="isSubmitting ? 'Mengirim...' : 'Kirim'"></span>
+                    <button type="submit" class="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-purple-600 px-6 py-3 text-white font-medium disabled:opacity-60" :disabled="isSubmitting || isAiWorking">
+                        <span x-text="isSubmitting ? 'Mengirim...' : (isAiWorking ? 'Tunggu AI...' : 'Kirim')"></span>
                     </button>
                 </div>
             </form>

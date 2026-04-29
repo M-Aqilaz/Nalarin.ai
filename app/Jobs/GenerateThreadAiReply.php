@@ -60,6 +60,10 @@ class GenerateThreadAiReply implements ShouldQueue
 
             broadcast(new ThreadAiStatusUpdated($thread->fresh()));
 
+            if (config('queue.default') === 'sync') {
+                return;
+            }
+
             throw $throwable;
         }
     }

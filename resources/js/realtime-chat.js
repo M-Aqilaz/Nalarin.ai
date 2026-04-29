@@ -260,7 +260,7 @@ const buildBaseChat = (options) => {
     async submitMessage() {
         const content = this.form.content.trim();
 
-        if (content === '' || this.isSubmitting) {
+        if (content === '' || this.isSubmitting || this.isAiWorking) {
             return;
         }
 
@@ -337,6 +337,7 @@ export function registerRealtimeChat(Alpine) {
         aiStatus: options.thread.ai_status ?? 'idle',
         aiError: options.thread.ai_error ?? null,
         hasAiNotice: false,
+        isAiWorking: false,
         aiStatusText: '',
         aiStatusClasses: 'border-blue-500/30 bg-blue-500/10 text-blue-200',
 
@@ -375,16 +376,17 @@ export function registerRealtimeChat(Alpine) {
         },
 
         syncAiPresentation() {
-            this.hasAiNotice = this.aiStatus !== 'idle' || Boolean(this.aiError);
+            this.isAiWorking = this.aiStatus === 'queued' || this.aiStatus === 'processing';
+            this.hasAiNotice = this.aiStatus === 'failed' || Boolean(this.aiError);
 
             if (this.aiStatus === 'queued') {
-                this.aiStatusText = 'AI sedang antre memproses jawaban...';
+                this.aiStatusText = 'AI sedang mengetik...';
                 this.aiStatusClasses = 'border-blue-500/30 bg-blue-500/10 text-blue-200';
                 return;
             }
 
             if (this.aiStatus === 'processing') {
-                this.aiStatusText = 'AI sedang menyusun jawaban...';
+                this.aiStatusText = 'AI sedang mengetik...';
                 this.aiStatusClasses = 'border-blue-500/30 bg-blue-500/10 text-blue-200';
                 return;
             }

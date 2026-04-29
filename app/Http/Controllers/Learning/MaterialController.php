@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Learning;
 use App\Http\Controllers\Controller;
 use App\Models\AiSummary;
 use App\Models\Material;
+use App\Services\Learning\AiMaterialCleaner;
 use App\Services\Learning\MaterialTextExtractor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class MaterialController extends Controller
         return view('pages.user.materials.create');
     }
 
-    public function store(Request $request, MaterialTextExtractor $textExtractor): RedirectResponse
+    public function store(Request $request, MaterialTextExtractor $textExtractor, AiMaterialCleaner $aiMaterialCleaner): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -40,10 +41,15 @@ class MaterialController extends Controller
         $user = $request->user();
         $file = $request->file('material_file');
         $providedText = trim((string) ($validated['raw_text'] ?? ''));
-        $extracted = $file && $providedText === ''
-            ? $textExtractor->extractFromUpload($file)
-            : ['text' => '', 'warning' => null];
-        $rawText = $providedText !== '' ? $providedText : $extracted['text'];
+        $maxOcrPages = $user->isPremium()
+            ? (int) config('services.ocr.premium_max_pages', 50)
+            : (int) config('services.ocr.free_max_pages', 5);
+        $extracted = $file
+            ? $textExtractor->extractFromUpload($file, $maxOcrPages)
+            : ['text' => '', 'warning' => null, 'used_ocr' => false, 'engine' => null];
+        $fileText = trim((string) $extracted['text']);
+        $usedManualFallback = $file && $fileText === '' && $providedText !== '';
+        $rawText = $fileText !== '' ? $fileText : $providedText;
 
         if ($rawText === '') {
             return back()
@@ -53,7 +59,12 @@ class MaterialController extends Controller
                 ]);
         }
 
+        $aiCleaned = $file && $fileText !== ''
+            ? $aiMaterialCleaner->clean($validated['title'], $rawText)
+            : null;
+        $rawText = $aiCleaned['text'] ?? $rawText;
         $storedPath = $file?->store('materials');
+        $ocrStatus = $extracted['used_ocr'] ? 'completed' : 'not_required';
 
         $material = Material::create([
             'user_id' => $user->id,
@@ -64,22 +75,32 @@ class MaterialController extends Controller
             'file_size' => $file?->getSize(),
             'raw_text' => $rawText,
             'status' => 'processed',
+            'ocr_status' => $ocrStatus,
+            'ocr_engine' => $extracted['engine'],
+            'ocr_warning' => $usedManualFallback
+                ? 'File belum bisa dibaca otomatis, jadi sistem memakai teks manual yang ditempel sebagai fallback.'
+                : $extracted['warning'],
+            'ocr_completed_at' => $extracted['used_ocr'] ? now() : null,
         ]);
 
-        AiSummary::create([
+        $aiSummary = $aiMaterialCleaner->summarize($material->title, $rawText);
+
+        $summary = AiSummary::create([
             'material_id' => $material->id,
             'user_id' => $user->id,
             'title' => 'Ringkasan ' . $material->title,
-            'summary_text' => $this->buildSummary($rawText),
-            'model' => 'local-placeholder',
+            'summary_text' => $aiSummary['text'] ?? $this->buildSummary($rawText),
+            'model' => $aiSummary['model'] ?? ($aiCleaned['model'] ?? 'local-placeholder'),
         ]);
 
         $redirect = redirect()
-            ->route('materials.show', $material)
-            ->with('status', 'Materi berhasil dibuat.');
+            ->route('summaries.show', $summary)
+            ->with('status', 'Materi berhasil discan dan ringkasan sudah dibuat.');
 
-        if ($extracted['warning']) {
-            $redirect->with('warning', $extracted['warning']);
+        if ($usedManualFallback || $extracted['warning']) {
+            $redirect->with('warning', $usedManualFallback
+                ? 'File belum bisa dibaca otomatis, jadi sistem memakai teks manual yang ditempel sebagai fallback.'
+                : $extracted['warning']);
         }
 
         return $redirect;

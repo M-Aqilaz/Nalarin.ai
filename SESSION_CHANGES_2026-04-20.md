@@ -103,12 +103,24 @@ Perubahan utama dalam sesi ini mencakup:
 - penambahan section `testimoni` dan update link `Harga` di landing page
 - pemulihan link `Pomodoro` di sidebar
 - penambahan dummy seeder untuk tester
+- penambahan pipeline OCR gratis berbasis Tesseract/Poppler untuk material PDF scan dan gambar
+- support Office modern ringan `.docx`, `.pptx`, `.xlsx` tanpa LibreOffice; format lama `.doc`, `.ppt`, `.xls` diarahkan untuk convert ulang
+- hasil OCR dirapikan dengan AI OpenRouter jika `OPENAI_API_KEY` tersedia, lalu ringkasan otomatis dibuat di halaman `summaries`
+- penambahan limit OCR akun free/premium melalui env `OCR_FREE_MAX_PAGES` dan `OCR_PREMIUM_MAX_PAGES`
+- penyederhanaan OCR production: dependency cukup Tesseract + Poppler; LibreOffice dihapus dari Docker/env agar image lebih ringan
+- upload material sekarang memprioritaskan isi file terlebih dahulu; textarea hanya menjadi fallback jika file gagal dibaca
+- generator flashcard dan kuis sekarang mencoba AI OpenRouter terlebih dahulu dengan fallback generator lokal jika AI gagal/hasil JSON tidak valid
+- output flashcard divalidasi agar front berupa istilah/konsep jelas dan back berupa definisi singkat
+- output kuis divalidasi agar selalu 4 opsi unik dengan `correct_choice` index 0-3 dan pembahasan jawaban
+- penambahan rate limit generate AI content melalui env `AI_CONTENT_FREE_PER_MINUTE`, `AI_CONTENT_FREE_PER_DAY`, dan `AI_CONTENT_PREMIUM_PER_MINUTE`
 
 ## Notes
 
 - File ini mencerminkan kondisi perubahan saat ini, bukan histori langkah demi langkah.
 - Pasca-merge, konflik utama sudah dibersihkan; modul admin `users` dan `documents` sudah diaktifkan kembali dengan backend yang disesuaikan ke arsitektur aktif proyek.
 - Artefak pull yang tidak dipakai lagi seperti `Document` model, migration `documents`, dan seeder legacy sudah dibersihkan.
+- `package.json` tidak diubah untuk OCR karena OCR berjalan di backend melalui binary server, bukan dependency frontend.
+- LibreOffice tidak dipakai sebagai dependency production agar Docker/image tetap lebih ringan.
 - Jika Anda ingin, saya bisa buat versi kedua yang berisi:
   - file + alasan perubahan per file
   - urutan perubahan kronologis

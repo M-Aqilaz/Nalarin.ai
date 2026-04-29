@@ -3,33 +3,68 @@
 namespace App\Services\Learning;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
 
 class MaterialTextExtractor
 {
-    public function extractFromUpload(UploadedFile $file): array
+    public function extractFromUpload(UploadedFile $file, ?int $maxOcrPages = null): array
     {
         $extension = strtolower($file->getClientOriginalExtension());
+        $path = $file->getRealPath();
+
         $text = match ($extension) {
-            'txt', 'md', 'markdown', 'csv', 'json', 'xml' => $this->extractPlainText($file->getRealPath()),
-            'html', 'htm' => $this->extractHtmlText($file->getRealPath()),
-            'docx' => $this->extractDocxText($file->getRealPath()),
-            'pdf' => $this->extractPdfText($file->getRealPath()),
+            'txt', 'md', 'markdown', 'csv', 'json', 'xml' => $this->extractPlainText($path),
+            'html', 'htm' => $this->extractHtmlText($path),
+            'docx' => $this->extractDocxText($path),
+            'pptx' => $this->extractPptxText($path),
+            'xlsx' => $this->extractXlsxText($path),
+            'pdf' => $this->extractPdfText($path),
+            'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp' => $this->extractImageOcr($path),
             default => '',
         };
 
         $text = $this->normalize($text);
+        $usedOcr = false;
+        $warning = null;
 
-        if ($text !== '') {
-            return ['text' => $text, 'warning' => null];
+        $needsOcr = $this->shouldRunOcr($extension, $text);
+
+        if ($needsOcr) {
+            $ocrText = match ($extension) {
+                'pdf' => $this->extractPdfOcr($path, $maxOcrPages),
+                'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp' => $this->extractImageOcr($path),
+                default => '',
+            };
+
+            $ocrText = $this->normalize($ocrText);
+
+            if ($ocrText !== '') {
+                $text = $ocrText;
+                $usedOcr = true;
+            }
         }
 
-        $warning = match ($extension) {
-            'pdf' => 'PDF ini belum bisa dibaca otomatis dengan baik. Jika isinya tidak muncul, tempelkan teks materi di kolom teks.',
-            'doc', 'ppt', 'pptx', 'xls', 'xlsx' => 'Format file ini belum didukung untuk ekstraksi otomatis. Tempelkan teks materi agar flashcard dan kuis bisa dibuat.',
-            default => 'Isi file belum bisa dibaca otomatis. Tempelkan teks materi agar fitur belajar bisa diproses.',
-        };
+        if ($needsOcr && ! $usedOcr && $this->isProbablyScan($extension)) {
+            $text = '';
+        }
 
-        return ['text' => '', 'warning' => $warning];
+        if ($text === '') {
+            $warning = match ($extension) {
+                'pdf' => 'PDF ini belum bisa dibaca sebagai teks. Untuk PDF scan, install Poppler pdftoppm dan Tesseract, lalu upload ulang.',
+                'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp' => 'Gambar ini belum bisa dibaca. Install Tesseract dan pastikan OCR_LANGUAGES sudah sesuai.',
+                'doc', 'ppt', 'xls', 'odt', 'odp', 'ods', 'rtf' => 'Format Office lama belum didukung di mode ringan. Convert ke PDF, DOCX, PPTX, atau XLSX lalu upload ulang.',
+                default => 'Isi file belum bisa dibaca otomatis. Tempelkan teks materi agar fitur belajar bisa diproses.',
+            };
+        }
+
+        return [
+            'text' => $text,
+            'warning' => $warning,
+            'used_ocr' => $usedOcr,
+            'engine' => $usedOcr ? 'tesseract' : $this->engineFor($extension, $text),
+        ];
     }
 
     private function extractPlainText(string $path): string
@@ -44,6 +79,21 @@ class MaterialTextExtractor
 
     private function extractDocxText(string $path): string
     {
+        return $this->extractZipXmlText($path, 'word/document.xml');
+    }
+
+    private function extractPptxText(string $path): string
+    {
+        return $this->extractZipXmlText($path, 'ppt/slides/slide*.xml');
+    }
+
+    private function extractXlsxText(string $path): string
+    {
+        return $this->extractZipXmlText($path, 'xl/sharedStrings.xml');
+    }
+
+    private function extractZipXmlText(string $path, string $pattern): string
+    {
         if (! class_exists(\ZipArchive::class)) {
             return '';
         }
@@ -54,17 +104,44 @@ class MaterialTextExtractor
             return '';
         }
 
-        $documentXml = $zip->getFromName('word/document.xml') ?: '';
-        $zip->close();
+        $chunks = [];
 
-        if ($documentXml === '') {
-            return '';
+        for ($index = 0; $index < $zip->numFiles; $index++) {
+            $name = $zip->getNameIndex($index);
+
+            if (! Str::is($pattern, $name)) {
+                continue;
+            }
+
+            $xml = $zip->getFromIndex($index) ?: '';
+
+            if ($xml !== '') {
+                $chunks[] = html_entity_decode(strip_tags(str_replace(['</w:p>', '</a:p>', '</si>', '</row>'], "\n", $xml)), ENT_QUOTES | ENT_XML1, 'UTF-8');
+            }
         }
 
-        return html_entity_decode(strip_tags(str_replace(['</w:p>', '</w:tr>'], ["\n", "\n"], $documentXml)), ENT_QUOTES | ENT_XML1, 'UTF-8');
+        $zip->close();
+
+        return implode("\n", $chunks);
     }
 
     private function extractPdfText(string $path): string
+    {
+        $binaryText = $this->runCommand([
+            (string) config('services.ocr.pdftotext_path', 'pdftotext'),
+            '-layout',
+            $path,
+            '-',
+        ]);
+
+        if ($this->normalize($binaryText) !== '') {
+            return $binaryText;
+        }
+
+        return $this->extractPdfTextFallback($path);
+    }
+
+    private function extractPdfTextFallback(string $path): string
     {
         $content = (string) file_get_contents($path);
 
@@ -113,6 +190,101 @@ class MaterialTextExtractor
         }
 
         return implode(' ', $chunks);
+    }
+
+    private function extractPdfOcr(string $path, ?int $maxPages): string
+    {
+        if (! (bool) config('services.ocr.enabled', true)) {
+            return '';
+        }
+
+        $tempDir = storage_path('framework/cache/ocr/'.Str::uuid());
+        File::ensureDirectoryExists($tempDir);
+
+        try {
+            $prefix = $tempDir.DIRECTORY_SEPARATOR.'page';
+            $command = [
+                (string) config('services.ocr.pdftoppm_path', 'pdftoppm'),
+                '-png',
+                '-r',
+                '200',
+                '-f',
+                '1',
+            ];
+
+            if ($maxPages !== null && $maxPages > 0) {
+                $command[] = '-l';
+                $command[] = (string) $maxPages;
+            }
+
+            $command[] = $path;
+            $command[] = $prefix;
+
+            $this->runCommand($command);
+
+            $pages = glob($tempDir.DIRECTORY_SEPARATOR.'page-*.png') ?: [];
+            sort($pages);
+
+            return implode("\n\n", array_map(fn (string $image): string => $this->extractImageOcr($image), $pages));
+        } finally {
+            File::deleteDirectory($tempDir);
+        }
+    }
+
+    private function extractImageOcr(string $path): string
+    {
+        if (! (bool) config('services.ocr.enabled', true)) {
+            return '';
+        }
+
+        return $this->runCommand([
+            (string) config('services.ocr.tesseract_path', 'tesseract'),
+            $path,
+            'stdout',
+            '-l',
+            (string) config('services.ocr.languages', 'ind+eng'),
+            '--psm',
+            '3',
+        ]);
+    }
+
+    private function shouldRunOcr(string $extension, string $text): bool
+    {
+        if (! in_array($extension, ['pdf', 'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp'], true)) {
+            return false;
+        }
+
+        return mb_strlen($this->normalize($text)) < (int) config('services.ocr.min_text_length', 120);
+    }
+
+    private function isProbablyScan(string $extension): bool
+    {
+        return in_array($extension, ['pdf', 'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp'], true);
+    }
+
+    private function runCommand(array $command): string
+    {
+        try {
+            $process = new Process($command);
+            $process->setTimeout((int) config('services.ocr.timeout', 120));
+            $process->run();
+
+            return $process->isSuccessful() ? $process->getOutput() : '';
+        } catch (\Throwable) {
+            return '';
+        }
+    }
+
+    private function engineFor(string $extension, string $text): ?string
+    {
+        if ($text === '') {
+            return null;
+        }
+
+        return match ($extension) {
+            'pdf' => 'pdftotext',
+            default => 'native',
+        };
     }
 
     private function decodePdfString(string $value): string

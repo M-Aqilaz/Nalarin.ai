@@ -7,6 +7,7 @@ use App\Events\ThreadMessageCreated;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateThreadAiReply;
 use App\Models\ChatThread;
+use App\Support\AiUsageLimiter;
 use App\Support\RealtimePayloads;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +33,7 @@ class ChatMessageController extends Controller
         ]);
     }
 
-    public function store(Request $request, ChatThread $chatThread): RedirectResponse|JsonResponse
+    public function store(Request $request, ChatThread $chatThread, AiUsageLimiter $aiUsageLimiter): RedirectResponse|JsonResponse
     {
         abort_unless($chatThread->user_id === $request->user()->id, 403);
 
@@ -40,10 +41,25 @@ class ChatMessageController extends Controller
             'content' => ['required', 'string', 'max:4000'],
         ]);
 
+        $limit = $aiUsageLimiter->check($request->user());
+
+        if (! $limit['allowed']) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $limit['message'],
+                    'retry_after' => $limit['retry_after'],
+                ], 429);
+            }
+
+            return back()->withErrors(['content' => $limit['message']]);
+        }
+
         $message = $chatThread->messages()->create([
             'role' => 'user',
             'content' => $validated['content'],
         ]);
+
+        $aiUsageLimiter->hit($request->user());
 
         $chatThread->forceFill([
             'ai_status' => 'queued',

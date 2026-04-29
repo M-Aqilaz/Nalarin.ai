@@ -8,6 +8,7 @@ use App\Models\FlashcardDeck;
 use App\Models\Material;
 use App\Services\Learning\FlashcardReviewScheduler;
 use App\Services\Learning\StudyContentGenerator;
+use App\Support\AiContentGenerationLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -42,20 +43,33 @@ class FlashcardController extends Controller
         ]);
     }
 
-    public function generate(Request $request, StudyContentGenerator $generator): RedirectResponse
+    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter): RedirectResponse
     {
         $validated = $request->validate([
             'material_id' => ['required', 'exists:materials,id'],
         ]);
 
         $material = Material::query()->where('user_id', $request->user()->id)->findOrFail($validated['material_id']);
-        $cards = $generator->generateFlashcards($material);
+        $limit = $limiter->check($request->user(), 'flashcards');
+
+        if (! $limit['allowed']) {
+            return redirect()
+                ->route('feature.flashcards', ['material_id' => $material->id])
+                ->withErrors(['material_id' => $limit['message']]);
+        }
+
+        $existingFronts = $material->flashcardDeck?->cards()
+            ->pluck('front')
+            ->all() ?? [];
+        $cards = $generator->generateFlashcards($material, 12, $existingFronts);
 
         if (count($cards) < 4) {
             return redirect()
                 ->route('feature.flashcards', ['material_id' => $material->id])
                 ->withErrors(['material_id' => 'Materi ini belum cukup jelas untuk dijadikan flashcard. Tambahkan materi yang lebih lengkap.']);
         }
+
+        $limiter->hit($request->user(), 'flashcards');
 
         $deck = $material->flashcardDeck()->updateOrCreate(
             [],

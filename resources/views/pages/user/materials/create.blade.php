@@ -17,7 +17,10 @@
             @endif
 
             <div class="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 text-sm text-blue-100">
-                Tempel teks materi jika ingin hasil paling stabil. File teks, HTML, DOCX, dan sebagian PDF bisa dicoba otomatis, tetapi PDF hasil scan biasanya tetap perlu teks manual.
+                Upload PDF, gambar, DOCX, PPTX, atau XLSX. Jika file berupa scan, sistem akan mencoba OCR dengan Tesseract lalu AI merapikan hasilnya menjadi ringkasan.
+                @unless (auth()->user()->isPremium())
+                    Akun free dibatasi sampai {{ config('services.ocr.free_max_pages', 5) }} halaman OCR per PDF.
+                @endunless
             </div>
 
             <div>
@@ -27,12 +30,14 @@
 
             <div>
                 <label for="material_file" class="block text-sm font-medium text-gray-300 mb-2">File Materi</label>
-                <input id="material_file" name="material_file" type="file" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-gray-300">
+                <input id="material_file" name="material_file" type="file" accept=".txt,.md,.markdown,.csv,.json,.xml,.html,.htm,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.odt,.odp,.ods,.rtf,.pdf,.png,.jpg,.jpeg,.webp,.tif,.tiff,.bmp" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-gray-300">
+                <p class="mt-2 text-xs text-gray-500">Format lama seperti .doc/.ppt/.xls belum didukung di mode ringan. Convert ke PDF, DOCX, PPTX, atau XLSX. PDF scan dan gambar butuh Poppler/Tesseract.</p>
             </div>
 
             <div>
                 <label for="raw_text" class="block text-sm font-medium text-gray-300 mb-2">Teks Materi</label>
-                <textarea id="raw_text" name="raw_text" rows="10" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="Paste isi materi di sini agar sistem bisa langsung membuat ringkasan dasar.">{{ old('raw_text') }}</textarea>
+                <textarea id="raw_text" name="raw_text" rows="10" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="Opsional. Dipakai hanya jika tidak upload file, atau sebagai fallback jika file gagal dibaca.">{{ old('raw_text') }}</textarea>
+                <p class="mt-2 text-xs text-gray-500">Jika file diupload, sistem akan memproses isi file terlebih dahulu sebelum memakai teks manual.</p>
             </div>
 
             <div class="flex justify-end gap-3">

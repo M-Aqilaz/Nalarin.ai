@@ -18,10 +18,14 @@
         <section class="glass-panel rounded-2xl border border-white/5 p-5 md:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Status</span>{{ $material->status }}</div>
+                <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">OCR</span>{{ $material->ocr_status }}{{ $material->ocr_engine ? ' via '.$material->ocr_engine : '' }}</div>
                 <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Pemilik</span>{{ $material->user->name }}</div>
                 <div class="rounded-2xl bg-white/5 p-4 break-all"><span class="text-gray-500 block mb-1">File</span>{{ $material->original_filename ?? 'Tidak ada file' }}</div>
                 <div class="rounded-2xl bg-white/5 p-4"><span class="text-gray-500 block mb-1">Ukuran</span>{{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
             </div>
+            @if ($material->ocr_warning)
+                <div class="mt-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">{{ $material->ocr_warning }}</div>
+            @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                 <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="rounded-2xl border border-pink-500/20 bg-pink-500/10 p-4 hover:bg-pink-500/15 transition">
                     <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcards</p>

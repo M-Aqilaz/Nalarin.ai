@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Models\QuizSet;
 use App\Services\Learning\StudyContentGenerator;
+use App\Support\AiContentGenerationLimiter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -41,20 +42,33 @@ class QuizController extends Controller
         ]);
     }
 
-    public function generate(Request $request, StudyContentGenerator $generator): RedirectResponse
+    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter): RedirectResponse
     {
         $validated = $request->validate([
             'material_id' => ['required', 'exists:materials,id'],
         ]);
 
         $material = Material::query()->where('user_id', $request->user()->id)->findOrFail($validated['material_id']);
-        $questions = $generator->generateQuiz($material);
+        $limit = $limiter->check($request->user(), 'quiz');
+
+        if (! $limit['allowed']) {
+            return redirect()
+                ->route('feature.quiz', ['material_id' => $material->id])
+                ->withErrors(['material_id' => $limit['message']]);
+        }
+
+        $existingPrompts = $material->quizSet?->questions()
+            ->pluck('prompt')
+            ->all() ?? [];
+        $questions = $generator->generateQuiz($material, 10, $existingPrompts);
 
         if (count($questions) < 4) {
             return redirect()
                 ->route('feature.quiz', ['material_id' => $material->id])
                 ->withErrors(['material_id' => 'Materi ini belum cukup kuat untuk dibuat kuis. Tambahkan materi yang lebih lengkap.']);
         }
+
+        $limiter->hit($request->user(), 'quiz');
 
         $quiz = $material->quizSet()->updateOrCreate(
             [],

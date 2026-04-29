@@ -7,6 +7,7 @@ Setup ini dibuat untuk deployment Laravel production dengan:
 - `mysql`
 - `queue worker`
 - `reverb websocket server`
+- OCR lokal dengan Tesseract dan Poppler
 - `Docker multi-stage build`
 
 Arsitektur ini mengikuti praktik umum dari dokumentasi resmi Docker untuk `multi-stage builds`, serta memakai official images untuk `php` dan `nginx`.
@@ -44,6 +45,7 @@ Lalu isi:
 - database password
 - `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`
 - `OPENAI_API_KEY`
+- `OCR_LANGUAGES` jika ingin bahasa OCR selain default `ind+eng`
 - Google login
 - Discord login
 
@@ -121,6 +123,11 @@ Catatan:
 
 - menjalankan `php-fpm`
 - mengeksekusi Laravel
+- berisi dependency OCR:
+  - `tesseract-ocr`
+  - `tesseract-ocr-ind`
+  - `tesseract-ocr-eng`
+  - `poppler-utils`
 
 ### `web`
 
@@ -161,7 +168,13 @@ Catatan:
 - jika memakai domain production, `REVERB_SCHEME` dan `VITE_REVERB_SCHEME` biasanya harus `https`
 - `BROADCAST_CONNECTION` harus tetap `reverb`
 - `QUEUE_CONNECTION` harus tetap `database` atau diganti konsisten ke backend queue lain
+- `OPENAI_BASE_URL` default mengarah ke OpenRouter: `https://openrouter.ai/api/v1`
+- `OPENAI_MODEL` default memakai `openai/gpt-oss-120b:free`
 - tanpa `OPENAI_API_KEY`, AI tutor realtime tetap hidup tetapi balasan AI akan gagal dan status thread menjadi `failed`
+- OCR PDF scan dan gambar memakai Tesseract; PDF ke gambar memakai Poppler
+- file Office modern `.docx`, `.pptx`, dan `.xlsx` dibaca langsung tanpa LibreOffice
+- file Office lama `.doc`, `.ppt`, dan `.xls` tidak diproses otomatis di mode ringan; convert ke PDF/DOCX/PPTX/XLSX sebelum upload
+- akun free default dibatasi OCR sampai `OCR_FREE_MAX_PAGES=5` halaman per PDF, sedangkan premium default `OCR_PREMIUM_MAX_PAGES=50`
 
 ## Command Berguna
 
@@ -211,3 +224,5 @@ docker compose down -v
 - PHP official image: https://hub.docker.com/_/php/
 - Nginx official image: https://hub.docker.com/_/nginx
 - Laravel Reverb: https://laravel.com/docs/reverb
+- Tesseract OCR: https://tesseractocr.org/
+- OCRmyPDF/konsep OCR PDF: https://ocrmypdf.readthedocs.io/

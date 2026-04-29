@@ -143,6 +143,8 @@ REVERB_APP_KEY=
 REVERB_APP_SECRET=
 REVERB_PORT=8081
 OPENAI_API_KEY=
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_MODEL=openai/gpt-oss-120b:free
 ```
 
 Jika memakai social login atau domain production, callback OAuth dan host Reverb juga harus ikut diperbarui.

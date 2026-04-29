@@ -70,7 +70,10 @@
             <section class="glass-panel rounded-3xl border border-white/5 p-8">
                 <p class="text-xs uppercase tracking-[0.25em] text-emerald-300">Materi Terpilih</p>
                 <h3 class="font-outfit text-2xl font-bold text-white mt-2">{{ $selectedMaterial->title }}</h3>
-                <p class="text-gray-400 mt-3">Generator akan menyusun soal pilihan ganda dari konsep penting yang ditemukan pada materi ini.</p>
+                <p class="text-gray-400 mt-3">AI akan menyusun soal pilihan ganda dari konsep penting, dengan 4 opsi unik dan kunci jawaban yang divalidasi.</p>
+                @unless (auth()->user()->isPremium())
+                    <p class="mt-3 text-xs text-gray-500">Akun free dibatasi {{ config('services.openai.limits.content_free_per_day', 6) }} generate AI per hari untuk flashcard dan kuis.</p>
+                @endunless
                 <form method="POST" action="{{ route('quiz.generate') }}" class="mt-6">
                     @csrf
                     <input type="hidden" name="material_id" value="{{ $selectedMaterial->id }}">

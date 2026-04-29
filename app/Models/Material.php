@@ -21,7 +21,18 @@ class Material extends Model
         'file_size',
         'raw_text',
         'status',
+        'ocr_status',
+        'ocr_engine',
+        'ocr_warning',
+        'ocr_completed_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'ocr_completed_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

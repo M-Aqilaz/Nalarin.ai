@@ -64,7 +64,10 @@
             <section class="glass-panel rounded-3xl border border-white/5 p-8">
                 <p class="text-xs uppercase tracking-[0.25em] text-pink-300">Materi Terpilih</p>
                 <h3 class="font-outfit text-2xl font-bold text-white mt-2">{{ $selectedMaterial->title }}</h3>
-                <p class="text-gray-400 mt-3">Materi ini belum punya deck. Generator akan mengambil poin penting dari teks materi dan membuat kartu istilah, definisi, dan konteks singkat.</p>
+                <p class="text-gray-400 mt-3">Materi ini belum punya deck. AI akan membuat kartu istilah/konsep yang jelas dengan definisi singkat dari teks materi.</p>
+                @unless (auth()->user()->isPremium())
+                    <p class="mt-3 text-xs text-gray-500">Akun free dibatasi {{ config('services.openai.limits.content_free_per_day', 6) }} generate AI per hari untuk flashcard dan kuis.</p>
+                @endunless
                 <form method="POST" action="{{ route('flashcards.generate') }}" class="mt-6">
                     @csrf
                     <input type="hidden" name="material_id" value="{{ $selectedMaterial->id }}">
