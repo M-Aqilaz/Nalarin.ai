@@ -50,7 +50,7 @@
                                     <form action="{{ route('admin.documents.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Hapus materi ini secara permanen? Ringkasan, chat, flashcards, dan kuis terkait juga akan ikut terhapus.');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition border border-transparent hover:border-red-500/30">
+                                        <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 transition">
                                             Hapus
                                         </button>
                                     </form>
@@ -94,7 +94,7 @@
                     <form action="{{ route('admin.documents.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Hapus materi ini secara permanen? Ringkasan, chat, flashcards, dan kuis terkait juga akan ikut terhapus.');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition border border-transparent hover:border-red-500/30">
+                        <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 transition">
                             Hapus
                         </button>
                     </form>
