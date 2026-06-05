@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div>
             <p class="user-kicker text-[11px] text-cyan-100/90">Collaborative Rooms</p>
@@ -43,6 +43,9 @@
                 @empty
                     <div class="p-4 text-sm text-slate-300/70">Belum ada room belajar.</div>
                 @endforelse
+            </div>
+            <div class="p-4 border-t border-white/5">
+                {{ $rooms->links() }}
             </div>
         </section>
 

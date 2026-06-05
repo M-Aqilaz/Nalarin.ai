@@ -56,7 +56,7 @@ class StudyRoomMessageController extends Controller
 
         $message = $room->messages()->create([
             'user_id' => $request->user()->id,
-            'content' => $validated['content'],
+            'content' => strip_tags($validated['content']),
             'type' => 'text',
         ]);
 

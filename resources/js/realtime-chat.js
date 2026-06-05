@@ -161,7 +161,7 @@ const buildBaseChat = (options) => {
     isSubmitting: false,
     booted: false,
     error: null,
-    connectionState: 'Menghubungkan realtime...',
+    connectionState: 'Menghubungkan koneksi waktu nyata...',
     currentUserId: currentUserId ?? null,
     currentUserName: currentUserName ?? null,
     enableTyping: Boolean(enableTyping ?? false),
@@ -187,7 +187,7 @@ const buildBaseChat = (options) => {
 
     connectRealtime() {
         if (!window.Echo) {
-            this.enablePolling('Realtime belum tersedia. Polling otomatis aktif.');
+            this.enablePolling('Koneksi waktu nyata belum tersedia. Pengambilan data otomatis aktif.');
             return;
         }
 
@@ -207,28 +207,28 @@ const buildBaseChat = (options) => {
             const connection = window.Echo.connector?.pusher?.connection;
 
             if (!connection) {
-                this.enablePolling('Realtime tidak stabil. Polling otomatis aktif.');
+                this.enablePolling('Koneksi waktu nyata tidak stabil. Pengambilan data otomatis aktif.');
                 return;
             }
 
             const syncState = (state) => {
                 if (state === 'connected') {
-                    this.disablePolling('Realtime aktif.');
+                    this.disablePolling('Koneksi waktu nyata aktif.');
                     return;
                 }
 
                 if (state === 'connecting' || state === 'initialized') {
-                    this.connectionState = 'Menghubungkan realtime...';
+                    this.connectionState = 'Menghubungkan koneksi waktu nyata...';
                     return;
                 }
 
-                this.enablePolling('Realtime terputus. Polling otomatis aktif.');
+                this.enablePolling('Koneksi waktu nyata terputus. Pengambilan data otomatis aktif.');
             };
 
             connection.bind('state_change', ({ current }) => syncState(current));
             window.setTimeout(() => syncState(connection.state), 1000);
         } catch (error) {
-            this.enablePolling('Realtime gagal dimuat. Polling otomatis aktif.');
+            this.enablePolling('Koneksi waktu nyata gagal dimuat. Pengambilan data otomatis aktif.');
         }
     },
 
