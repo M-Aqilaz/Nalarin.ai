@@ -34,7 +34,7 @@ class MaterialController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'material_file' => ['nullable', 'file', 'max:51200', 'required_without:raw_text'],
+            'material_file' => ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,doc,docx,ppt,pptx,xls,xlsx,txt', 'max:51200', 'required_without:raw_text'],
             'raw_text' => ['nullable', 'string', 'required_without:material_file'],
         ]);
 

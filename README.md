@@ -1,10 +1,8 @@
-<p align="center">
-  <img src="public/images/logo_nalarin_ai.png" alt="Nalarin.ai Logo" width="180">
-</p>
+![Nalarin.ai Logo](public/images/logo_nalarin_ai.png)
 
 # Nalarin.ai
 
-Nalarin.ai adalah platform pembelajaran berbasis AI yang membantu pengguna mengubah materi belajar menjadi pengalaman belajar yang lebih aktif, terstruktur, dan interaktif. Aplikasi ini menggabungkan ringkasan materi, chat tutor, flashcards, kuis, pomodoro, serta fitur sosial seperti group chat kelas dan study matching.
+Nalarin.ai adalah platform pembelajaran berbasis AI yang membantu pengguna mengubah materi belajar menjadi pengalaman belajar yang lebih aktif, terstruktur, dan interaktif. Aplikasi ini menggabungkan ringkasan materi, Tutor AI, *flashcards*, kuis, *Pomodoro*, serta fitur sosial seperti obrolan grup ruang kelas dan *study matching*.
 
 ## Why Nalarin.ai
 
@@ -23,27 +21,27 @@ Nalarin.ai dirancang untuk menjadi teman belajar digital yang tidak hanya memban
 
 ## Fitur Utama
 
-- Upload materi belajar berbasis teks atau file
+- Unggah materi belajar berbasis teks atau berkas
 - Ringkasan otomatis dari materi
-- Chat tutor AI per materi
-- Flashcards otomatis untuk review cepat
-- Kuis pilihan ganda dari materi yang diunggah
-- Pomodoro untuk manajemen fokus belajar
-- Group chat kelas untuk belajar bersama
-- Study matching untuk menemukan partner belajar
-- Realtime chat, typing indicator, dan notification center
+- Tutor AI khusus per materi
+- *Flashcards* otomatis untuk ulasan cepat
+- Kuis interaktif pilihan ganda
+- *Pomodoro* untuk manajemen fokus belajar
+- Obrolan grup ruang kelas untuk belajar bersama
+- *Study matching* untuk menemukan rekan belajar
+- Waktu nyata (*realtime*) obrolan, indikator pengetikan, dan pusat notifikasi
 - Dashboard admin untuk pemantauan sistem
 
 ## Gambaran Pengalaman Pengguna
 
 Alur utama pengguna dirancang sederhana:
 
-1. Upload materi atau tempel teks belajar
+1. Unggah materi atau tempel teks belajar
 2. Baca ringkasan awal untuk memahami inti materi
-3. Lanjutkan diskusi lewat chat tutor AI
-4. Ulangi materi dengan flashcards dan kuis
-5. Gunakan pomodoro untuk menjaga fokus
-6. Masuk ke room kelas atau cari partner belajar lewat study matching
+3. Lanjutkan diskusi lewat Tutor AI
+4. Ulangi materi dengan *flashcards* dan kuis
+5. Gunakan *Pomodoro* untuk menjaga fokus
+6. Masuk ke ruang kelas atau cari rekan belajar lewat *study matching*
 
 Dengan pola ini, pengguna tidak hanya membaca materi, tetapi diarahkan ke siklus belajar yang lebih aktif.
 
@@ -80,11 +78,11 @@ Dengan pola ini, pengguna tidak hanya membaca materi, tetapi diarahkan ke siklus
 - `Dashboard user`
   Merangkum progres belajar, kuota fitur, dan akses cepat ke modul utama.
 - `AI learning tools`
-  Ringkasan, tutor, flashcards, dan kuis dari materi yang diunggah.
+  Ringkasan, tutor, *flashcards*, dan kuis dari materi yang diunggah.
 - `Study management`
-  Pomodoro untuk menjaga fokus sesi belajar.
+  *Pomodoro* untuk menjaga fokus sesi belajar.
 - `Social learning`
-  Group chat kelas dan study matching.
+  Obrolan grup ruang kelas dan *study matching*.
 - `Admin panel`
   Monitoring statistik penggunaan, user, dan materi.
 
@@ -180,7 +178,7 @@ Seeder demo menyiapkan beberapa akun untuk pengujian:
 
 - `admin@nalarin.ai`
 - `free@tester.com`
-- `pro@tester.com`
+- `premium@tester.com`
 
 Password default:
 

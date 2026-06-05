@@ -13,10 +13,10 @@ class StudyRoomController extends Controller
     public function index(Request $request): View
     {
         $rooms = StudyRoom::query()
-            ->with(['owner', 'members.user'])
+            ->with(['owner'])
             ->withCount('members')
             ->latest()
-            ->get();
+            ->paginate(15);
 
         $myRooms = $request->user()->roomMemberships()->with('room')->latest()->get();
 
@@ -60,10 +60,8 @@ class StudyRoomController extends Controller
         $room->load([
             'owner',
             'members.user',
-            'messages' => fn ($query) => $query->with('user')->orderBy('id'),
-        ]);
         $blockedIds = $request->user()->blockedUsers()->pluck('blocked_user_id')->all();
-        $messages = $room->messages->reject(fn ($message) => in_array($message->user_id, $blockedIds, true))->values();
+        $messages = $room->messages()->with('user')->whereNotIn('user_id', $blockedIds)->orderBy('id')->get();
         $isMember = $room->members()->where('user_id', $request->user()->id)->where('status', 'active')->exists();
 
         return view('pages.user.rooms.show', compact('room', 'messages', 'isMember'));
