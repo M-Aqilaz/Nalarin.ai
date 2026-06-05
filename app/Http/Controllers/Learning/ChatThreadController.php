@@ -7,13 +7,15 @@ use App\Jobs\GenerateThreadAiReply;
 use App\Http\Controllers\Controller;
 use App\Models\ChatThread;
 use App\Models\Material;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ChatThreadController extends Controller
 {
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         $threads = ChatThread::query()
             ->where('user_id', auth()->id())
@@ -21,6 +23,10 @@ class ChatThreadController extends Controller
             ->withCount('messages')
             ->latest()
             ->get();
+
+        if ($threads->isNotEmpty()) {
+            return redirect()->route('chat.show', $threads->first());
+        }
 
         $materials = Material::query()->where('user_id', auth()->id())->latest()->get(['id', 'title']);
 
@@ -69,15 +75,78 @@ class ChatThreadController extends Controller
             ->with('status', 'Thread chat berhasil dibuat.');
     }
 
+    public function update(Request $request, ChatThread $chatThread): RedirectResponse
+    {
+        abort_unless($chatThread->user_id === $request->user()->id, 403);
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'material_id' => ['nullable', 'exists:materials,id'],
+        ]);
+
+        if (! empty($validated['material_id'])) {
+            Material::query()
+                ->where('id', $validated['material_id'])
+                ->where('user_id', $request->user()->id)
+                ->firstOrFail();
+        }
+
+        $chatThread->update([
+            'title' => $validated['title'],
+            'material_id' => $validated['material_id'] ?? null,
+        ]);
+
+        return redirect()
+            ->route('chat.show', $chatThread)
+            ->with('status', 'Thread chat berhasil diperbarui.');
+    }
+
+    public function destroy(Request $request, ChatThread $chatThread): RedirectResponse
+    {
+        abort_unless($chatThread->user_id === $request->user()->id, 403);
+
+        DB::transaction(function () use ($chatThread) {
+            $chatThread->messages()->with('attachments')->get()->each(function ($message) {
+                $message->attachments->each(fn ($attachment) => Storage::disk($attachment->disk)->delete($attachment->path));
+                $message->delete();
+            });
+
+            Storage::disk('public')->deleteDirectory('chat-attachments/'.$chatThread->id);
+            $chatThread->delete();
+        });
+
+        $nextThread = ChatThread::query()
+            ->where('user_id', $request->user()->id)
+            ->latest()
+            ->first();
+
+        return redirect()
+            ->route($nextThread ? 'chat.show' : 'feature.chat', $nextThread ? [$nextThread] : [])
+            ->with('status', 'Thread dan seluruh percakapannya berhasil dihapus.');
+    }
+
     public function show(ChatThread $chatThread): View
     {
         abort_unless($chatThread->user_id === auth()->id(), 403);
         $chatThread->load([
             'material',
             'user',
-            'messages' => fn ($query) => $query->orderBy('id'),
+            'messages' => fn ($query) => $query->with('attachments')->orderBy('id'),
         ]);
 
-        return view('pages.user.chat.show', ['thread' => $chatThread]);
+        $threads = ChatThread::query()
+            ->where('user_id', auth()->id())
+            ->with(['material'])
+            ->withCount('messages')
+            ->latest()
+            ->get();
+
+        $materials = Material::query()->where('user_id', auth()->id())->latest()->get(['id', 'title']);
+
+        return view('pages.user.chat.show', [
+            'thread' => $chatThread,
+            'threads' => $threads,
+            'materials' => $materials,
+        ]);
     }
 }

@@ -1,6 +1,6 @@
-# Social Login Setup
+# Auth Setup
 
-Dokumen ini menjelaskan social login `Google` dan `Discord` untuk project `Nalarin.ai`.
+Dokumen ini menjelaskan social login `Google`, `Discord`, dan reset password via SMTP untuk project `Nalarin.ai`.
 
 ## Tool Yang Dipakai
 
@@ -70,11 +70,34 @@ DISCORD_AVATAR_GIF=true
 DISCORD_EXTENSION_DEFAULT=png
 ```
 
+Untuk reset password via email SMTP, isi juga:
+
+```env
+APP_URL=http://127.0.0.1:8000
+
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_ENCRYPTION=tls
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=emailkamu@gmail.com
+MAIL_PASSWORD=app_password_gmail
+MAIL_FROM_ADDRESS=emailkamu@gmail.com
+MAIL_FROM_NAME="Nalarin.ai"
+```
+
 Setelah mengubah `.env`, jalankan:
 
 ```bash
 php artisan config:clear
+php artisan cache:clear
 ```
+
+Catatan:
+
+- `APP_URL` dipakai Laravel untuk membuat link reset password.
+- `MAIL_USERNAME` dan `MAIL_FROM_ADDRESS` sebaiknya sama kalau memakai Gmail.
+- `MAIL_PASSWORD` untuk Gmail harus memakai `App Password`, bukan password akun Gmail biasa.
 
 ## Jika Nanti Pakai Domain .com
 
@@ -92,6 +115,9 @@ Contoh:
 
 ```env
 APP_URL=https://nalarin.ai
+
+MAIL_FROM_ADDRESS=no-reply@nalarin.ai
+MAIL_FROM_NAME="Nalarin.ai"
 
 GOOGLE_REDIRECT_URI=https://nalarin.ai/auth/google/callback
 
@@ -230,6 +256,81 @@ Catatan penting:
 - redirect URI Discord harus sama persis dengan `.env`
 - tanpa scope `email`, Discord bisa tidak mengembalikan email user
 
+## Konfigurasi SMTP Forgot Password
+
+Project ini sudah memakai fitur reset password bawaan Laravel.
+
+Bagian yang sudah tersedia:
+
+- route forgot password: [routes/auth.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/routes/auth.php)
+- controller kirim link: [app/Http/Controllers/Auth/PasswordResetLinkController.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Http/Controllers/Auth/PasswordResetLinkController.php)
+- controller password baru: [app/Http/Controllers/Auth/NewPasswordController.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Http/Controllers/Auth/NewPasswordController.php)
+- config mail: [config/mail.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/config/mail.php)
+- halaman forgot password: [resources/views/auth/forgot-password.blade.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/resources/views/auth/forgot-password.blade.php)
+- halaman reset password: [resources/views/auth/reset-password.blade.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/resources/views/auth/reset-password.blade.php)
+- tabel token: `password_reset_tokens`
+
+### Setup Gmail SMTP
+
+Langkah ringkas:
+
+1. buka `Google Account > Security`
+2. aktifkan `2-Step Verification`
+3. buka `App Passwords`
+4. generate app password untuk `Mail`
+5. tempel password 16 karakter ke `.env`:
+
+```env
+MAIL_USERNAME=emailkamu@gmail.com
+MAIL_PASSWORD=app_password_16_karakter
+MAIL_FROM_ADDRESS=emailkamu@gmail.com
+```
+
+Setelah itu jalankan:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+### Cara Kerja Forgot Password
+
+Alur reset password:
+
+1. user klik `Lupa password` di halaman login
+2. user mengisi email di `/forgot-password`
+3. Laravel membuat token reset dan menyimpannya ke `password_reset_tokens`
+4. Laravel mengirim email reset lewat SMTP
+5. user klik link `/reset-password/{token}?email=...`
+6. user mengisi password baru
+7. Laravel validasi token dan email
+8. password user di tabel `users` diperbarui
+9. token reset dihapus dan user diarahkan ke login
+
+### Test Forgot Password
+
+Urutan test:
+
+1. isi konfigurasi SMTP di `.env`
+2. jalankan:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+3. buka:
+
+```text
+http://127.0.0.1:8000/forgot-password
+```
+
+4. masukkan email user yang ada di database
+5. cek inbox atau spam email
+6. klik link reset password
+7. isi password baru
+8. login dengan password baru
+
 ## Cara Kerja Login Di Project
 
 Alur social login di project ini:
@@ -327,13 +428,28 @@ Kalau berhasil:
 - user cocok dengan akun yang `is_active = false`
 - aktifkan lagi dari admin atau database
 
+`Email reset password tidak masuk`
+
+- cek `MAIL_MAILER=smtp`
+- cek `MAIL_USERNAME`, `MAIL_PASSWORD`, dan `MAIL_FROM_ADDRESS`
+- cek Gmail sudah memakai `App Password`
+- cek folder spam
+- jalankan `php artisan config:clear`
+
+`Link reset password mengarah ke domain salah`
+
+- cek `APP_URL`
+- untuk lokal pakai `http://127.0.0.1:8000`
+- untuk production pakai domain HTTPS
+
 ## Ringkasan
 
 Untuk project ini:
 
 - `pakai`: `Laravel Socialite`
 - `pakai`: `SocialiteProviders Discord`
+- `pakai`: `Laravel Password Broker` untuk forgot password
+- `pakai`: `SMTP` untuk kirim email reset password
 - `tidak pakai`: `Firebase`
-- `database baru`: tidak perlu
-- `tabel baru`: tidak perlu
-- `cukup`: tambah kolom social login di `users`
+- `database baru untuk social login`: tidak perlu
+- `tabel reset password`: sudah ada `password_reset_tokens`

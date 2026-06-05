@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>404 - Nalarin.ai</title>
-        <link rel="icon" href="{{ asset('images/logo_nalarin_ai.png') }}" type="image/png">
+        <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|poppins:500,600,700,800|roboto:400,500,700" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,7 +18,7 @@
         <main class="relative flex min-h-screen items-center justify-center px-4 py-12">
             <section class="glass-panel-strong user-highlight-ring w-full max-w-3xl overflow-hidden rounded-[2rem] p-8 text-center sm:p-12">
                 <div class="mx-auto flex max-w-2xl flex-col items-center">
-                    <img src="{{ asset('images/logo_nalarin_ai.png') }}" alt="Nalarin.ai" class="h-28 w-28 animate-[loader-float_2.6s_ease-in-out_infinite] object-contain sm:h-32 sm:w-32">
+                    <img src="{{ asset('images/favicon.png') }}" alt="Nalarin.ai" class="h-28 w-28 animate-[loader-float_2.6s_ease-in-out_infinite] object-contain sm:h-32 sm:w-32">
 
                     <p class="user-kicker mt-6 text-[11px] text-cyan-100/90">Page Not Found</p>
                     <h1 class="mt-3 font-outfit text-5xl font-bold soft-gradient-text sm:text-6xl">404</h1>

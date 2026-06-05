@@ -1,83 +1,106 @@
-<aside class="glass-panel-strong z-20 hidden h-full w-64 shrink-0 flex-col border-r border-white/10 md:flex">
-    <div class="flex h-20 items-center border-b border-white/10 px-6">
-        <a href="{{ url('/') }}" class="flex items-center gap-2">
-            <img src="{{ asset('images/logo_nalarin_ai.png') }}" class="w-8 h-8 object-contain" alt="Nalarin.ai Logo">
-            <span class="flex gap-1 font-outfit text-xl font-bold tracking-tight soft-gradient-text">Nalarin.ai</span>
+<aside class="z-20 hidden h-full shrink-0 flex-col border-r border-sky-200/80 bg-sky-100/70 text-slate-950 shadow-[10px_0_35px_rgba(14,116,144,0.08)] backdrop-blur-2xl transition-[width] duration-200 md:flex" :class="sidebarCollapsed ? 'w-20' : 'w-64'">
+    <div class="relative flex h-20 items-center border-b border-sky-200/80 px-4" :class="sidebarCollapsed ? 'justify-center px-2' : 'justify-between'">
+        <a href="{{ url('/') }}" class="flex min-w-0 items-center">
+            <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-11 w-auto object-contain transition-all" :class="sidebarCollapsed ? 'max-w-[42px]' : 'max-w-[170px]'" alt="Nalarin.ai Logo">
         </a>
+        <button type="button" class="hidden shrink-0 items-center justify-center border border-sky-200 bg-white/90 text-slate-700 shadow-sm transition hover:bg-white md:inline-flex" :class="sidebarCollapsed ? 'absolute -right-3 top-6 h-7 w-7 rounded-full' : 'h-8 w-8 rounded-xl'" @click="toggleSidebar" :aria-label="sidebarCollapsed ? 'Buka sidebar' : 'Tutup sidebar'">
+            <svg class="h-4 w-4 transition-transform" :class="sidebarCollapsed ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('dashboard') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5.5v-6h-5v6H4a1 1 0 01-1-1v-9.5z"></path></svg>
-            <span>Dashboard</span>
-        </a>
-        <div class="pt-4 pb-2"><p class="user-kicker px-3 text-[10px] font-semibold text-slate-400">AI Learning</p></div>
-        <a href="{{ route('feature.upload') }}" data-feature="Unggah Materi" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.upload') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01.88-7.903A5.5 5.5 0 0118.5 9.5h.5a3.5 3.5 0 010 7H7zm5-8v9m0 0l-3-3m3 3l3-3"></path></svg>
-            <span>Unggah Materi</span>
-        </a>
-        <a href="{{ route('feature.summary') }}" data-feature="Ringkasan Otomatis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.summary') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 5.5h10M7 9.5h10M7 13.5h6M6 3h12a1 1 0 011 1v16l-3.5-2-3.5 2-3.5-2L5 20V4a1 1 0 011-1z"></path></svg>
-            <span>Ringkasan</span>
-        </a>
-        <a href="{{ route('feature.chat') }}" data-feature="AI Tutor Khusus" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.chat') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-7 6l2.8-2H18a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2h.5L6 20z"></path></svg>
-            <span>AI Tutor</span>
-        </a>
-        <a href="{{ route('feature.flashcards') }}" data-feature="Smart Flashcards" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.flashcards') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h10a2 2 0 012 2v8H10a2 2 0 00-2 2V7zm0 0V5a2 2 0 00-2-2H4v14a2 2 0 012-2h2"></path></svg>
-            <span>Flashcards</span>
-        </a>
-        <a href="{{ route('feature.quiz') }}" data-feature="Latihan Kuis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.quiz') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.09 9a3 3 0 115.82 1c0 2-3 3-3 3m.09 4h.01M4 6.5l8-3 8 3v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9v-5z"></path></svg>
-            <span>Kuis</span>
-        </a>
-        <div class="pt-4 pb-2"><p class="user-kicker px-3 text-[10px] font-semibold text-slate-400">Focus Section</p></div>
-        <a href="{{ route('feature.pomodoro') }}" data-feature="Pomodoro Timer" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.pomodoro') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l2.5 2.5M12 21a8 8 0 100-16 8 8 0 000 16zm-3-18h6"></path></svg>
-            <span>Pomodoro</span>
-        </a>
-        <a href="{{ route('feature.focus-planner') }}" data-feature="Focus Planner" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.focus-planner') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h8M8 12h8M8 17h5M6 3h12a1 1 0 011 1v16l-3-2-4 2-4-2-3 2V4a1 1 0 011-1z"></path></svg>
-            <span>Focus Planner</span>
-        </a>
-        <a href="{{ route('feature.focus-insights') }}" data-feature="Focus Insights" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('feature.focus-insights') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 19h16M7 16V9m5 7V5m5 11v-4"></path></svg>
-            <span>Focus Insights</span>
-        </a>
-        <div class="pt-4 pb-2"><p class="user-kicker px-3 text-[10px] font-semibold text-slate-400">Social Learning</p></div>
-        <a href="{{ route('rooms.index') }}" data-feature="Group Chat Kelas" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('rooms.*') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5V10l-5-7-5 7v10h5m-5 0H7a2 2 0 01-2-2v-5m7 7v-4a2 2 0 00-2-2H8a2 2 0 00-2 2v4m0 0H2"></path></svg>
-            <span>Group Chat Kelas</span>
-        </a>
-        <a href="{{ route('matchmaking.index') }}" data-feature="Study Matching" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'user-highlight-ring bg-violet-500/15 text-violet-200 shadow-[0_14px_30px_rgba(76,29,149,0.18)]' : 'text-slate-300 hover:bg-white/[0.06] hover:text-white' }}">
-            <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 21s-6.5-4.35-8.5-8A4.9 4.9 0 014 6.7 4.8 4.8 0 017.6 5a4.7 4.7 0 014.4 2.7A4.7 4.7 0 0116.4 5 4.8 4.8 0 0120 6.7a4.9 4.9 0 01.5 6.3C18.5 16.65 12 21 12 21z"></path></svg>
-            <span>Study Matching</span>
-        </a>
+    <nav class="flex-1 overflow-y-auto px-4 py-5" :class="sidebarCollapsed ? 'px-3' : 'px-4'">
+        <div class="space-y-2">
+            <a href="{{ route('dashboard') }}" title="Dashboard" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('dashboard') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#8962;</span>
+                <span x-show="!sidebarCollapsed">Dashboard</span>
+            </a>
+        </div>
+
+        <div class="mt-6">
+            <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">AI Learning</p>
+            <div class="mt-4 space-y-2">
+                <a href="{{ route('feature.upload') }}" title="Unggah Materi" data-feature="Unggah Materi" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.upload') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#8679;</span>
+                    <span x-show="!sidebarCollapsed">Unggah Materi</span>
+                </a>
+                <a href="{{ route('feature.summary') }}" title="Ringkasan" data-feature="Ringkasan Otomatis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.summary', 'summaries.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">AI</span>
+                    <span x-show="!sidebarCollapsed">Ringkasan</span>
+                </a>
+                <a href="{{ route('feature.chat') }}" title="AI Tutor" data-feature="AI Tutor Khusus" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#9993;</span>
+                    <span x-show="!sidebarCollapsed">AI Tutor</span>
+                </a>
+                <a href="{{ route('feature.flashcards') }}" title="Flashcards" data-feature="Smart Flashcards" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#9635;</span>
+                    <span x-show="!sidebarCollapsed">Flashcards</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-6 space-y-1">
+            <a href="{{ route('feature.quiz') }}" title="Kuis" data-feature="Latihan Kuis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.quiz') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">?</span>
+                <span x-show="!sidebarCollapsed">Kuis</span>
+            </a>
+        </div>
+
+        <div class="mt-8">
+            <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">Focus Section</p>
+            <div class="mt-4 space-y-2">
+                <a href="{{ route('feature.pomodoro') }}" title="Pomodoro" data-feature="Pomodoro Timer" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="text-xl">&#9716;</span>
+                    <span x-show="!sidebarCollapsed">Pomodoro</span>
+                </a>
+                <a href="{{ route('feature.focus-planner') }}" title="Focus Planner" data-feature="Focus Planner" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="text-xl">&#9638;</span>
+                    <span x-show="!sidebarCollapsed">Focus Planner</span>
+                </a>
+                <a href="{{ route('feature.focus-insights') }}" title="Focus Insights" data-feature="Focus Insights" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="text-xl">&#9636;</span>
+                    <span x-show="!sidebarCollapsed">Focus Insights</span>
+                </a>
+               
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">Social Learning</p>
+            <div class="mt-4 space-y-2">
+
+                <a href="{{ route('matchmaking.roulette') }}" title="Study Matching" data-feature="Study Matching" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="text-xl text-rose-500">&#9825;</span>
+                    <span x-show="!sidebarCollapsed">Study Matching</span>
+                </a>
+                <a href="{{ route('rooms.index') }}" title="Group Chat Kelas" data-feature="Group Chat Kelas" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('rooms.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="text-xl">&#9993;</span>
+                    <span x-show="!sidebarCollapsed">Group Chat Kelas</span>
+                </a>
+            </div>
+        </div>
     </nav>
 
-    <div class="border-t border-white/10 p-4">
-        <div class="space-y-3">
-            <div class="rounded-2xl border border-white/10 bg-white/[0.06] p-3">
-                <p class="text-xs font-medium text-white truncate">{{ Auth::user()->name }}</p>
-                <p class="text-[10px] text-slate-400 truncate">{{ Auth::user()->email }}</p>
-                <p class="mt-2 text-[10px] uppercase text-violet-200">Plan {{ Auth::user()->plan }} | Match {{ Auth::user()->match_credits }}</p>
-            </div>
-            @if (Auth::user()->plan === 'free')
-                <a href="{{ route('pricing') }}" class="block rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3 transition-all hover:bg-cyan-400/15">
-                    <p class="user-kicker text-[10px] text-cyan-100">Free Plan</p>
-                    <p class="mt-2 text-sm font-semibold text-white">Upgrade to Pro</p>
-                    <p class="mt-1 text-xs text-cyan-100/80">Buka limit room lebih besar, quota match lebih banyak, dan akses fitur premium.</p>
-                </a>
-            @endif
-            <a href="{{ route('profile.edit') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 transition-all hover:bg-white/[0.06] hover:text-white">Profil Saya</a>
-            @if (Auth::user()->role === 'admin')
-                <a href="{{ route('admin.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 transition-all hover:bg-white/[0.06] hover:text-white">Admin Dashboard</a>
-            @endif
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="w-full rounded-xl px-3 py-2 text-left text-xs text-rose-300 transition-all hover:bg-rose-500/10 hover:text-rose-200">Keluar</button>
-            </form>
-        </div>
+    <div class="border-t border-sky-200/80 p-4" :class="sidebarCollapsed ? 'px-3' : 'p-4'">
+        <a href="{{ route('profile.edit') }}" title="Profil" class="block rounded-2xl border border-sky-200 bg-white/55 p-4 shadow-sm transition hover:bg-white/75 hover:shadow-md" :class="sidebarCollapsed ? 'px-2 py-3 text-center' : ''">
+            <span x-show="sidebarCollapsed" class="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-sky-500 text-sm font-extrabold text-white">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+            <p x-show="!sidebarCollapsed" class="truncate text-sm font-extrabold text-slate-950">{{ Auth::user()->name }}</p>
+            <p x-show="!sidebarCollapsed" class="mt-1 truncate text-xs text-slate-700">{{ Auth::user()->email }}</p>
+            <p x-show="!sidebarCollapsed" class="mt-3 text-[11px] font-extrabold uppercase text-slate-950">Plan {{ Auth::user()->plan }} | Match {{ Auth::user()->match_credits }}</p>
+        </a>
+        @if (Auth::user()->plan === 'free')
+            <a href="{{ route('pricing') }}" x-show="!sidebarCollapsed" class="mt-3 block rounded-2xl border border-cyan-300 bg-gradient-to-br from-white via-sky-50 to-fuchsia-100 p-4 shadow-sm transition hover:-translate-y-0.5">
+                <p class="text-xs font-extrabold uppercase tracking-wider text-slate-950">Free Plan</p>
+                <p class="mt-3 text-sm font-extrabold text-slate-950">Upgrade to Pro</p>
+                <p class="mt-1 text-xs leading-5 text-slate-700">Buka limit room lebih besar, kuota match lebih banyak, dan akses fitur premium.</p>
+                <span class="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20">Upgrade to Pro</span>
+            </a>
+        @endif
+        <form method="POST" action="{{ route('logout') }}" class="mt-4 border-t border-sky-200/80 pt-4">
+            @csrf
+            <button type="submit" title="Keluar" class="flex w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-extrabold text-red-700 transition hover:bg-red-100" :class="sidebarCollapsed ? 'px-0' : ''">
+                <span x-show="sidebarCollapsed">X</span>
+                <span x-show="!sidebarCollapsed">Keluar</span>
+            </button>
+        </form>
     </div>
 </aside>

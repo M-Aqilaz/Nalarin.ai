@@ -52,7 +52,7 @@
         x-data="pomodoroTimer()"
         x-init="init()"
         :data-mode="mode"
-        class="pomodoro-page relative min-h-full overflow-hidden md:h-full"
+        class="pomodoro-page readable-study-page relative min-h-full overflow-hidden md:h-full"
     >
         <div class="pointer-events-none absolute inset-x-12 top-0 h-48 rounded-full blur-3xl opacity-60" :style="'background: radial-gradient(circle, var(--accent-soft) 0%, transparent 72%);'"></div>
 
@@ -60,6 +60,13 @@
             <section class="glass-panel-strong flex-1 overflow-hidden rounded-[32px] p-4 shadow-[0_24px_80px_rgba(2,6,23,0.32)] md:p-5">
                 <div class="grid items-start gap-3 xl:grid-cols-[minmax(0,1.62fr)_290px]">
                     <div class="flex min-h-0 flex-col gap-3">
+                        <x-nala-guide
+                            mood="flat"
+                            title="Mode fokus dimulai dari niat kecil"
+                            message="Pilih durasi yang realistis, lalu jalankan satu sesi penuh. Kalau baru mulai, jangan sok kuat ambil terlalu lama."
+                            compact
+                        />
+
                         <div class="feature-hero">
                             <div class="max-w-2xl text-left">
                                 <p class="user-kicker text-[11px] text-orange-100/90">Flow Management</p>

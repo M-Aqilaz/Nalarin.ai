@@ -11,12 +11,25 @@ class RealtimePayloads
 {
     public static function threadMessage(ChatMessage $message): array
     {
+        $message->loadMissing('attachments');
+
         return [
             'id' => $message->id,
             'thread_id' => $message->thread_id,
             'role' => $message->role,
             'content' => $message->content,
             'token_count' => $message->token_count,
+            'attachments' => $message->attachments
+                ->map(fn ($attachment) => [
+                    'id' => $attachment->id,
+                    'kind' => $attachment->kind,
+                    'url' => $attachment->url(),
+                    'original_name' => $attachment->original_name,
+                    'mime_type' => $attachment->mime_type,
+                    'size' => $attachment->size,
+                ])
+                ->values()
+                ->all(),
             'created_at' => $message->created_at?->toIso8601String(),
         ];
     }
@@ -50,6 +63,7 @@ class RealtimePayloads
     {
         return [
             'id' => $thread->id,
+            'title' => $thread->title,
             'ai_status' => $thread->ai_status,
             'ai_error' => $thread->ai_error,
         ];

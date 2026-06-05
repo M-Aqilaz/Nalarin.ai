@@ -7,6 +7,19 @@
         </div>
     </x-slot>
     <div class="space-y-6">
+        @php
+            $profileEnabled = $user->studyProfile?->is_matchmaking_enabled ?? false;
+            $nalaMood = $activeMatch ? 'happy' : ($profileEnabled ? 'flat' : 'sad');
+            $nalaTitle = $activeMatch ? 'Kamu punya match aktif' : ($profileEnabled ? 'Profil siap dipakai' : 'Profil matching belum aktif');
+            $nalaMessage = $activeMatch
+                ? 'Partner belajar sudah ada. Buka match aktif dan jangan dibiarkan menggantung.'
+                : ($profileEnabled
+                    ? 'Profilmu sudah bisa dipakai untuk roulette. Pastikan goal dan gaya belajar tidak kosong biar hasilnya lebih nyambung.'
+                    : 'Aktifkan profil matching dulu. Nala tidak bisa mencarikan partner kalau kamu belum kasih arahan yang jelas.');
+        @endphp
+
+        <x-nala-guide :mood="$nalaMood" :title="$nalaTitle" :message="$nalaMessage" :action-label="$activeMatch ? 'Buka Match' : 'Study Roulette'" :action-url="$activeMatch ? route('matches.show', $activeMatch) : route('matchmaking.roulette')" compact />
+
         <section class="feature-hero">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-3xl">

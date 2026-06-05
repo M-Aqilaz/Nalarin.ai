@@ -53,7 +53,22 @@ return [
         'api_key' => env('OPENAI_API_KEY'),
         'base_url' => env('OPENAI_BASE_URL', 'https://openrouter.ai/api/v1'),
         'model' => env('OPENAI_MODEL', 'openai/gpt-oss-120b:free'),
-        'timeout' => env('OPENAI_TIMEOUT', 60),
+        'vision_model' => env('OPENAI_VISION_MODEL', 'nvidia/nemotron-nano-12b-v2-vl:free'),
+        'vision_fallback_model' => env('OPENAI_VISION_FALLBACK_MODEL', 'openrouter/free'),
+        'vision_models' => (function () {
+            $default = implode(',', array_filter([
+                env('OPENAI_VISION_MODEL', 'nvidia/nemotron-nano-12b-v2-vl:free'),
+                env('OPENAI_VISION_FALLBACK_MODEL', 'openrouter/free'),
+            ]));
+
+            return array_values(array_unique(array_filter(array_map('trim', explode(',', (string) env('OPENAI_VISION_MODELS', $default))))));
+        })(),
+        'vision_timeout' => env('OPENAI_VISION_TIMEOUT', 25),
+        'vision_fallback_timeout' => env('OPENAI_VISION_FALLBACK_TIMEOUT', 55),
+        'vision_cooldown_seconds' => env('OPENAI_VISION_COOLDOWN_SECONDS', 180),
+        'vision_provider_ignore' => array_values(array_filter(array_map('trim', explode(',', (string) env('OPENAI_VISION_PROVIDER_IGNORE', ''))))),
+        'pdf_engine' => env('OPENROUTER_PDF_ENGINE', 'cloudflare-ai'),
+        'timeout' => env('OPENAI_TIMEOUT', 120),
         'max_output_tokens' => env('OPENAI_MAX_OUTPUT_TOKENS', 800),
         'content_max_output_tokens' => env('OPENAI_CONTENT_MAX_OUTPUT_TOKENS', 1800),
         'limits' => [

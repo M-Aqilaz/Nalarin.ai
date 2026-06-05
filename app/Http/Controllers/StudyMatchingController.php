@@ -18,9 +18,14 @@ use Illuminate\View\View;
 
 class StudyMatchingController extends Controller
 {
-    public function index(Request $request, StudyMatchingService $matchingService): View
+    public function index(Request $request, StudyMatchingService $matchingService): View|RedirectResponse
     {
         $user = $request->user()->load('studyProfile');
+
+        if ($user->studyProfile) {
+            return redirect()->route('matchmaking.roulette');
+        }
+
         $activeMatch = $matchingService->findMatchFor($user)?->load(['userOne.studyProfile', 'userTwo.studyProfile', 'messages.user']);
         $queue = $user->matchQueueEntries()
             ->where('status', 'waiting')
@@ -44,6 +49,35 @@ class StudyMatchingController extends Controller
         return view('pages.user.matchmaking.roulette', compact('user', 'activeMatch', 'queue'));
     }
 
+    public function rouletteStatus(Request $request, StudyMatchingService $matchingService): JsonResponse
+    {
+        $user = $request->user();
+        $activeMatch = $matchingService->findRouletteMatchFor($user);
+        $latestRouletteMatch = StudyMatch::query()
+            ->where('topic', StudyMatchingService::ROULETTE_TOPIC_LABEL)
+            ->where(function ($query) use ($user) {
+                $query->where('user_one_id', $user->id)
+                    ->orWhere('user_two_id', $user->id);
+            })
+            ->latest('matched_at')
+            ->first();
+        $queue = $user->matchQueueEntries()
+            ->where('status', 'waiting')
+            ->where('selected_topic', \App\Models\MatchQueueEntry::ROULETTE_TOPIC)
+            ->latest()
+            ->first();
+
+        return response()->json([
+            'matched' => (bool) $activeMatch,
+            'match_id' => $activeMatch?->id,
+            'redirect_url' => $activeMatch ? route('matchmaking.roulette') : null,
+            'searching' => (bool) $queue,
+            'queue_status' => $queue?->status,
+            'latest_match_id' => $latestRouletteMatch?->id,
+            'latest_match_status' => $latestRouletteMatch?->status,
+        ]);
+    }
+
     public function updateProfile(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -60,7 +94,7 @@ class StudyMatchingController extends Controller
             'is_matchmaking_enabled' => $request->boolean('is_matchmaking_enabled'),
         ]);
 
-        return redirect()->route('matchmaking.index')->with('status', 'Profil study matching diperbarui.');
+        return redirect()->route('matchmaking.roulette')->with('status', 'Profil study matching siap. Kamu bisa mulai cari partner belajar.');
     }
 
     public function search(Request $request, StudyMatchingService $matchingService): RedirectResponse

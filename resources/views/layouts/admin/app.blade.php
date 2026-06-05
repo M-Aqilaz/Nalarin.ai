@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,7 @@
 
         <title>{{ config('app.name', 'Nalarin.ai') }} - Admin</title>
 
+        <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|outfit:500,600,700,800" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -15,8 +16,8 @@
             .font-outfit { font-family: 'Outfit', sans-serif; }
             .font-inter { font-family: 'Inter', sans-serif; }
             .fi-sidebar {
-                background-color: #18181b;
-                border-right: 1px solid #27272a;
+                background-color: rgba(224, 242, 254, 0.92);
+                border-right: 1px solid rgba(14, 116, 144, 0.2);
             }
             .fi-sidebar-item {
                 display: flex;
@@ -49,16 +50,16 @@
                 padding-left: 0.75rem;
             }
             .fi-main-bg {
-                background-color: #09090b;
+                background-color: transparent;
             }
             [x-cloak] { display: none !important; }
             ::-webkit-scrollbar { width: 6px; height: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
-            ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-            ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+            ::-webkit-scrollbar-thumb { background: rgba(14, 116, 144, 0.35); border-radius: 3px; }
+            ::-webkit-scrollbar-thumb:hover { background: rgba(14, 116, 144, 0.55); }
         </style>
     </head>
-    <body x-data="{ mobileAdminNavOpen: false }" class="font-inter antialiased fi-main-bg text-gray-100 flex h-screen overflow-hidden">
+    <body x-data="{ mobileAdminNavOpen: false }" class="admin-theme font-inter antialiased fi-main-bg flex h-screen overflow-hidden">
         <x-page-loader />
         @php
             $adminUser = auth()->user();

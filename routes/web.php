@@ -72,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat', [ChatThreadController::class, 'index'])->name('feature.chat');
     Route::post('/chat', [ChatThreadController::class, 'store'])->name('chat.store');
     Route::get('/chat/{chatThread}', [ChatThreadController::class, 'show'])->name('chat.show');
+    Route::patch('/chat/{chatThread}', [ChatThreadController::class, 'update'])->name('chat.update');
+    Route::delete('/chat/{chatThread}', [ChatThreadController::class, 'destroy'])->name('chat.destroy');
     Route::get('/chat/{chatThread}/messages', [ChatMessageController::class, 'index'])->name('chat.messages.index');
     Route::post('/chat/{chatThread}/messages', [ChatMessageController::class, 'store'])->name('chat.messages.store');
 
@@ -106,6 +108,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/matchmaking', [StudyMatchingController::class, 'index'])->name('matchmaking.index');
     Route::get('/matchmaking/roulette', [StudyMatchingController::class, 'roulette'])->name('matchmaking.roulette');
+    Route::get('/matchmaking/roulette/status', [StudyMatchingController::class, 'rouletteStatus'])->name('matchmaking.roulette.status');
     Route::post('/matchmaking/profile', [StudyMatchingController::class, 'updateProfile'])->name('matchmaking.profile.update');
     Route::post('/matchmaking/search', [StudyMatchingController::class, 'search'])->name('matchmaking.search');
     Route::post('/matchmaking/cancel', [StudyMatchingController::class, 'cancel'])->name('matchmaking.cancel');
@@ -125,6 +128,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 
 });
