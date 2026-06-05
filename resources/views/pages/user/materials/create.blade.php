@@ -31,8 +31,8 @@
                 </div>
             @endif
 
-            <div class="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-4 text-sm text-cyan-100">
-                Upload PDF, gambar, DOCX, PPTX, atau XLSX. Jika file berupa scan, sistem akan mencoba OCR dengan Tesseract lalu AI merapikan hasilnya menjadi ringkasan.
+            <div class="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 text-sm text-blue-100">
+                Unggah PDF, gambar, DOCX, PPTX, atau XLSX. Jika berkas berupa scan, sistem akan mencoba OCR dengan Tesseract lalu AI merapikan hasilnya menjadi ringkasan.
                 @unless (auth()->user()->isPremium())
                     Akun free dibatasi sampai {{ config('services.ocr.free_max_pages', 5) }} halaman OCR per PDF.
                 @endunless
@@ -50,9 +50,9 @@
             </div>
 
             <div>
-                <label for="raw_text" class="mb-2 block text-sm font-medium text-slate-200">Teks Materi</label>
-                <textarea id="raw_text" name="raw_text" rows="10" class="glass-input w-full px-4 py-3" placeholder="Opsional. Dipakai hanya jika tidak upload file, atau sebagai fallback jika file gagal dibaca.">{{ old('raw_text') }}</textarea>
-                <p class="mt-2 text-xs text-slate-300/55">Jika file diupload, sistem akan memproses isi file terlebih dahulu sebelum memakai teks manual.</p>
+                <label for="raw_text" class="block text-sm font-medium text-gray-300 mb-2">Teks Materi</label>
+                <textarea id="raw_text" name="raw_text" rows="10" class="w-full bg-gray-900 border border-white/10 rounded-xl px-4 py-3 text-white" placeholder="Opsional. Dipakai hanya jika tidak mengunggah berkas, atau sebagai fallback jika berkas gagal dibaca.">{{ old('raw_text') }}</textarea>
+                <p class="mt-2 text-xs text-gray-500">Jika berkas diunggah, sistem akan memproses isi berkas terlebih dahulu sebelum memakai teks manual.</p>
             </div>
 
             <div class="flex justify-end gap-3">
