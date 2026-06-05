@@ -11,62 +11,24 @@
         <a href="{{ route('feature.upload') }}" class="inline-flex w-full items-center justify-center rounded-2xl bg-sky-500 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600 md:w-auto">Materi Baru</a>
     </x-slot>
 
-    @php
-        $user = auth()->user();
-        $nalaMood = 'happy';
-        $nalaTitle = 'Nala siap memandu belajarmu';
-        $nalaMessage = 'Aku Nala. Aku akan bantu kamu upload materi, membuat ringkasan, latihan kuis, flashcard, sampai mencari partner belajar. Jangan cuma buka dashboard lalu diam, ya.';
-        $nalaActionLabel = 'Unggah Materi';
-        $nalaActionUrl = route('feature.upload');
-
-        if ($materialCount === 0) {
-            $nalaMood = 'flat';
-            $nalaTitle = 'Mulai dari materi pertama';
-            $nalaMessage = 'Belum ada materi yang bisa Nala olah. Upload PDF, teks, atau gambar dulu, nanti Nala bantu jadikan ringkasan, kuis, dan flashcard.';
-        } elseif (($user->match_credits ?? 0) <= 0 && $user->plan === 'free') {
-            $nalaMood = 'angry';
-            $nalaTitle = 'Kuota matching habis, lho';
-            $nalaMessage = 'Materimu sudah ada, tapi kuota study matching kamu habis. Kalau mau cari partner lagi, cek paket yang tersedia.';
-            $nalaActionLabel = 'Lihat Pricing';
-            $nalaActionUrl = route('pricing');
-        }
-
-        $shortcuts = [
-            ['label' => 'Unggah Materi', 'desc' => 'Masukkan PDF, gambar, atau teks belajar.', 'href' => route('feature.upload'), 'tone' => 'from-sky-100 to-white', 'icon' => 'UP'],
-            ['label' => 'Ringkasan', 'desc' => 'Buka hasil rangkuman AI dari materi.', 'href' => route('feature.summary'), 'tone' => 'from-cyan-100 to-white', 'icon' => 'AI'],
-            ['label' => 'AI Tutor', 'desc' => 'Diskusi dengan Nala per thread materi.', 'href' => route('feature.chat'), 'tone' => 'from-violet-100 to-white', 'icon' => 'N'],
-            ['label' => 'Flashcards', 'desc' => 'Review konsep penting dengan kartu pintar.', 'href' => route('feature.flashcards'), 'tone' => 'from-pink-100 to-white', 'icon' => 'FC'],
-            ['label' => 'Kuis', 'desc' => 'Latihan pilihan ganda dari materi.', 'href' => route('feature.quiz'), 'tone' => 'from-emerald-100 to-white', 'icon' => '?'],
-            ['label' => 'Pomodoro', 'desc' => 'Jalankan sesi fokus terukur.', 'href' => route('feature.pomodoro'), 'tone' => 'from-orange-100 to-white', 'icon' => '25'],
-            ['label' => 'Focus Planner', 'desc' => 'Susun target belajar harian.', 'href' => route('feature.focus-planner'), 'tone' => 'from-amber-100 to-white', 'icon' => 'PL'],
-            ['label' => 'Focus Insights', 'desc' => 'Lihat ritme dan performa fokus.', 'href' => route('feature.focus-insights'), 'tone' => 'from-indigo-100 to-white', 'icon' => 'IN'],
-            ['label' => 'Study Matching', 'desc' => 'Cari partner belajar cepat.', 'href' => route('matchmaking.roulette'), 'tone' => 'from-rose-100 to-white', 'icon' => 'SM'],
-            ['label' => 'Room Kelas', 'desc' => 'Gabung diskusi belajar grup.', 'href' => route('rooms.index'), 'tone' => 'from-teal-100 to-white', 'icon' => 'RM'],
-            ['label' => 'Profil', 'desc' => 'Cek akun, plan, limit, dan keamanan.', 'href' => route('profile.edit'), 'tone' => 'from-slate-100 to-white', 'icon' => 'ME'],
-            ['label' => 'Notifikasi', 'desc' => 'Baca update aktivitas terbaru.', 'href' => route('notifications.index'), 'tone' => 'from-blue-100 to-white', 'icon' => 'NO'],
-        ];
-    @endphp
-
     <div class="space-y-6">
-        <section class="relative overflow-hidden rounded-[2rem] border border-sky-200 bg-gradient-to-br from-white/92 via-sky-50/88 to-cyan-100/78 p-5 shadow-[0_24px_60px_rgba(14,116,144,0.16)] md:p-6">
-            <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-center">
-                <div class="min-w-0">
-                    <div class="inline-flex rounded-full border border-sky-200 bg-white/75 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Intro to Nala</div>
-                    <h3 class="mt-4 font-outfit text-3xl font-extrabold leading-tight text-slate-950 md:text-4xl">{{ $nalaTitle }}</h3>
-                    <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-700">{{ $nalaMessage }}</p>
-                    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
-                        <a href="{{ $nalaActionUrl }}" class="inline-flex h-12 items-center justify-center rounded-2xl bg-sky-500 px-6 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">{{ $nalaActionLabel }}</a>
-                        <a href="{{ route('feature.chat') }}" class="inline-flex h-12 items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-extrabold text-slate-700 transition hover:bg-sky-50">Tanya Nala</a>
-                    </div>
-                </div>
-                <div class="flex justify-center lg:justify-end">
-                    <div class="flex h-72 w-56 items-end justify-center overflow-hidden rounded-[2rem] bg-white/75 shadow-inner ring-1 ring-sky-100">
-                        <x-nala-character variant="full" size="lg" alt="Nala menyapa di dashboard" />
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Materi</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $materialCount }}</p></div>
+            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Ringkasan</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $summaryCount }}</p></div>
+            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Thread AI</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $threadCount }}</p></div>
+            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Ruang Kelas</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $roomCount }}</p></div>
+            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Match Aktif</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $activeMatchCount }}</p></div>
+        </div>
+
+        <section class="glass-panel rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-amber-200">Plan {{ auth()->user()->plan }}</p>
+                <p class="text-lg font-semibold text-white mt-2">Sisa kuota <em>study matching</em>: {{ auth()->user()->match_credits }}</p>
+                <p class="text-sm text-amber-100/80 mt-1">Tingkatkan ke premium untuk ruang kelas lebih banyak, match tanpa batas, dan fitur sosial penuh.</p>
             </div>
         </section>
 
+<<<<<<< Updated upstream
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
             @foreach ([
                 ['label' => 'Materi', 'value' => $materialCount, 'tone' => 'from-sky-100 to-white', 'icon' => 'AI'],
@@ -92,6 +54,13 @@
                 <div>
                     <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Shortcut Page</p>
                     <h3 class="mt-2 font-outfit text-2xl font-extrabold text-slate-950">Mau mulai dari mana?</h3>
+=======
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <section class="glass-panel rounded-2xl border border-white/5 overflow-hidden">
+                <div class="p-5 border-b border-white/5 flex items-center justify-between">
+                    <h3 class="font-outfit text-lg font-semibold text-white">Ruang Kelas</h3>
+                    <a href="{{ route('rooms.index') }}" class="text-sm text-purple-400">Buka room</a>
+>>>>>>> Stashed changes
                 </div>
                 <p class="text-sm text-slate-600">Semua fitur utama Nalarin.ai dalam satu launcher.</p>
             </div>

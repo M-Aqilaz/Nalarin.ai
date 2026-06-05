@@ -78,52 +78,22 @@
                 </div>
 
                 <nav class="flex-1 overflow-y-auto px-4 py-5 space-y-2">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('dashboard') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5.5v-6h-5v6H4a1 1 0 01-1-1v-9.5z"></path></svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">AI Learning</p></div>
-                    <a href="{{ route('feature.upload') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.upload') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01.88-7.903A5.5 5.5 0 0118.5 9.5h.5a3.5 3.5 0 010 7H7zm5-8v9m0 0l-3-3m3 3l3-3"></path></svg>
-                        <span>Unggah Materi</span>
-                    </a>
-                    <a href="{{ route('feature.summary') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.summary') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 5.5h10M7 9.5h10M7 13.5h6M6 3h12a1 1 0 011 1v16l-3.5-2-3.5 2-3.5-2L5 20V4a1 1 0 011-1z"></path></svg>
-                        <span>Ringkasan</span>
-                    </a>
-                    <a href="{{ route('feature.chat') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.chat') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h8M8 14h5m-7 6l2.8-2H18a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2h.5L6 20z"></path></svg>
-                        <span>AI Tutor</span>
-                    </a>
-                    <a href="{{ route('feature.flashcards') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.flashcards') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h10a2 2 0 012 2v8H10a2 2 0 00-2 2V7zm0 0V5a2 2 0 00-2-2H4v14a2 2 0 012-2h2"></path></svg>
-                        <span>Flashcards</span>
-                    </a>
-                    <a href="{{ route('feature.quiz') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.quiz') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.09 9a3 3 0 115.82 1c0 2-3 3-3 3m.09 4h.01M4 6.5l8-3 8 3v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9v-5z"></path></svg>
-                        <span>Kuis</span>
-                    </a>
-                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Focus Section</p></div>
-                    <a href="{{ route('feature.pomodoro') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l2.5 2.5M12 21a8 8 0 100-16 8 8 0 000 16zm-3-18h6"></path></svg>
-                        <span>Pomodoro</span>
-                    </a>
-                    <a href="{{ route('feature.focus-planner') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h8M8 12h8M8 17h5M6 3h12a1 1 0 011 1v16l-3-2-4 2-4-2-3 2V4a1 1 0 011-1z"></path></svg>
-                        <span>Focus Planner</span>
-                    </a>
-                    <a href="{{ route('feature.focus-insights') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 19h16M7 16V9m5 7V5m5 11v-4"></path></svg>
-                        <span>Focus Insights</span>
-                    </a>
-                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Social Learning</p></div>
-                    <a href="{{ route('rooms.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('rooms.*') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5V10l-5-7-5 7v10h5m-5 0H7a2 2 0 01-2-2v-5m7 7v-4a2 2 0 00-2-2H8a2 2 0 00-2 2v4m0 0H2"></path></svg>
-                        <span>Group Chat Kelas</span>
-                    </a>
-                    <a href="{{ route('matchmaking.roulette') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-white/70 text-slate-950 shadow-sm' : 'text-slate-800 hover:bg-white/60' }}">
-                        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 21s-6.5-4.35-8.5-8A4.9 4.9 0 014 6.7 4.8 4.8 0 017.6 5a4.7 4.7 0 014.4 2.7A4.7 4.7 0 0116.4 5 4.8 4.8 0 0120 6.7a4.9 4.9 0 01.5 6.3C18.5 16.65 12 21 12 21z"></path></svg>
-                        <span>Study Matching</span>
+                    <a href="{{ route('dashboard') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Dashboard</a>
+                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">AI Learning</p></div>
+                    <a href="{{ route('feature.upload') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.upload') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Unggah Materi</a>
+                    <a href="{{ route('feature.summary') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.summary') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Ringkasan</a>
+                    <a href="{{ route('feature.chat') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.chat') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Tutor AI</a>
+                    <a href="{{ route('feature.flashcards') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.flashcards') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Flashcards</a>
+                    <a href="{{ route('feature.quiz') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.quiz') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Kuis</a>
+                    <a href="{{ route('feature.pomodoro') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.pomodoro') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Pomodoro</a>
+                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Social Learning</p></div>
+                    <a href="{{ route('rooms.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('rooms.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">Group Chat Kelas</a>
+                    <a href="{{ route('matchmaking.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}"><em>Study Matching</em></a>
+                    <a href="{{ route('notifications.index') }}" class="flex items-center justify-between px-3 py-3 rounded-xl {{ request()->routeIs('notifications.*') ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
+                        <span>Notifikasi</span>
+                        @if ($mobileUnreadNotificationCount > 0)
+                            <span class="inline-flex min-w-6 items-center justify-center rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold text-white">{{ $mobileUnreadNotificationCount > 99 ? '99+' : $mobileUnreadNotificationCount }}</span>
+                        @endif
                     </a>
                 </nav>
 
@@ -163,6 +133,16 @@
                         @endif
                     </a>
                     <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-800">Home</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center px-2 py-1 bg-white/5 rounded-full border border-white/10" x-data="{ lang: 'id' }">
+                        <span class="text-[10px] font-semibold mr-2" :class="lang === 'id' ? 'text-white' : 'text-gray-500'">ID</span>
+                        <button @click="lang = lang === 'id' ? 'en' : 'id'" class="relative inline-flex h-3 w-6 items-center rounded-full transition-colors focus:outline-none" :class="lang === 'en' ? 'bg-purple-500' : 'bg-gray-600'">
+                            <span class="inline-block h-2 w-2 transform rounded-full bg-white transition-transform" :class="lang === 'en' ? 'translate-x-3' : 'translate-x-1'"></span>
+                        </button>
+                        <span class="text-[10px] font-semibold ml-2" :class="lang === 'en' ? 'text-white' : 'text-gray-500'">EN</span>
+                    </div>
+                    <a href="{{ route('dashboard') }}" class="text-sm text-gray-300">Home</a>
                 </div>
             </header>
 

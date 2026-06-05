@@ -123,4 +123,26 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Error Debugging Hide / Blacklist
+    |--------------------------------------------------------------------------
+    |
+    | Menyembunyikan data sensitif di halaman error exception ketika APP_DEBUG=true
+    | agar mencegah kebocoran (leak) kunci rahasia ke publik.
+    |
+    */
+
+    'debug_blacklist' => [
+        '_ENV' => [
+            'APP_KEY', 'DB_PASSWORD', 'REDIS_PASSWORD', 'MAIL_PASSWORD', 'PUSHER_APP_SECRET'
+        ],
+        '_SERVER' => [
+            'APP_KEY', 'DB_PASSWORD', 'REDIS_PASSWORD', 'MAIL_PASSWORD', 'PUSHER_APP_SECRET'
+        ],
+        '_POST' => [
+            'password', 'password_confirmation',
+        ],
+    ],
+
 ];
