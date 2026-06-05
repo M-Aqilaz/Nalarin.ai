@@ -13,7 +13,7 @@
         </div>
     </x-slot>
 
-    <div x-data="focusPlanner()" x-init="init()" class="space-y-6">
+    <div x-data="focusPlanner()" x-init="init()" class="readable-study-page space-y-6">
         <section class="feature-hero overflow-hidden">
             <div class="absolute inset-y-0 right-0 w-48 rounded-full bg-cyan-400/15 blur-3xl"></div>
             <div class="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

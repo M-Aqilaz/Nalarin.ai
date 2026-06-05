@@ -8,6 +8,13 @@
     </x-slot>
 
     <div class="mx-auto max-w-3xl space-y-6">
+        <x-nala-guide
+            mood="flat"
+            title="Upload yang rapi, ya"
+            message="Kasih judul yang jelas dan pakai file yang mudah dibaca. Kalau hasil scan buram, Nala tetap coba bantu, tapi jangan sengaja bikin susah."
+            compact
+        />
+
         <section class="feature-hero">
             <div class="max-w-2xl">
                 <p class="user-kicker text-[11px] text-cyan-100/90">One Entry Point</p>

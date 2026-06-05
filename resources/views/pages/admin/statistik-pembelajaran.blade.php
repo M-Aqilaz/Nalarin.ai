@@ -23,16 +23,16 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Overall Score</p>
-                        <p class="text-xl font-bold font-outfit text-white">A-</p>
+                        <p class="text-xl font-bold font-outfit text-white">{{ $learningStats['overall_score'] >= 85 ? 'A' : ($learningStats['overall_score'] >= 70 ? 'B' : ($learningStats['overall_score'] >= 55 ? 'C' : 'D')) }}</p>
                     </div>
                 </div>
                 <div class="bg-white/5 rounded-xl p-4 border border-white/5 flex items-center gap-4 hover:bg-white/10 transition cursor-default">
                     <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 shrink-0 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
-                        <span class="font-bold text-lg font-outfit">A+</span>
+                        <span class="font-bold text-lg font-outfit">{{ $learningStats['avg_quiz_score'] }}%</span>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Rata-rata Skor Quiz</p>
-                        <p class="text-xl font-bold font-outfit text-white">{{ $learningStats['avg_quiz_score'] }}%</p>
+                        <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Kesiapan Quiz</p>
+                        <p class="text-xl font-bold font-outfit text-white">{{ $learningStats['avg_quiz_score'] >= 80 ? 'Siap' : 'Perlu Data' }}</p>
                     </div>
                 </div>
                 <div class="bg-white/5 rounded-xl p-4 border border-white/5 flex items-center gap-4 hover:bg-white/10 transition cursor-default">
@@ -50,18 +50,68 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Aktivitas Belajar</p>
-                        <p class="text-xl font-bold font-outfit text-white">{{ $learningStats['learning_activity'] }} Jam</p>
+                        <p class="text-xl font-bold font-outfit text-white">{{ $learningStats['learning_activity'] }} Item</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="glass-panel p-6 rounded-2xl border border-white/5 bg-gradient-to-b from-gray-800/80 to-gray-900/80 mt-6">
-            <h3 class="font-outfit font-bold text-xl text-white mb-2">Distribusi Nilai</h3>
-            <p class="text-sm text-gray-400 mb-6">Grafik skor user di seluruh platform.</p>
-            <div class="w-full relative h-64 border border-dashed border-white/10 rounded-xl overflow-hidden flex items-center justify-center bg-white/5">
-                <p class="text-gray-500 font-medium text-sm">Bar Chart / Grafik menyusul</p>
+            <h3 class="font-outfit font-bold text-xl text-white mb-2">Distribusi Aktivitas Belajar</h3>
+            <p class="text-sm text-gray-400 mb-6">Perbandingan jumlah materi, ringkasan, quiz, soal, flashcard, dan chat.</p>
+            <div class="w-full relative h-64 rounded-xl border border-white/10 bg-white/5 p-4">
+                <canvas id="learningActivityChart"></canvas>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('learningActivityChart').getContext('2d');
+            const chartData = @json($learningActivityChart);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'Jumlah Item',
+                        data: chartData.data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.62)',
+                            'rgba(34, 197, 94, 0.58)',
+                            'rgba(168, 85, 247, 0.62)',
+                            'rgba(249, 115, 22, 0.58)',
+                            'rgba(236, 72, 153, 0.58)',
+                            'rgba(14, 165, 233, 0.62)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.18)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)', precision: 0 }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: 'rgba(255, 255, 255, 0.9)' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-admin-layout>

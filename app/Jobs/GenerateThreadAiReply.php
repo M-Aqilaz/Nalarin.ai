@@ -20,7 +20,7 @@ class GenerateThreadAiReply implements ShouldQueue
     public function handle(AiThreadResponder $responder): void
     {
         $thread = ChatThread::query()
-            ->with(['material', 'messages' => fn ($query) => $query->orderBy('id')])
+            ->with(['material', 'messages' => fn ($query) => $query->with('attachments')->orderBy('id')])
             ->find($this->threadId);
 
         if (! $thread) {

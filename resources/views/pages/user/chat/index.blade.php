@@ -8,6 +8,13 @@
     </x-slot>
 
     <div class="space-y-6">
+        <x-nala-guide
+            mood="happy"
+            title="Buat thread yang fokus"
+            message="Satu thread sebaiknya untuk satu topik atau satu materi. Kalau semua dicampur, Nala masih bisa jawab, tapi konteksnya jadi berantakan."
+            compact
+        />
+
         <section class="feature-hero">
             <div class="max-w-3xl">
                 <p class="user-kicker text-[11px] text-violet-100/90">Threaded Learning</p>

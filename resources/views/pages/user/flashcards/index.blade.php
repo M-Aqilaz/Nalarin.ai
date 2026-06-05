@@ -27,7 +27,7 @@
         .flashcard-rotated { transform: rotateY(180deg); }
     </style>
 
-    <div class="space-y-6">
+    <div class="readable-study-page space-y-6">
         @if (session('status'))
             <div class="rounded-2xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">{{ session('status') }}</div>
         @endif
@@ -35,6 +35,28 @@
         @if ($errors->any())
             <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">{{ $errors->first() }}</div>
         @endif
+
+        @php
+            $nalaMood = 'flat';
+            $nalaTitle = 'Pilih materi untuk flashcard';
+            $nalaMessage = 'Flashcard butuh sumber materi. Pilih dulu, lalu Nala bantu pecah jadi kartu yang gampang direview.';
+
+            if ($deck && $currentCard) {
+                $nalaMood = 'happy';
+                $nalaTitle = 'Review kartu satu per satu';
+                $nalaMessage = 'Balik kartu setelah kamu benar-benar mencoba mengingat jawabannya. Jangan curang sama diri sendiri, ya.';
+            } elseif ($deck) {
+                $nalaMood = 'happy';
+                $nalaTitle = 'Deck sudah tersedia';
+                $nalaMessage = 'Kartu sudah siap. Kalau belum ada yang jatuh tempo, cek lagi nanti sesuai jadwal review.';
+            } elseif ($selectedMaterial) {
+                $nalaMood = 'flat';
+                $nalaTitle = 'Buat deck dari materi ini';
+                $nalaMessage = 'Materi sudah dipilih. Sekarang generate flashcard agar konsep pentingnya bisa kamu ulang lebih cepat.';
+            }
+        @endphp
+
+        <x-nala-guide :mood="$nalaMood" :title="$nalaTitle" :message="$nalaMessage" compact />
 
         <section class="feature-hero">
             <div class="flex flex-col lg:flex-row lg:items-end gap-4">

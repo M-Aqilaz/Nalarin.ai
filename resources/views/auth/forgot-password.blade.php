@@ -1,84 +1,88 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Lupa Password - Nalarin.ai</title>
+    <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|outfit:500,600,700" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|outfit:600,700,800" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         .font-outfit { font-family: 'Outfit', sans-serif; }
         .font-inter { font-family: 'Inter', sans-serif; }
-        .glass-card {
-            background: rgba(31, 41, 55, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            border-radius: 50%;
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
     </style>
 </head>
-<body class="font-inter antialiased bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center relative overflow-hidden">
-    <!-- Background Blobs -->
-    <div class="blob bg-purple-600 w-96 h-96 top-[-10%] left-[-10%]"></div>
-    <div class="blob bg-blue-600 w-[30rem] h-[30rem] bottom-[-20%] right-[-10%]"></div>
+<body class="font-inter min-h-screen bg-sky-50 text-slate-950 antialiased selection:bg-sky-200">
+    <x-page-loader />
 
-    <div class="w-full max-w-md px-6 z-10 animate-float">
-        <div class="text-center mb-8">
-            <a href="/" class="inline-flex items-center gap-2 mb-4 hover:scale-105 transition-transform duration-300">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-purple-500/30">
-                    P
+    <main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-10">
+        <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_15%,rgba(255,246,178,0.62),transparent_12%),radial-gradient(circle_at_82%_12%,rgba(255,255,255,0.95),transparent_14%),linear-gradient(135deg,#e9f8ff_0%,#ccefff_42%,#f8fdff_74%,#ddf7ff_100%)]"></div>
+        <div class="absolute -left-24 bottom-10 -z-10 h-72 w-72 rounded-full bg-sky-300/30 blur-3xl"></div>
+        <div class="absolute -right-24 top-10 -z-10 h-80 w-80 rounded-full bg-cyan-200/50 blur-3xl"></div>
+
+        <section class="grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-sky-200 bg-white/88 shadow-[0_24px_70px_rgba(14,116,144,0.18)] backdrop-blur-xl lg:grid-cols-[0.95fr_1.05fr]">
+            <aside class="relative hidden min-h-[580px] overflow-hidden bg-gradient-to-br from-sky-100 via-white to-cyan-100 p-8 lg:block">
+                <a href="{{ url('/') }}" class="inline-flex items-center">
+                    <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-10 w-auto max-w-[200px] object-contain" alt="Nalarin.ai Logo">
+                </a>
+
+                <div class="mx-auto mt-8 flex h-[270px] w-[330px] items-center justify-center">
+                    <img src="{{ asset('images/NALA.png') }}" class="max-h-full w-auto object-contain drop-shadow-[0_24px_40px_rgba(14,116,144,0.22)]" alt="Nala">
                 </div>
-                <span class="font-outfit font-bold text-3xl tracking-tight text-white">Nalarin<span class="text-purple-400">.ai</span></span>
-            </a>
-            <h2 class="font-outfit text-2xl font-bold text-white mt-2">Lupa Password?</h2>
-            <p class="text-gray-400 mt-2 text-sm px-4">Jangan khawatir. Masukkan email Anda dan kami akan mengirimkan tautan reset password.</p>
-        </div>
 
-        <div class="glass-card rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
-            
-            @if (session('status'))
-                <div class="mb-6 text-sm font-medium text-green-400 p-3 bg-green-500/10 border border-green-500/20 rounded-xl relative z-10">
-                    {{ session('status') }}
+                <div class="mt-8 max-w-sm">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-sky-700">Reset Access</p>
+                    <h1 class="mt-4 font-outfit text-4xl font-extrabold leading-tight text-slate-950">Kirim link reset ke email akunmu.</h1>
+                    <p class="mt-5 text-base leading-7 text-slate-700">Masukkan email yang terdaftar. Nala akan bantu kirim tautan aman untuk membuat password baru.</p>
                 </div>
-            @endif
+            </aside>
 
-            <form method="POST" action="{{ route('password.email') }}" class="space-y-6 relative z-10">
-                @csrf
+            <section class="p-6 sm:p-8 lg:p-10">
+                <div class="mb-8 flex items-center justify-between gap-4 lg:hidden">
+                    <a href="{{ url('/') }}" class="inline-flex items-center">
+                        <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-10 w-auto max-w-[190px] object-contain" alt="Nalarin.ai Logo">
+                    </a>
+                    <a href="{{ route('login') }}" class="rounded-xl border border-sky-200 bg-white px-4 py-2 text-sm font-bold text-sky-800 shadow-sm">Login</a>
+                </div>
+
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Alamat Email</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus class="w-full px-5 py-3.5 rounded-xl bg-gray-900/50 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all shadow-inner" placeholder="nama@email.com">
-                    @error('email')
-                        <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @enderror
+                    <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-sky-700">Forgot Password</p>
+                    <h2 class="mt-3 font-outfit text-3xl font-extrabold text-slate-950">Lupa password?</h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Masukkan email akunmu, lalu cek inbox untuk tautan reset password.</p>
                 </div>
 
-                <button type="submit" class="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold text-lg shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 transition-all duration-300">
-                    Kirim Tautan Reset
-                </button>
-            </form>
+                <div class="mt-8">
+                    @if (session('status'))
+                        <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-700">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-            <div class="mt-8 text-center text-sm text-gray-400 relative z-10 border-t border-white/10 pt-6">
-                Ingat password Anda? 
-                <a href="{{ route('login') }}" class="text-purple-400 hover:text-purple-300 font-bold transition-colors">Masuk kembali</a>
-            </div>
-        </div>
-    </div>
+                    <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+                        @csrf
+
+                        <div>
+                            <label for="email" class="mb-2 block text-sm font-bold text-slate-700">Alamat Email</label>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" class="w-full rounded-2xl border border-sky-200 bg-white px-5 py-3.5 text-slate-950 placeholder-slate-400 shadow-sm outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100" placeholder="nama@email.com">
+                            @error('email')
+                                <p class="mt-2 text-sm font-semibold text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="w-full rounded-2xl bg-sky-500 px-5 py-4 text-base font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:-translate-y-0.5 hover:bg-sky-600">
+                            Kirim Tautan Reset
+                        </button>
+                    </form>
+
+                    <div class="mt-7 rounded-2xl border border-sky-100 bg-sky-50 px-4 py-4 text-center text-sm font-semibold text-slate-600">
+                        Ingat password?
+                        <a href="{{ route('login') }}" class="font-extrabold text-sky-700 transition hover:text-sky-500">Masuk kembali</a>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
 </body>
 </html>

@@ -39,9 +39,24 @@
                     <h3 class="font-outfit font-semibold text-lg text-white">Aktivitas Terakhir</h3>
                 </div>
                 <div class="p-5">
-                    <div class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6">
-                        <p class="text-sm font-medium text-white">Panel aktivitas detail belum dihubungkan ke data real-time.</p>
-                        <p class="mt-2 text-sm text-gray-400">Statistik utama dan grafik penggunaan fitur sudah memakai data nyata. Aktivitas detail lebih aman ditambahkan setelah sumber event admin ditentukan dengan jelas.</p>
+                    <div class="space-y-3">
+                        @forelse($recentActivities as $activity)
+                            <div class="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+                                <div class="mt-0.5 rounded-lg border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-purple-200">
+                                    {{ $activity['badge'] }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-semibold text-white">{{ $activity['title'] }}</p>
+                                    <p class="mt-1 text-sm text-zinc-400">{{ $activity['description'] }}</p>
+                                </div>
+                                <p class="shrink-0 text-xs text-zinc-500">{{ $activity['time']->diffForHumans() }}</p>
+                            </div>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6">
+                                <p class="text-sm font-medium text-white">Belum ada aktivitas.</p>
+                                <p class="mt-2 text-sm text-gray-400">Aktivitas akan muncul setelah user, materi, atau ringkasan AI dibuat.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -65,9 +80,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('featureUsageChart').getContext('2d');
-            const featuresData = @json($featureUsages);
-            const labels = featuresData.map(f => f.feature_name);
-            const data = featuresData.map(f => f.click_count);
+            const chartData = @json($featureUsageChart);
+            const labels = chartData.labels;
+            const data = chartData.data;
 
             new Chart(ctx, {
                 type: 'bar',
@@ -76,10 +91,18 @@
                     datasets: [{
                         label: 'Jumlah Klik',
                         data: data,
-                        backgroundColor: 'rgba(168, 85, 247, 0.5)',
-                        borderColor: 'rgba(168, 85, 247, 1)',
+                        backgroundColor: [
+                            'rgba(168, 85, 247, 0.65)',
+                            'rgba(14, 165, 233, 0.62)',
+                            'rgba(34, 197, 94, 0.58)',
+                            'rgba(249, 115, 22, 0.58)',
+                            'rgba(236, 72, 153, 0.58)',
+                            'rgba(245, 158, 11, 0.58)',
+                            'rgba(99, 102, 241, 0.62)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.18)',
                         borderWidth: 1,
-                        borderRadius: 4
+                        borderRadius: 6
                     }]
                 },
                 options: {

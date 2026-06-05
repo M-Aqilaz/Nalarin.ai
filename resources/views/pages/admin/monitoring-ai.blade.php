@@ -38,10 +38,56 @@
 
         <div class="glass-panel p-6 rounded-2xl border border-white/5 bg-gradient-to-b from-gray-800/80 to-gray-900/80 mt-6">
             <h3 class="font-outfit font-bold text-xl text-white mb-2">Trend AI Requests</h3>
-            <p class="text-sm text-gray-400 mb-6">Grafik mock penggunaan 7 hari terakhir.</p>
-            <div class="w-full relative h-64 border border-dashed border-white/10 rounded-xl overflow-hidden flex items-center justify-center bg-white/5">
-                <p class="text-gray-500 font-medium text-sm">Area Chart / Grafik menyusul</p>
+            <p class="text-sm text-gray-400 mb-6">Jumlah ringkasan, quiz, flashcard, dan balasan AI dalam 7 hari terakhir.</p>
+            <div class="w-full relative h-64 rounded-xl border border-white/10 bg-white/5 p-4">
+                <canvas id="aiTrendChart"></canvas>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('aiTrendChart').getContext('2d');
+            const chartData = @json($aiTrendChart);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'AI Requests',
+                        data: chartData.data,
+                        borderColor: 'rgba(56, 189, 248, 1)',
+                        backgroundColor: 'rgba(56, 189, 248, 0.16)',
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: 'rgba(168, 85, 247, 1)',
+                        pointBorderColor: 'rgba(255, 255, 255, 0.9)',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)', precision: 0 }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: 'rgba(255, 255, 255, 0.9)' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-admin-layout>

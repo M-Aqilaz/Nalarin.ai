@@ -7,6 +7,13 @@
         </div>
     </x-slot>
     <div class="space-y-6">
+        <x-nala-guide
+            mood="happy"
+            title="Belajar bareng lebih ringan"
+            message="Cari room yang topiknya cocok, atau buat room sendiri kalau belum ada. Tapi isi nama dan deskripsinya jelas, biar orang lain paham."
+            compact
+        />
+
         <section class="feature-hero">
             <div class="max-w-3xl">
                 <p class="user-kicker text-[11px] text-cyan-100/90">Study Together</p>

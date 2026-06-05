@@ -34,6 +34,13 @@ class NotificationController extends Controller
         return back();
     }
 
+    public function destroyAll(Request $request): RedirectResponse
+    {
+        $request->user()->notifications()->delete();
+
+        return back()->with('status', 'Semua notifikasi berhasil dihapus.');
+    }
+
     private function findUserNotification(Request $request, string $notification): ?DatabaseNotification
     {
         return $request->user()->notifications()->whereKey($notification)->first();
