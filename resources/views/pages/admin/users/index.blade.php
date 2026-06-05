@@ -81,7 +81,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="plan" value="{{ $user->plan === 'premium' ? 'free' : 'premium' }}">
-                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-amber-500/20 hover:text-amber-300 transition border border-transparent hover:border-amber-500/30">
+                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 hover:text-sky-800 transition">
                                                 {{ $user->plan === 'premium' ? 'Jadikan Freemium' : 'Jadikan Paid' }}
                                             </button>
                                         </form>
@@ -90,7 +90,7 @@
                                         <form action="{{ route('admin.users.suspend', $user->id) }}" method="POST" onsubmit="return confirm('Suspend user ini?');">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition border border-transparent hover:border-red-500/30">
+                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 transition">
                                                 Suspend
                                             </button>
                                         </form>
@@ -98,7 +98,7 @@
                                         <form action="{{ route('admin.users.activate', $user->id) }}" method="POST" onsubmit="return confirm('Aktifkan kembali user ini?');">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-green-500/20 hover:text-green-400 transition border border-transparent hover:border-green-500/30">
+                                            <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 hover:text-green-700 transition">
                                                 Aktifkan
                                             </button>
                                         </form>
@@ -159,7 +159,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="plan" value="{{ $user->plan === 'premium' ? 'free' : 'premium' }}">
-                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-amber-500/20 hover:text-amber-300 transition border border-transparent hover:border-amber-500/30">
+                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 hover:text-sky-800 transition">
                                     {{ $user->plan === 'premium' ? 'Jadikan Freemium' : 'Jadikan Paid' }}
                                 </button>
                             </form>
@@ -168,7 +168,7 @@
                             <form action="{{ route('admin.users.suspend', $user->id) }}" method="POST" onsubmit="return confirm('Suspend user ini?');">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-red-500/20 hover:text-red-400 transition border border-transparent hover:border-red-500/30">
+                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:text-red-700 transition">
                                     Suspend
                                 </button>
                             </form>
@@ -176,7 +176,7 @@
                             <form action="{{ route('admin.users.activate', $user->id) }}" method="POST" onsubmit="return confirm('Aktifkan kembali user ini?');">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-green-500/20 hover:text-green-400 transition border border-transparent hover:border-green-500/30">
+                                <button type="submit" class="w-full text-xs px-3 py-2.5 rounded-lg bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 hover:text-green-700 transition">
                                     Aktifkan
                                 </button>
                             </form>

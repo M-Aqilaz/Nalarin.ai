@@ -69,9 +69,9 @@
         <aside x-cloak x-show="mobileAdminNavOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full opacity-0" x-transition:enter-end="translate-x-0 opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0 opacity-100" x-transition:leave-end="-translate-x-full opacity-0" class="fixed inset-y-0 left-0 z-50 w-[86vw] max-w-sm fi-sidebar md:hidden">
             <div class="flex h-full flex-col">
                 <div class="h-16 flex items-center justify-between px-4 border-b border-zinc-800">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-purple-500/20">N</div>
-                        <span class="font-inter font-bold text-lg tracking-tight text-white">Nalarin Admin</span>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
+                        <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[160px] object-contain" alt="Nalarin.ai Logo">
+                        <span class="rounded-md bg-purple-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700 border border-purple-200/50">Admin</span>
                     </a>
                     <button type="button" class="rounded-xl border border-zinc-700 bg-zinc-800/80 p-2 text-zinc-300" @click="mobileAdminNavOpen = false">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -125,27 +125,27 @@
                     </div>
                 </nav>
 
-                <details class="group border-t border-zinc-800 p-4">
-                    <summary class="flex w-full cursor-pointer list-none items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-3 text-left transition hover:border-purple-500/40 hover:bg-zinc-800/80 [&::-webkit-details-marker]:hidden">
-                        <div class="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0">
-                            <span class="text-zinc-200 font-semibold text-sm">{{ $adminInitial }}</span>
+                <details class="group border-t border-sky-200/60 p-4">
+                    <summary class="flex w-full cursor-pointer list-none items-center gap-3 rounded-2xl border border-sky-200 bg-white/60 p-3 text-left transition hover:border-sky-300 hover:bg-white/85 [&::-webkit-details-marker]:hidden">
+                        <div class="w-10 h-10 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center shrink-0">
+                            <span class="text-sky-700 font-semibold text-sm">{{ $adminInitial }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-white truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
-                            <p class="text-xs text-zinc-500 truncate">{{ $adminUser?->email ?? 'admin@nalarin.ai' }}</p>
+                            <p class="text-sm font-semibold text-slate-900 truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                            <p class="text-xs text-slate-500 truncate">{{ $adminUser?->email ?? 'admin@nalarin.ai' }}</p>
                         </div>
-                        <svg class="h-4 w-4 text-zinc-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="h-4 w-4 text-slate-400 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
 
-                    <div class="mt-3 space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl">
-                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-200 transition hover:bg-zinc-800">
-                            <svg class="h-4 w-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.862 4.487l1.651-1.651a2.121 2.121 0 113 3l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L7 17l.84-3.423a4.5 4.5 0 011.13-1.897l7.892-7.193z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 7.125L16.875 4.5M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
+                    <div class="mt-3 space-y-2 rounded-2xl border border-sky-100 bg-white p-2 shadow-xl shadow-sky-900/5">
+                        <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-700 transition hover:bg-sky-50 hover:text-slate-900">
+                            <svg class="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.862 4.487l1.651-1.651a2.121 2.121 0 113 3l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L7 17l.84-3.423a4.5 4.5 0 011.13-1.897l7.892-7.193z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 7.125L16.875 4.5M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
                             <span>Edit Profile</span>
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-zinc-300 transition hover:bg-zinc-800">
-                                <svg class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path></svg>
+                            <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 hover:text-rose-700">
+                                <svg class="h-4 w-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path></svg>
                                 <span>Logout</span>
                             </button>
                         </form>
@@ -156,9 +156,9 @@
 
         <aside class="w-64 fi-sidebar hidden md:flex flex-col h-full shrink-0 z-20">
             <div class="h-16 flex items-center px-6 border-b border-zinc-800">
-                <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-purple-500/20">N</div>
-                    <span class="font-inter font-bold text-lg tracking-tight text-white">Nalarin Admin</span>
+                <a href="{{ url('/') }}" class="flex items-center gap-2.5">
+                    <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[160px] object-contain" alt="Nalarin.ai Logo">
+                    <span class="rounded-md bg-purple-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700 border border-purple-200/50">Admin</span>
                 </a>
             </div>
 
@@ -211,27 +211,27 @@
                 </div>
             </nav>
 
-            <details class="group relative border-t border-zinc-800 p-4">
-                <summary class="flex w-full cursor-pointer list-none items-center gap-3 rounded-2xl p-2 text-left transition hover:bg-zinc-800/70 [&::-webkit-details-marker]:hidden">
-                    <div class="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0">
-                        <span class="text-zinc-300 font-medium text-sm">{{ $adminInitial }}</span>
+            <details class="group relative border-t border-sky-200/60 p-4">
+                <summary class="flex w-full cursor-pointer list-none items-center gap-3 rounded-2xl border border-sky-200 bg-white/60 p-2 text-left transition hover:border-sky-300 hover:bg-white/85 [&::-webkit-details-marker]:hidden">
+                    <div class="w-9 h-9 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center shrink-0">
+                        <span class="text-sky-700 font-semibold text-xs">{{ $adminInitial }}</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-white truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
-                        <p class="text-xs text-zinc-500 truncate">{{ $adminUser?->email ?? 'admin@nalarin.ai' }}</p>
+                        <p class="text-sm font-semibold text-slate-900 truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                        <p class="text-xs text-slate-500 truncate">{{ $adminUser?->email ?? 'admin@nalarin.ai' }}</p>
                     </div>
-                    <svg class="h-4 w-4 text-zinc-500 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg class="h-4 w-4 text-slate-400 transition group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
                 </summary>
 
-                <div class="absolute bottom-[5.75rem] left-4 right-4 z-30 rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl shadow-black/40">
-                    <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-200 transition hover:bg-zinc-800">
-                        <svg class="h-4 w-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.862 4.487l1.651-1.651a2.121 2.121 0 113 3l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L7 17l.84-3.423a4.5 4.5 0 011.13-1.897l7.892-7.193z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 7.125L16.875 4.5M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
+                <div class="absolute bottom-[5.75rem] left-4 right-4 z-30 rounded-2xl border border-sky-100 bg-white p-2 shadow-xl shadow-sky-900/5">
+                    <a href="{{ route('admin.profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-700 transition hover:bg-sky-50 hover:text-slate-900">
+                        <svg class="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.862 4.487l1.651-1.651a2.121 2.121 0 113 3l-9.193 9.193a4.5 4.5 0 01-1.897 1.13L7 17l.84-3.423a4.5 4.5 0 011.13-1.897l7.892-7.193z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 7.125L16.875 4.5M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
                         <span>Edit Profile</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-zinc-300 transition hover:bg-zinc-800">
-                            <svg class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path></svg>
+                        <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 hover:text-rose-700">
+                            <svg class="h-4 w-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"></path></svg>
                             <span>Logout</span>
                         </button>
                     </form>
@@ -245,7 +245,9 @@
                     <button type="button" class="rounded-xl border border-zinc-700 bg-zinc-800/80 p-2 text-zinc-300" @click="mobileAdminNavOpen = true">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">N</div>
+                    <a href="{{ route('admin.dashboard') }}">
+                        <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-8 w-auto max-w-[140px] object-contain" alt="Nalarin.ai Logo">
+                    </a>
                 </div>
                 <a href="{{ route('admin.dashboard') }}" class="text-sm text-zinc-300">Dashboard</a>
             </header>
