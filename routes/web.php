@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminDocumentController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\FeatureUsageController;
 use App\Http\Controllers\Learning\ChatMessageController;
 use App\Http\Controllers\Learning\ChatThreadController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Learning\MaterialController;
 use App\Http\Controllers\Learning\QuizController;
 use App\Http\Controllers\Learning\SummaryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PakasirWebhookController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudyMatchingController;
@@ -38,6 +40,13 @@ Route::post('/track-feature', [FeatureUsageController::class, 'track'])
         ShareErrorsFromSession::class,
     ])
     ->name('feature.track');
+Route::post('/webhooks/pakasir', [PakasirWebhookController::class, 'store'])
+    ->withoutMiddleware([
+        PreventRequestForgery::class,
+        StartSession::class,
+        ShareErrorsFromSession::class,
+    ])
+    ->name('webhooks.pakasir');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
@@ -126,6 +135,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::post('/billing/checkout/{plan}', [BillingController::class, 'checkout'])
+        ->whereIn('plan', ['pro_monthly', 'ultimate_yearly'])
+        ->name('billing.checkout');
+    Route::get('/billing/payments/{payment}/return', [BillingController::class, 'return'])->name('billing.return');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
