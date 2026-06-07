@@ -90,7 +90,7 @@ class AdminController extends Controller
             'Unggah Materi' => 18,
             'Ringkasan Otomatis' => 14,
             'AI Tutor Khusus' => 12,
-            'Smart Flashcards' => 11,
+            'Smart Flashcard' => 11,
             'Latihan Kuis' => 10,
             'Group Chat Kelas' => 8,
             'Study Matching' => 6,

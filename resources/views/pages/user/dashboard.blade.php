@@ -9,6 +9,46 @@
             ['label' => __('ui.quiz'), 'desc' => __('ui.quiz_description'), 'href' => route('feature.quiz'), 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'quiz'],
             ['label' => __('ui.study_matching'), 'desc' => __('ui.matching_description'), 'href' => route('matchmaking.index'), 'tone' => 'from-emerald-100 to-cyan-50', 'icon' => 'matching'],
         ];
+
+        $recommendation = match (true) {
+            $materialCount === 0 => [
+                'title' => __('ui.recommend_upload_title'),
+                'description' => __('ui.recommend_upload_description'),
+                'action' => __('ui.recommend_upload_action'),
+                'href' => route('feature.upload'),
+                'icon' => 'upload',
+            ],
+            $summaryCount === 0 => [
+                'title' => __('ui.recommend_summary_title'),
+                'description' => __('ui.recommend_summary_description'),
+                'action' => __('ui.recommend_summary_action'),
+                'href' => route('feature.summary'),
+                'icon' => 'summary',
+            ],
+            $threadCount === 0 => [
+                'title' => __('ui.recommend_tutor_title'),
+                'description' => __('ui.recommend_tutor_description'),
+                'action' => __('ui.recommend_tutor_action'),
+                'href' => route('feature.chat'),
+                'icon' => 'tutor',
+            ],
+            $roomCount === 0 => [
+                'title' => __('ui.recommend_room_title'),
+                'description' => __('ui.recommend_room_description'),
+                'action' => __('ui.recommend_room_action'),
+                'href' => route('matchmaking.index'),
+                'icon' => 'matching',
+            ],
+            default => [
+                'title' => __('ui.recommend_flashcard_title'),
+                'description' => __('ui.recommend_flashcard_description'),
+                'action' => __('ui.recommend_flashcard_action'),
+                'href' => route('feature.flashcards'),
+                'icon' => 'flashcards',
+            ],
+        };
+
+        $displayPlan = $user->plan === 'pro' ? __('ui.premium') : ucfirst($user->plan);
     @endphp
 
     <x-slot name="header">
@@ -72,7 +112,7 @@
 
         <section class="rounded-[1.75rem] border border-sky-300 bg-gradient-to-r from-sky-500 to-teal-400 p-5 text-white shadow-[0_20px_45px_rgba(14,165,233,0.25)] md:flex md:items-center md:justify-between">
             <div>
-                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/85">{{ __('ui.plan') }} {{ $user->plan }}</p>
+                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/85">{{ __('ui.plan') }} {{ $displayPlan }}</p>
                 <p class="mt-4 text-xl font-extrabold">{{ __('ui.remaining_match_quota', ['count' => $user->match_credits]) }}</p>
                 <p class="mt-2 text-sm text-white/90">{{ __('ui.premium_description') }}</p>
             </div>
@@ -85,7 +125,7 @@
                     <h3 class="font-outfit text-xl font-extrabold text-slate-950">{{ __('ui.class_room') }}</h3>
                     <a href="{{ route('rooms.index') }}" class="text-sm font-semibold text-cyan-700">{{ __('ui.open_room') }}</a>
                 </div>
-                <div class="min-h-[210px] p-4">
+                <div class="min-h-[112px] p-4">
                     @forelse ($recentRooms as $room)
                         <a href="{{ route('rooms.show', $room) }}" class="block rounded-xl bg-sky-100 px-4 py-3 transition hover:bg-sky-200">
                             <p class="font-bold text-slate-950">{{ $room->name }}</p>
@@ -102,7 +142,7 @@
                     <h3 class="font-outfit text-xl font-extrabold text-slate-950">{{ __('ui.latest_materials') }}</h3>
                     <a href="{{ route('materials.index') }}" class="text-sm font-semibold text-cyan-700">{{ __('ui.view_all') }}</a>
                 </div>
-                <div class="divide-y divide-sky-100">
+                <div class="min-h-[112px] divide-y divide-sky-100">
                     @forelse ($recentMaterials as $material)
                         <a href="{{ route('materials.show', $material) }}" class="flex items-center gap-4 p-4 transition hover:bg-sky-50">
                             <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
@@ -124,7 +164,7 @@
                     <h3 class="font-outfit text-xl font-extrabold text-slate-950">{{ __('ui.ai_conversations') }}</h3>
                     <a href="{{ route('feature.chat') }}" class="text-sm font-semibold text-cyan-700">{{ __('ui.open_chat') }}</a>
                 </div>
-                <div class="min-h-[210px] p-4">
+                <div class="min-h-[112px] p-4">
                     @forelse ($recentThreads as $thread)
                         <a href="{{ route('chat.show', $thread) }}" class="block rounded-xl px-1 py-2 transition hover:bg-sky-50">
                             <p class="font-bold text-slate-950">{{ $thread->title }}</p>
@@ -136,5 +176,22 @@
                 </div>
             </section>
         </div>
+
+        <section class="overflow-hidden rounded-[1.75rem] border border-sky-200 bg-gradient-to-r from-white via-sky-50 to-cyan-50 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
+            <div class="grid gap-5 p-5 md:grid-cols-[auto_1fr_auto] md:items-center md:p-6">
+                <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500 text-white shadow-lg shadow-sky-500/20">
+                    <x-feature-icon :name="$recommendation['icon']" class="h-7 w-7" />
+                </span>
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">{{ __('ui.today_recommendation') }}</p>
+                    <h3 class="mt-2 font-outfit text-xl font-extrabold text-slate-950 md:text-2xl">{{ $recommendation['title'] }}</h3>
+                    <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{{ $recommendation['description'] }}</p>
+                    <p class="mt-2 text-xs font-semibold text-slate-500">{{ __('ui.recommendation_local_note') }}</p>
+                </div>
+                <a href="{{ $recommendation['href'] }}" class="inline-flex w-full items-center justify-center rounded-2xl bg-sky-500 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-sky-500/20 transition hover:bg-sky-600 md:w-auto">
+                    {{ $recommendation['action'] }}
+                </a>
+            </div>
+        </section>
     </div>
 </x-app-layout>

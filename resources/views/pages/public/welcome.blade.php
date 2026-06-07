@@ -68,7 +68,7 @@
                     $features = [
                         ['title' => 'Ringkasan Otomatis', 'desc' => 'Ubah materi panjang menjadi poin penting yang mudah dipahami.', 'tone' => 'text-sky-600', 'icon' => 'summary'],
                         ['title' => 'AI Tutor 24/7', 'desc' => 'Tanyakan konsep sulit dan dapatkan penjelasan yang lebih sederhana.', 'tone' => 'text-cyan-600', 'icon' => 'chat'],
-                        ['title' => 'Smart Flashcards', 'desc' => 'Buat kartu hafalan otomatis dari materi yang kamu unggah.', 'tone' => 'text-pink-500', 'icon' => 'cards'],
+                        ['title' => 'Smart Flashcard', 'desc' => 'Buat kartu hafalan otomatis dari materi yang kamu unggah.', 'tone' => 'text-pink-500', 'icon' => 'cards'],
                         ['title' => 'Interactive Quiz', 'desc' => 'Latih pemahaman lewat kuis yang dibuat dari materi belajarmu.', 'tone' => 'text-emerald-500', 'icon' => 'quiz'],
                         ['title' => 'Pomodoro Fokus', 'desc' => 'Atur sesi belajar dan istirahat agar fokus tetap terjaga.', 'tone' => 'text-orange-500', 'icon' => 'pomodoro'],
                         ['title' => 'Focus Planner', 'desc' => 'Susun target dan agenda belajar harian secara lebih terarah.', 'tone' => 'text-amber-500', 'icon' => 'planner'],

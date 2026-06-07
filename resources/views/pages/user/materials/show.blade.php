@@ -36,7 +36,7 @@
             @endif
             <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="accent-card-pink rounded-2xl border border-pink-500/20 p-4 transition hover:bg-pink-500/15">
-                    <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcards</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcard</p>
                     <p class="text-white font-semibold mt-2">{{ $material->flashcardDeck ? $material->flashcardDeck->card_count . ' kartu siap dipakai' : 'Belum dibuat' }}</p>
                     <p class="text-sm text-pink-100/70 mt-1">Buka dari sidebar atau klik kartu ini untuk generate dari materi ini.</p>
                 </a>

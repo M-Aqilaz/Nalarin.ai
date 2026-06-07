@@ -31,7 +31,7 @@
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="tutor" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.ai_tutor') }}</span>
                 </a>
-                <a href="{{ route('feature.flashcards') }}" title="Flashcards" data-feature="Smart Flashcards" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.flashcards') }}" title="Flashcard" data-feature="Smart Flashcard" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="flashcards" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.flashcards') }}</span>
                 </a>
@@ -90,9 +90,9 @@
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="text-[11px] font-bold uppercase tracking-wider text-cyan-700">{{ __('ui.free_plan') }}</p>
-                        <p class="mt-1 truncate text-sm font-extrabold leading-5 text-slate-950">{{ __('ui.upgrade_to_pro') }}</p>
+                        <p class="mt-1 truncate text-sm font-extrabold leading-5 text-slate-950">{{ __('ui.upgrade_to_premium') }}</p>
                     </div>
-                    <span class="shrink-0 rounded-full bg-sky-100 px-2.5 py-1 text-[11px] font-bold text-sky-700">Pro</span>
+                    <span class="shrink-0 rounded-full bg-sky-100 px-2.5 py-1 text-[11px] font-bold text-sky-700">{{ __('ui.premium') }}</span>
                 </div>
                 <p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-600">{{ __('ui.upgrade_description') }}</p>
                 <span class="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-bold text-white shadow-sm shadow-sky-500/20">{{ __('ui.upgrade') }}</span>
@@ -105,7 +105,7 @@
                     <span class="block truncate text-[15px] font-bold leading-5 text-slate-950">{{ Auth::user()->name }}</span>
                     <span class="mt-1 block truncate text-[13px] leading-5 text-slate-600">{{ Auth::user()->email }}</span>
                     <span class="mt-2 inline-flex max-w-full items-center rounded-full border border-sky-200 bg-white/80 px-2 py-0.5 text-[10px] font-semibold uppercase leading-4 tracking-wide text-slate-700">
-                        {{ __('ui.plan') }} {{ Auth::user()->plan }} | {{ __('ui.match') }} {{ Auth::user()->match_credits }}
+                        {{ __('ui.plan') }} {{ Auth::user()->plan === 'pro' ? __('ui.premium') : ucfirst(Auth::user()->plan) }} | {{ __('ui.match') }} {{ Auth::user()->match_credits }}
                     </span>
                 </span>
                 <svg x-show="!sidebarCollapsed" class="h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="m6 9 6 6 6-6"></path></svg>
