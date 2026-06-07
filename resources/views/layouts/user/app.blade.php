@@ -120,6 +120,17 @@
                     <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-8 w-auto max-w-[150px] object-contain" alt="Nalarin.ai Logo">
                 </div>
                 <div class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        x-data="{ language: 'id' }"
+                        @click="language = language === 'id' ? 'en' : 'id'"
+                        class="relative inline-flex h-10 w-24 items-center rounded-xl border border-sky-200 bg-white/70 p-1 text-[11px] font-extrabold shadow-sm"
+                        :aria-label="language === 'id' ? 'Ganti tampilan bahasa ke Inggris' : 'Ganti tampilan bahasa ke Indonesia'"
+                    >
+                        <span class="absolute h-8 w-[42px] rounded-lg bg-sky-100 transition-transform duration-300 ease-out" :class="language === 'en' ? 'translate-x-[46px]' : 'translate-x-0'"></span>
+                        <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'id' ? 'text-sky-700' : 'text-slate-400'">ID</span>
+                        <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'en' ? 'text-sky-700' : 'text-slate-400'">EN</span>
+                    </button>
                     <a href="{{ route('notifications.index') }}" class="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200 bg-white/70 text-slate-800 transition hover:bg-white {{ request()->routeIs('notifications.*') ? 'ring-1 ring-cyan-300/60' : '' }}" aria-label="Notifikasi">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0m6 0H9"></path></svg>
                         @if ($unreadNotificationCount > 0)
@@ -135,6 +146,17 @@
                     <div class="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div class="min-w-0">{{ $header }}</div>
                         <div class="flex w-full flex-col gap-3 md:w-auto md:shrink-0 md:flex-row md:items-center md:justify-end">
+                            <button
+                                type="button"
+                                x-data="{ language: 'id' }"
+                                @click="language = language === 'id' ? 'en' : 'id'"
+                                class="relative hidden h-11 w-28 items-center rounded-2xl border border-sky-200 bg-white/65 p-1 text-xs font-extrabold shadow-sm transition hover:bg-white md:inline-flex"
+                                :aria-label="language === 'id' ? 'Ganti tampilan bahasa ke Inggris' : 'Ganti tampilan bahasa ke Indonesia'"
+                            >
+                                <span class="absolute h-9 w-[50px] rounded-xl bg-sky-100 transition-transform duration-300 ease-out" :class="language === 'en' ? 'translate-x-[54px]' : 'translate-x-0'"></span>
+                                <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'id' ? 'text-sky-700' : 'text-slate-400'">ID</span>
+                                <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'en' ? 'text-sky-700' : 'text-slate-400'">EN</span>
+                            </button>
                             <a href="{{ route('notifications.index') }}" class="relative hidden md:inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-sky-200 bg-white/65 text-slate-800 shadow-sm transition hover:bg-white {{ request()->routeIs('notifications.*') ? 'ring-1 ring-cyan-300/60 bg-white' : '' }}" aria-label="Notifikasi">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0m6 0H9"></path></svg>
                                 @if ($unreadNotificationCount > 0)
