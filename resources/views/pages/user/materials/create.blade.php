@@ -12,6 +12,8 @@
             mood="happy"
             title="Siapkan materi terbaikmu"
             message="Beri judul yang mudah dikenali dan pilih file dengan tulisan yang jelas agar hasil belajarmu lebih baik."
+            image="images/nala_upload_guide.png"
+            image-class="h-40 w-36 rounded-[1.5rem] object-cover object-[center_15%] sm:h-48 sm:w-44"
             compact
         />
 

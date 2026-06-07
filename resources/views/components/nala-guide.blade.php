@@ -5,10 +5,13 @@
     'actionLabel' => null,
     'actionUrl' => null,
     'compact' => false,
+    'image' => 'images/nala_dashboard_chibi.png',
+    'imageClass' => null,
 ])
 
 @php
-    $imageClass = $compact ? 'h-28 w-28 sm:h-32 sm:w-32' : 'h-36 w-36 sm:h-44 sm:w-44';
+    $defaultImageClass = $compact ? 'h-28 w-28 sm:h-32 sm:w-32' : 'h-36 w-36 sm:h-44 sm:w-44';
+    $resolvedImageClass = $imageClass ?: $defaultImageClass.' rounded-full object-cover';
 @endphp
 
 <section {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-[1.75rem] border border-sky-200 bg-gradient-to-br from-white/92 via-sky-50/90 to-cyan-100/85 p-4 text-slate-950 shadow-[0_18px_38px_rgba(14,116,144,0.14)] backdrop-blur']) }}>
@@ -17,7 +20,7 @@
 
     <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center">
         <div class="mx-auto flex shrink-0 items-end justify-center sm:mx-0">
-            <img src="{{ asset('images/nala_dashboard_chibi.png') }}" alt="Nala" class="{{ $imageClass }} rounded-full object-cover mix-blend-multiply drop-shadow-[0_18px_28px_rgba(14,116,144,0.2)]">
+            <img src="{{ asset($image) }}" alt="Nala" class="{{ $resolvedImageClass }} mix-blend-multiply drop-shadow-[0_18px_28px_rgba(14,116,144,0.2)]">
         </div>
 
         <div class="min-w-0 flex-1 text-center sm:text-left">
