@@ -17,8 +17,8 @@ class StudyMatchingService
             return ['queue' => null, 'match' => null, 'error' => 'Aktifkan profil study matching terlebih dahulu.'];
         }
 
-        if ($user->plan !== 'premium' && $user->match_credits < 1) {
-            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching paket gratis sudah habis.'];
+        if ($user->match_credits < 1) {
+            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching sudah habis.'];
         }
 
         $this->expireOldEntries();
@@ -38,6 +38,7 @@ class StudyMatchingService
             ->where('status', 'waiting')
             ->where('selected_topic', $payload['selected_topic'])
             ->where('user_id', '!=', $user->id)
+            ->whereHas('user', fn ($query) => $query->where('match_credits', '>', 0))
             ->where(function ($query) use ($user) {
                 $query->whereNotIn('user_id', $user->blockedUsers()->pluck('blocked_user_id'))
                     ->whereNotIn('user_id', $user->blockedByUsers()->pluck('user_id'));
@@ -56,13 +57,8 @@ class StudyMatchingService
                 'matched_at' => now(),
             ]);
 
-            if ($user->plan !== 'premium') {
-                $user->decrement('match_credits');
-            }
-
-            if ($candidate->user->plan !== 'premium') {
-                $candidate->user->decrement('match_credits');
-            }
+            $user->decrement('match_credits');
+            $candidate->user->decrement('match_credits');
 
             return ['queue' => null, 'match' => $match, 'error' => null];
         }
@@ -85,8 +81,8 @@ class StudyMatchingService
             return ['queue' => null, 'match' => null, 'error' => 'Aktifkan profil study matching terlebih dahulu.'];
         }
 
-        if ($user->plan !== 'premium' && $user->match_credits < 1) {
-            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching paket gratis sudah habis.'];
+        if ($user->match_credits < 1) {
+            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching sudah habis.'];
         }
 
         $this->expireOldEntries();
@@ -107,6 +103,7 @@ class StudyMatchingService
             ->where('status', 'waiting')
             ->where('selected_topic', MatchQueueEntry::ROULETTE_TOPIC)
             ->where('user_id', '!=', $user->id)
+            ->whereHas('user', fn ($query) => $query->where('match_credits', '>', 0))
             ->where(function ($query) use ($user) {
                 $query->whereNotIn('user_id', $user->blockedUsers()->pluck('blocked_user_id'))
                     ->whereNotIn('user_id', $user->blockedByUsers()->pluck('user_id'));
@@ -125,13 +122,8 @@ class StudyMatchingService
                 'matched_at' => now(),
             ]);
 
-            if ($user->plan !== 'premium') {
-                $user->decrement('match_credits');
-            }
-
-            if ($candidate->user->plan !== 'premium') {
-                $candidate->user->decrement('match_credits');
-            }
+            $user->decrement('match_credits');
+            $candidate->user->decrement('match_credits');
 
             return ['queue' => null, 'match' => $match, 'error' => null];
         }

@@ -150,6 +150,7 @@
                             <div class="space-y-4 p-6 text-sm text-slate-700">
                                 <p>&#10003; Semua fitur Basic</p>
                                 <p>&#10003; AI Tutor 24/7</p>
+                                <p>&#10003; 99 study match credit / bulan</p>
                                 <p>&#10003; Unlimited Flashcard & Quiz</p>
                                 <p>&#10003; Prioritas Dukungan</p>
                                 @auth
@@ -173,6 +174,7 @@
                             </div>
                             <div class="space-y-4 p-6 text-sm text-slate-700">
                                 <p>&#10003; Semua fitur Premium</p>
+                                <p>&#10003; 999 study match credit / bulan selama 1 tahun</p>
                                 <p>&#10003; Analisis Belajar Lengkap</p>
                                 <p>&#10003; Konten Eksklusif</p>
                                 <p>&#10003; Hemat 20%</p>

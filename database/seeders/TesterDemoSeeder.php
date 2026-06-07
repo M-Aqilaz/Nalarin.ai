@@ -26,8 +26,11 @@ class TesterDemoSeeder extends Seeder
                 'password' => 'password',
                 'role' => 'admin',
                 'plan' => 'premium',
+                'plan_key' => 'ultimate_yearly',
                 'room_limit' => 999,
                 'match_credits' => 999,
+                'match_credits_monthly_allowance' => 999,
+                'match_credits_reset_at' => now()->addMonth(),
                 'is_active' => true,
             ]
         );
@@ -39,8 +42,11 @@ class TesterDemoSeeder extends Seeder
                 'password' => 'password',
                 'role' => 'user',
                 'plan' => 'free',
+                'plan_key' => 'free',
                 'room_limit' => 2,
                 'match_credits' => 3,
+                'match_credits_monthly_allowance' => 3,
+                'match_credits_reset_at' => null,
                 'is_active' => true,
             ]
         );
@@ -52,8 +58,11 @@ class TesterDemoSeeder extends Seeder
                 'password' => 'password',
                 'role' => 'user',
                 'plan' => 'premium',
+                'plan_key' => 'pro_monthly',
                 'room_limit' => 10,
                 'match_credits' => 99,
+                'match_credits_monthly_allowance' => 99,
+                'match_credits_reset_at' => null,
                 'is_active' => true,
             ]
         );

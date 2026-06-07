@@ -84,8 +84,60 @@
         </div>
     </nav>
 
+    @php
+        $authUser = Auth::user();
+        $planKey = $authUser->plan_key;
+        if ($authUser->plan === 'premium' && ($planKey === null || $planKey === 'free')) {
+            $planKey = 'pro_monthly';
+        }
+        $planKey ??= 'free';
+        $planMeta = match ($planKey) {
+            'ultimate_yearly' => [
+                'label' => 'Ultimate',
+                'short' => 'U',
+                'tone' => 'border-teal-200 bg-teal-50 text-teal-800',
+                'description' => '999 credit/bulan',
+            ],
+            'pro_monthly' => [
+                'label' => __('ui.premium'),
+                'short' => 'P',
+                'tone' => 'border-purple-200 bg-purple-50 text-purple-800',
+                'description' => '99 credit/bulan',
+            ],
+            default => [
+                'label' => 'Free',
+                'short' => 'F',
+                'tone' => 'border-sky-200 bg-sky-50 text-sky-800',
+                'description' => '3 credit awal',
+            ],
+        };
+    @endphp
+
     <div class="border-t border-sky-200/80 p-3" :class="sidebarCollapsed ? 'px-3' : 'p-3'">
-        @if (Auth::user()->plan === 'free')
+        <div x-show="sidebarCollapsed" class="mb-2 flex justify-center">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border text-xs font-extrabold {{ $planMeta['tone'] }}" title="{{ $planMeta['label'] }}">{{ $planMeta['short'] }}</span>
+        </div>
+
+        <div x-show="!sidebarCollapsed" class="mb-2 rounded-[18px] border p-3 shadow-sm {{ $planMeta['tone'] }}">
+            <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.2em]">{{ $planMeta['label'] }}</p>
+                    <p class="mt-1 truncate text-xs font-bold">{{ $planMeta['description'] }}</p>
+                </div>
+                <span class="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold">{{ $planMeta['short'] }}</span>
+            </div>
+            <div class="mt-2 space-y-1 text-[11px] font-semibold opacity-80">
+                <p>{{ __('ui.match') }} {{ $authUser->match_credits }}</p>
+                @if ($authUser->plan_expires_at)
+                    <p>Aktif sampai {{ $authUser->plan_expires_at->format('d M Y') }}</p>
+                @endif
+                @if ($planKey === 'ultimate_yearly' && $authUser->match_credits_reset_at)
+                    <p>Reset credit {{ $authUser->match_credits_reset_at->format('d M Y') }}</p>
+                @endif
+            </div>
+        </div>
+
+        @if ($planKey === 'free')
             <a href="{{ route('pricing') }}" x-show="!sidebarCollapsed" class="block rounded-[18px] border border-cyan-200 bg-gradient-to-br from-white via-sky-50 to-cyan-50 p-3 shadow-sm transition duration-200 hover:bg-white hover:shadow-md">
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
@@ -102,10 +154,10 @@
             <summary title="Profil" style="list-style: none;" class="flex w-full cursor-pointer items-center gap-3 rounded-[18px] border border-sky-200/80 bg-sky-50/80 p-3 text-left shadow-sm transition duration-200 hover:bg-sky-100/80 [&::-webkit-details-marker]:hidden" :class="sidebarCollapsed ? 'justify-center p-2.5' : ''">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500 text-sm font-extrabold text-white shadow-sm">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                 <span x-show="!sidebarCollapsed" class="min-w-0 flex-1">
-                    <span class="block truncate text-[15px] font-bold leading-5 text-slate-950">{{ Auth::user()->name }}</span>
-                    <span class="mt-1 block truncate text-[13px] leading-5 text-slate-600">{{ Auth::user()->email }}</span>
+                    <span class="block truncate text-[15px] font-bold leading-5 text-slate-950">{{ $authUser->name }}</span>
+                    <span class="mt-1 block truncate text-[13px] leading-5 text-slate-600">{{ $authUser->email }}</span>
                     <span class="mt-2 inline-flex max-w-full items-center rounded-full border border-sky-200 bg-white/80 px-2 py-0.5 text-[10px] font-semibold uppercase leading-4 tracking-wide text-slate-700">
-                        {{ __('ui.plan') }} {{ Auth::user()->plan === 'pro' ? __('ui.premium') : ucfirst(Auth::user()->plan) }} | {{ __('ui.match') }} {{ Auth::user()->match_credits }}
+                        {{ __('ui.plan') }} {{ $planMeta['label'] }} | {{ __('ui.match') }} {{ $authUser->match_credits }}
                     </span>
                 </span>
                 <svg x-show="!sidebarCollapsed" class="h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="m6 9 6 6 6-6"></path></svg>

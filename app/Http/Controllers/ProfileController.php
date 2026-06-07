@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -19,12 +20,15 @@ class ProfileController extends Controller
         $user = $request->user();
         $roomLimit = max(0, (int) $user->room_limit);
         $ownedRoomCount = $user->ownedRooms()->count();
-        $matchAllowance = $user->isPremium() ? 99 : 3;
+        $matchAllowance = max(3, (int) $user->match_credits_monthly_allowance);
         $matchAllowance = max($matchAllowance, (int) $user->match_credits);
+        $recentPayments = Schema::hasTable('payments')
+            ? $user->payments()->latest()->take(3)->get()
+            : collect();
 
         return view('pages.user.profile.edit', [
             'user' => $user,
-            'recentPayments' => $user->payments()->latest()->take(3)->get(),
+            'recentPayments' => $recentPayments,
             'limitStats' => [
                 'room_limit' => $roomLimit,
                 'owned_room_count' => $ownedRoomCount,

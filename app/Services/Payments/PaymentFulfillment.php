@@ -27,6 +27,9 @@ class PaymentFulfillment
                 : now();
             $planEndsAt = $planStartsAt->copy()->addDays($lockedPayment->duration_days);
             $paidAt = $this->completedAt($gatewayPayload) ?? now();
+            $planConfig = config("services.pakasir.plans.{$lockedPayment->plan_key}", []);
+            $monthlyResetEnabled = (bool) ($planConfig['monthly_credit_reset'] ?? false);
+            $monthlyAllowance = (int) ($planConfig['monthly_match_credits'] ?? $lockedPayment->match_credits);
 
             $lockedPayment->update([
                 'status' => Payment::STATUS_COMPLETED,
@@ -40,9 +43,12 @@ class PaymentFulfillment
 
             $user->update([
                 'plan' => $lockedPayment->plan,
+                'plan_key' => $lockedPayment->plan_key,
                 'plan_expires_at' => $planEndsAt,
                 'room_limit' => $lockedPayment->room_limit,
                 'match_credits' => $lockedPayment->match_credits,
+                'match_credits_monthly_allowance' => $monthlyAllowance,
+                'match_credits_reset_at' => $monthlyResetEnabled ? $planStartsAt->copy()->addMonth() : null,
             ]);
 
             return $lockedPayment->refresh();
