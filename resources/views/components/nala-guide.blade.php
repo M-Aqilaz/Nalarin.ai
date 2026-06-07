@@ -24,7 +24,7 @@
         </div>
 
         <div class="min-w-0 flex-1 text-center sm:text-left">
-            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Nala Guide</p>
+            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">{{ __('ui.nala_guide') }}</p>
             <h3 class="mt-2 font-outfit text-xl font-extrabold leading-tight text-slate-950 sm:text-2xl">{{ $title }}</h3>
             <p class="mt-2 text-sm leading-6 text-slate-700">{{ $message }}</p>
         </div>
