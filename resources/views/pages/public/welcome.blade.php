@@ -25,20 +25,7 @@
                         <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[190px] object-contain sm:h-10" alt="Nalarin.ai Logo">
                     </a>
                     <div class="flex items-center gap-3">
-                        <button
-                            type="button"
-                            x-data="{ language: 'id' }"
-                            @click="language = language === 'id' ? 'en' : 'id'"
-                            class="relative inline-flex h-11 w-28 items-center rounded-xl border border-sky-200 bg-white p-1 text-xs font-extrabold shadow-sm transition hover:border-sky-300"
-                            :aria-label="language === 'id' ? 'Ganti tampilan bahasa ke Inggris' : 'Ganti tampilan bahasa ke Indonesia'"
-                        >
-                            <span
-                                class="absolute h-9 w-[50px] rounded-lg bg-sky-100 transition-transform duration-300 ease-out"
-                                :class="language === 'en' ? 'translate-x-[54px]' : 'translate-x-0'"
-                            ></span>
-                            <span class="relative z-10 flex w-1/2 items-center justify-center transition-colors" :class="language === 'id' ? 'text-sky-700' : 'text-slate-400'">ID</span>
-                            <span class="relative z-10 flex w-1/2 items-center justify-center transition-colors" :class="language === 'en' ? 'text-sky-700' : 'text-slate-400'">EN</span>
-                        </button>
+                        <x-language-switch class="rounded-xl bg-white hover:border-sky-300" />
                         <a href="{{ route('login') }}" class="inline-flex h-11 w-28 items-center justify-center rounded-xl bg-sky-500 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600 hover:shadow-lg">Masuk</a>
                     </div>
                 </nav>

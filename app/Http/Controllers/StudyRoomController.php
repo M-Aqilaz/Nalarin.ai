@@ -60,6 +60,8 @@ class StudyRoomController extends Controller
         $room->load([
             'owner',
             'members.user',
+        ]);
+
         $blockedIds = $request->user()->blockedUsers()->pluck('blocked_user_id')->all();
         $messages = $room->messages()->with('user')->whereNotIn('user_id', $blockedIds)->orderBy('id')->get();
         $isMember = $room->members()->where('user_id', $request->user()->id)->where('status', 'active')->exists();

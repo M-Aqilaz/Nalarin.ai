@@ -72,19 +72,19 @@
                 </div>
 
                 <nav class="flex-1 overflow-y-auto px-4 py-5 space-y-2">
-                    <a href="{{ route('dashboard') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Dashboard</a>
-                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">AI Learning</p></div>
-                    <a href="{{ route('feature.upload') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.upload') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Unggah Materi</a>
-                    <a href="{{ route('feature.summary') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.summary') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Ringkasan</a>
-                    <a href="{{ route('feature.chat') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.chat') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Tutor AI</a>
-                    <a href="{{ route('feature.flashcards') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.flashcards') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Flashcards</a>
-                    <a href="{{ route('feature.quiz') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.quiz') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Kuis</a>
+                    <a href="{{ route('dashboard') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('dashboard') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.dashboard') }}</a>
+                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ __('ui.ai_learning') }}</p></div>
+                    <a href="{{ route('feature.upload') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.upload') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.upload_material') }}</a>
+                    <a href="{{ route('feature.summary') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.summary') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.summary') }}</a>
+                    <a href="{{ route('feature.chat') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.chat') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.ai_tutor') }}</a>
+                    <a href="{{ route('feature.flashcards') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.flashcards') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.flashcards') }}</a>
+                    <a href="{{ route('feature.quiz') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.quiz') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.quiz') }}</a>
                     <a href="{{ route('feature.pomodoro') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.pomodoro') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Pomodoro</a>
-                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Social Learning</p></div>
-                    <a href="{{ route('rooms.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('rooms.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Group Chat Kelas</a>
-                    <a href="{{ route('matchmaking.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}"><em>Study Matching</em></a>
+                    <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ __('ui.social_learning') }}</p></div>
+                    <a href="{{ route('rooms.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('rooms.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.class_room') }}</a>
+                    <a href="{{ route('matchmaking.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.study_matching') }}</a>
                     <a href="{{ route('notifications.index') }}" class="flex items-center justify-between px-3 py-3 rounded-xl {{ request()->routeIs('notifications.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">
-                        <span>Notifikasi</span>
+                        <span>{{ __('ui.notifications') }}</span>
                         @if ($unreadNotificationCount > 0)
                             <span class="inline-flex min-w-6 items-center justify-center rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold text-white">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
                         @endif
@@ -95,15 +95,15 @@
                     <div class="rounded-2xl border border-sky-200 bg-white/60 p-3">
                         <p class="text-sm font-bold text-slate-950 truncate">{{ Auth::user()->name }}</p>
                         <p class="text-xs text-slate-700 truncate">{{ Auth::user()->email }}</p>
-                        <p class="text-[10px] text-slate-900 mt-2 uppercase">Plan {{ Auth::user()->plan }} | Match {{ Auth::user()->match_credits }}</p>
+                        <p class="text-[10px] text-slate-900 mt-2 uppercase">{{ __('ui.plan') }} {{ Auth::user()->plan }} | {{ __('ui.match') }} {{ Auth::user()->match_credits }}</p>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="{{ route('profile.edit') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800">Profil</a>
+                        <a href="{{ route('profile.edit') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800">{{ __('ui.profile') }}</a>
                         <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800 {{ Auth::user()->role === 'admin' ? '' : 'hidden' }}">Admin</a>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-left text-sm text-red-600">Keluar</button>
+                        <button type="submit" class="w-full rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-left text-sm text-red-600">{{ __('ui.logout') }}</button>
                     </form>
                 </div>
             </div>
@@ -120,24 +120,14 @@
                     <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-8 w-auto max-w-[150px] object-contain" alt="Nalarin.ai Logo">
                 </div>
                 <div class="flex items-center gap-2">
-                    <button
-                        type="button"
-                        x-data="{ language: 'id' }"
-                        @click="language = language === 'id' ? 'en' : 'id'"
-                        class="relative inline-flex h-10 w-24 items-center rounded-xl border border-sky-200 bg-white/70 p-1 text-[11px] font-extrabold shadow-sm"
-                        :aria-label="language === 'id' ? 'Ganti tampilan bahasa ke Inggris' : 'Ganti tampilan bahasa ke Indonesia'"
-                    >
-                        <span class="absolute h-8 w-[42px] rounded-lg bg-sky-100 transition-transform duration-300 ease-out" :class="language === 'en' ? 'translate-x-[46px]' : 'translate-x-0'"></span>
-                        <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'id' ? 'text-sky-700' : 'text-slate-400'">ID</span>
-                        <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'en' ? 'text-sky-700' : 'text-slate-400'">EN</span>
-                    </button>
+                    <x-language-switch compact />
                     <a href="{{ route('notifications.index') }}" class="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200 bg-white/70 text-slate-800 transition hover:bg-white {{ request()->routeIs('notifications.*') ? 'ring-1 ring-cyan-300/60' : '' }}" aria-label="Notifikasi">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0m6 0H9"></path></svg>
                         @if ($unreadNotificationCount > 0)
                             <span class="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-800">Home</a>
+                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-slate-800">{{ __('ui.home') }}</a>
                 </div>
             </header>
 
@@ -146,17 +136,7 @@
                     <div class="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div class="min-w-0">{{ $header }}</div>
                         <div class="flex w-full flex-col gap-3 md:w-auto md:shrink-0 md:flex-row md:items-center md:justify-end">
-                            <button
-                                type="button"
-                                x-data="{ language: 'id' }"
-                                @click="language = language === 'id' ? 'en' : 'id'"
-                                class="relative hidden h-11 w-28 items-center rounded-2xl border border-sky-200 bg-white/65 p-1 text-xs font-extrabold shadow-sm transition hover:bg-white md:inline-flex"
-                                :aria-label="language === 'id' ? 'Ganti tampilan bahasa ke Inggris' : 'Ganti tampilan bahasa ke Indonesia'"
-                            >
-                                <span class="absolute h-9 w-[50px] rounded-xl bg-sky-100 transition-transform duration-300 ease-out" :class="language === 'en' ? 'translate-x-[54px]' : 'translate-x-0'"></span>
-                                <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'id' ? 'text-sky-700' : 'text-slate-400'">ID</span>
-                                <span class="relative z-10 flex w-1/2 justify-center" :class="language === 'en' ? 'text-sky-700' : 'text-slate-400'">EN</span>
-                            </button>
+                            <x-language-switch class="hidden md:inline-flex" />
                             <a href="{{ route('notifications.index') }}" class="relative hidden md:inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-sky-200 bg-white/65 text-slate-800 shadow-sm transition hover:bg-white {{ request()->routeIs('notifications.*') ? 'ring-1 ring-cyan-300/60 bg-white' : '' }}" aria-label="Notifikasi">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0m6 0H9"></path></svg>
                                 @if ($unreadNotificationCount > 0)
