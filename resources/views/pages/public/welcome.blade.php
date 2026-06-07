@@ -13,9 +13,177 @@
         <style>
             .font-outfit { font-family: 'Outfit', sans-serif; }
             .font-inter { font-family: 'Inter', sans-serif; }
+
+            .landing-page,
+            .landing-page a,
+            .landing-page button,
+            .landing-page [role="button"] {
+                cursor: url("{{ asset('images/nala_cursor_32_transparent.png') }}") 6 6, auto !important;
+            }
+
+            .landing-page .feature-marquee,
+            .landing-page .testimonial-marquee {
+                position: relative;
+                overflow: hidden;
+                padding-block: 1.25rem 1.75rem;
+                mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+                -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+            }
+
+            .landing-page .feature-marquee::before,
+            .landing-page .feature-marquee::after,
+            .landing-page .testimonial-marquee::before,
+            .landing-page .testimonial-marquee::after {
+                content: "";
+                position: absolute;
+                top: 1rem;
+                bottom: 1.5rem;
+                z-index: 2;
+                width: min(8rem, 16vw);
+                pointer-events: none;
+            }
+
+            .landing-page .feature-marquee::before,
+            .landing-page .testimonial-marquee::before {
+                left: 0;
+                background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+            }
+
+            .landing-page .feature-marquee::after,
+            .landing-page .testimonial-marquee::after {
+                right: 0;
+                background: linear-gradient(to left, #ffffff, rgba(255, 255, 255, 0));
+            }
+
+            .landing-page .feature-marquee-track,
+            .landing-page .testimonial-marquee-track {
+                display: flex !important;
+                width: max-content !important;
+                gap: 1.5rem;
+                will-change: transform;
+                transform: translate3d(0, 0, 0);
+            }
+
+            .landing-page .feature-marquee-track {
+                animation: landing-feature-scroll 36s linear infinite !important;
+            }
+
+            .landing-page .testimonial-marquee-track {
+                animation: landing-testimonial-scroll 42s linear infinite !important;
+            }
+
+            .landing-page .feature-marquee:hover .feature-marquee-track,
+            .landing-page .feature-marquee-track.is-paused,
+            .landing-page .testimonial-marquee:hover .testimonial-marquee-track,
+            .landing-page .testimonial-marquee-track.is-paused {
+                animation-play-state: paused !important;
+            }
+
+            .landing-carousel-card {
+                position: relative;
+                overflow: hidden;
+                isolation: isolate;
+                transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
+            }
+
+            .landing-carousel-card > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .landing-carousel-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 36%),
+                    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.78) 45%, transparent 70%);
+                opacity: 0;
+                transform: translateX(-30%);
+                transition: opacity 260ms ease, transform 520ms ease;
+                pointer-events: none;
+            }
+
+            .landing-carousel-card:hover {
+                border-color: rgba(14, 165, 233, 0.52);
+                box-shadow: 0 22px 45px rgba(14, 165, 233, 0.16);
+                transform: translateY(-8px) scale(1.015);
+            }
+
+            .landing-carousel-card:hover::before {
+                opacity: 1;
+                transform: translateX(30%);
+            }
+
+            .landing-carousel-icon {
+                animation: landing-card-float 3.8s ease-in-out infinite;
+            }
+
+            .landing-carousel-card:nth-child(2n) .landing-carousel-icon {
+                animation-delay: -1.4s;
+            }
+
+            .landing-carousel-card:nth-child(3n) .landing-carousel-icon {
+                animation-delay: -2.2s;
+            }
+
+            .landing-spark {
+                position: absolute;
+                right: 1rem;
+                top: 1rem;
+                height: 0.65rem;
+                width: 0.65rem;
+                border-radius: 9999px;
+                background: #38bdf8;
+                box-shadow: 0 0 0 7px rgba(56, 189, 248, 0.14);
+                animation: landing-spark-pulse 2.6s ease-in-out infinite;
+            }
+
+            @keyframes landing-card-float {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-7px) rotate(2deg); }
+            }
+
+            @keyframes landing-spark-pulse {
+                0%, 100% { opacity: 0.42; transform: scale(0.9); }
+                50% { opacity: 1; transform: scale(1.18); }
+            }
+
+            @keyframes landing-feature-scroll {
+                from { transform: translate3d(0, 0, 0); }
+                to { transform: translate3d(calc(-50% - 0.75rem), 0, 0); }
+            }
+
+            @keyframes landing-testimonial-scroll {
+                from { transform: translate3d(0, 0, 0); }
+                to { transform: translate3d(calc(-50% - 0.75rem), 0, 0); }
+            }
+
+            @media (max-width: 768px), (pointer: coarse) {
+                .landing-page,
+                .landing-page a,
+                .landing-page button,
+                .landing-page [role="button"] {
+                    cursor: auto;
+                }
+
+                .landing-page .feature-marquee,
+                .landing-page .testimonial-marquee {
+                    overflow-x: auto;
+                    mask-image: none;
+                    -webkit-mask-image: none;
+                }
+
+                .landing-page .feature-marquee-track,
+                .landing-page .testimonial-marquee-track,
+                .landing-carousel-icon,
+                .landing-spark {
+                    animation: none;
+                }
+            }
         </style>
     </head>
-    <body class="font-inter bg-white text-slate-950 antialiased selection:bg-sky-200">
+    <body class="landing-page font-inter bg-white text-slate-950 antialiased selection:bg-sky-200">
         <x-page-loader />
 
         <header class="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-sky-50 via-white to-cyan-100">
@@ -25,8 +193,18 @@
                         <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[190px] object-contain sm:h-10" alt="Nalarin.ai Logo">
                     </a>
                     <div class="flex items-center gap-3">
-                        <x-language-switch class="rounded-xl bg-white hover:border-sky-300" />
-                        <a href="{{ route('login') }}" class="inline-flex h-11 w-28 items-center justify-center rounded-xl bg-sky-500 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600 hover:shadow-lg">Masuk</a>
+                        <div class="hidden items-center gap-8 text-sm font-semibold text-slate-700 md:flex">
+                            <a href="#fitur" class="transition hover:text-sky-600">Fitur</a>
+                            <a href="{{ route('pricing') }}" class="transition hover:text-sky-600">Harga</a>
+                            <a href="#testimoni" class="transition hover:text-sky-600">Testimoni</a>
+                        </div>
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">Dashboard</a>
+                            <a href="{{ route('dashboard') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">Ruang Belajar</a>
+                        @else
+                            <a href="{{ route('login') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">masuk</a>
+                            <a href="{{ route('login') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">daftar</a>
+                        @endauth
                     </div>
                 </nav>
 
@@ -89,9 +267,10 @@
                 >
                     <div class="feature-marquee-track" :class="{ 'is-paused': paused }">
                         @foreach (array_merge($features, $features) as $index => $feature)
-                            <article class="flex min-h-[260px] w-[280px] shrink-0 flex-col justify-between rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm sm:w-[300px]" @if ($index >= count($features)) aria-hidden="true" @endif>
+                            <article class="landing-carousel-card flex min-h-[260px] w-[280px] shrink-0 flex-col justify-between rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm sm:w-[300px]" @if ($index >= count($features)) aria-hidden="true" @endif>
+                                <span class="landing-spark"></span>
                                 <div>
-                                    <div class="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm {{ $feature['tone'] }}">
+                                    <div class="landing-carousel-icon mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm {{ $feature['tone'] }}">
                                         @if ($feature['icon'] === 'summary')
                                             <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path d="M7 3.75h7.5L19 8.25v12H7z" stroke-linejoin="round"/>
@@ -174,7 +353,8 @@
                 >
                     <div class="testimonial-marquee-track" :class="{ 'is-paused': paused }">
                         @foreach (array_merge($testimonials, $testimonials) as $index => $testimonial)
-                            <article class="min-h-[220px] w-[300px] shrink-0 rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm sm:w-[380px]" @if ($index >= count($testimonials)) aria-hidden="true" @endif>
+                            <article class="landing-carousel-card min-h-[220px] w-[300px] shrink-0 rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm sm:w-[380px]" @if ($index >= count($testimonials)) aria-hidden="true" @endif>
+                                <span class="landing-spark"></span>
                                 <div class="text-sm text-amber-400">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
                                 <p class="mt-4 text-sm leading-6 text-slate-700">"{{ $testimonial['text'] }}"</p>
                                 <div class="mt-5">
