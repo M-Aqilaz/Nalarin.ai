@@ -107,6 +107,8 @@ return [
                 'duration_days' => 30,
                 'room_limit' => 10,
                 'match_credits' => 99,
+                'monthly_credit_reset' => false,
+                'monthly_match_credits' => 99,
             ],
             'ultimate_yearly' => [
                 'name' => 'Ultimate',
@@ -115,6 +117,8 @@ return [
                 'duration_days' => 365,
                 'room_limit' => 25,
                 'match_credits' => 999,
+                'monthly_credit_reset' => true,
+                'monthly_match_credits' => 999,
             ],
         ],
     ],

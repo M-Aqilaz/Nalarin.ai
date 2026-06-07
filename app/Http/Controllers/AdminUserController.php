@@ -59,8 +59,21 @@ class AdminUserController extends Controller
         ]);
 
         $planLimits = $validated['plan'] === 'premium'
-            ? ['room_limit' => 10, 'match_credits' => 99]
-            : ['room_limit' => 2, 'match_credits' => 3];
+            ? [
+                'plan_key' => 'pro_monthly',
+                'room_limit' => 10,
+                'match_credits' => 99,
+                'match_credits_monthly_allowance' => 99,
+                'match_credits_reset_at' => null,
+            ]
+            : [
+                'plan_key' => 'free',
+                'room_limit' => 2,
+                'match_credits' => 3,
+                'match_credits_monthly_allowance' => 3,
+                'match_credits_reset_at' => null,
+                'plan_expires_at' => null,
+            ];
 
         $user->update([
             'plan' => $validated['plan'],

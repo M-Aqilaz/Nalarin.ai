@@ -19,8 +19,11 @@ use Illuminate\Notifications\Notifiable;
     'role',
     'plan',
     'plan_expires_at',
+    'plan_key',
     'room_limit',
     'match_credits',
+    'match_credits_monthly_allowance',
+    'match_credits_reset_at',
     'is_active',
     'provider',
     'provider_id',
@@ -119,6 +122,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'plan_expires_at' => 'datetime',
+            'match_credits_reset_at' => 'datetime',
             'is_active' => 'boolean',
         ];
     }
