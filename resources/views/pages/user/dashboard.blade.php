@@ -1,4 +1,16 @@
 <x-app-layout>
+    @php
+        $user = auth()->user();
+        $shortcuts = [
+            ['label' => 'Unggah Materi', 'desc' => 'Masukkan PDF, gambar, atau teks baru.', 'href' => route('feature.upload'), 'tone' => 'from-sky-100 to-white', 'icon' => 'UP'],
+            ['label' => 'Ringkasan', 'desc' => 'Baca ulang hasil rangkuman AI.', 'href' => route('feature.summary'), 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'AI'],
+            ['label' => 'Tutor AI', 'desc' => 'Tanya Nala dari thread chat.', 'href' => route('feature.chat'), 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'N'],
+            ['label' => 'Flashcards', 'desc' => 'Latihan hafalan dari materi.', 'href' => route('feature.flashcards'), 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'FC'],
+            ['label' => 'Kuis', 'desc' => 'Uji pemahaman dengan soal.', 'href' => route('feature.quiz'), 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'QZ'],
+            ['label' => 'Study Matching', 'desc' => 'Cari partner belajar aktif.', 'href' => route('matchmaking.index'), 'tone' => 'from-emerald-100 to-cyan-50', 'icon' => 'SM'],
+        ];
+    @endphp
+
     <x-slot name="header">
         <div>
             <p class="text-[11px] font-extrabold uppercase tracking-[0.24em] text-slate-800">Learning Hub</p>
@@ -12,27 +24,32 @@
     </x-slot>
 
     <div class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Materi</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $materialCount }}</p></div>
-            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Ringkasan</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $summaryCount }}</p></div>
-            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Thread AI</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $threadCount }}</p></div>
-            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Ruang Kelas</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $roomCount }}</p></div>
-            <div class="glass-panel p-5 rounded-2xl border border-white/5"><p class="text-xs uppercase tracking-wide text-gray-400">Match Aktif</p><p class="mt-2 text-3xl font-outfit font-bold text-white">{{ $activeMatchCount }}</p></div>
-        </div>
-
-        <section class="glass-panel rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-amber-200">Plan {{ auth()->user()->plan }}</p>
-                <p class="text-lg font-semibold text-white mt-2">Sisa kuota <em>study matching</em>: {{ auth()->user()->match_credits }}</p>
-                <p class="text-sm text-amber-100/80 mt-1">Tingkatkan ke premium untuk ruang kelas lebih banyak, match tanpa batas, dan fitur sosial penuh.</p>
+        <section class="rounded-[1.75rem] border border-sky-200 bg-white/88 p-5 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
+            <div class="grid gap-5 lg:grid-cols-[1fr_220px] lg:items-center">
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Nala Guide</p>
+                    <h3 class="mt-2 font-outfit text-2xl font-extrabold text-slate-950">Mau mulai dari mana?</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Semua fitur utama Nalarin.ai ada di launcher ini. Pilih alur belajar yang paling relevan hari ini.</p>
+                </div>
+                <div class="hidden justify-center lg:flex">
+                    <img src="{{ asset('images/NALA.png') }}" class="h-36 w-auto object-contain drop-shadow-[0_18px_28px_rgba(14,116,144,0.18)]" alt="Nala">
+                </div>
+            </div>
+            <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                @foreach ($shortcuts as $shortcut)
+                    <a href="{{ $shortcut['href'] }}" class="group min-h-[126px] rounded-[1.4rem] border border-sky-200 bg-gradient-to-br {{ $shortcut['tone'] }} p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_35px_rgba(14,116,144,0.14)]">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/80 text-sm font-extrabold text-sky-700 shadow-sm">{{ $shortcut['icon'] }}</span>
+                        <h4 class="mt-4 font-outfit text-lg font-extrabold text-slate-950">{{ $shortcut['label'] }}</h4>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">{{ $shortcut['desc'] }}</p>
+                    </a>
+                @endforeach
             </div>
         </section>
 
-<<<<<<< Updated upstream
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
             @foreach ([
-                ['label' => 'Materi', 'value' => $materialCount, 'tone' => 'from-sky-100 to-white', 'icon' => 'AI'],
-                ['label' => 'Ringkasan', 'value' => $summaryCount, 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'B'],
+                ['label' => 'Materi', 'value' => $materialCount, 'tone' => 'from-sky-100 to-white', 'icon' => 'MT'],
+                ['label' => 'Ringkasan', 'value' => $summaryCount, 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'AI'],
                 ['label' => 'Thread AI', 'value' => $threadCount, 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'N'],
                 ['label' => 'Room Kelas', 'value' => $roomCount, 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'RM'],
                 ['label' => 'Match Aktif', 'value' => $activeMatchCount, 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'SM'],
@@ -48,37 +65,6 @@
                 </article>
             @endforeach
         </div>
-
-        <section class="rounded-[1.75rem] border border-sky-200 bg-white/88 p-5 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Shortcut Page</p>
-                    <h3 class="mt-2 font-outfit text-2xl font-extrabold text-slate-950">Mau mulai dari mana?</h3>
-=======
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <section class="glass-panel rounded-2xl border border-white/5 overflow-hidden">
-                <div class="p-5 border-b border-white/5 flex items-center justify-between">
-                    <h3 class="font-outfit text-lg font-semibold text-white">Ruang Kelas</h3>
-                    <a href="{{ route('rooms.index') }}" class="text-sm text-purple-400">Buka room</a>
->>>>>>> Stashed changes
-                </div>
-                <p class="text-sm text-slate-600">Semua fitur utama Nalarin.ai dalam satu launcher.</p>
-            </div>
-
-            <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                @foreach ($shortcuts as $shortcut)
-                    <a href="{{ $shortcut['href'] }}" class="group min-h-[126px] rounded-[1.4rem] border border-sky-200 bg-gradient-to-br {{ $shortcut['tone'] }} p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_35px_rgba(14,116,144,0.14)]">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="min-w-0">
-                                <h4 class="font-outfit text-lg font-extrabold text-slate-950">{{ $shortcut['label'] }}</h4>
-                                <p class="mt-2 text-sm leading-6 text-slate-600">{{ $shortcut['desc'] }}</p>
-                            </div>
-                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-sm font-extrabold text-sky-700 shadow-sm">{{ $shortcut['icon'] }}</span>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-        </section>
 
         <section class="rounded-[1.75rem] border border-sky-300 bg-gradient-to-r from-sky-500 to-teal-400 p-5 text-white shadow-[0_20px_45px_rgba(14,165,233,0.25)] md:flex md:items-center md:justify-between">
             <div>
