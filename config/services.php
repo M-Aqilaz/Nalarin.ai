@@ -93,4 +93,30 @@ return [
         'pdftoppm_path' => env('OCR_PDFTOPPM_PATH', 'pdftoppm'),
     ],
 
+    'pakasir' => [
+        'base_url' => env('PAKASIR_BASE_URL', 'https://app.pakasir.com'),
+        'slug' => env('PAKASIR_SLUG'),
+        'api_key' => env('PAKASIR_API_KEY'),
+        'timeout' => env('PAKASIR_TIMEOUT', 15),
+        'qris_only' => env('PAKASIR_QRIS_ONLY', false),
+        'plans' => [
+            'pro_monthly' => [
+                'name' => 'Pro',
+                'plan' => 'premium',
+                'amount' => (int) env('PAKASIR_PRO_MONTHLY_AMOUNT', 49000),
+                'duration_days' => 30,
+                'room_limit' => 10,
+                'match_credits' => 99,
+            ],
+            'ultimate_yearly' => [
+                'name' => 'Ultimate',
+                'plan' => 'premium',
+                'amount' => (int) env('PAKASIR_ULTIMATE_YEARLY_AMOUNT', 490000),
+                'duration_days' => 365,
+                'room_limit' => 25,
+                'match_credits' => 999,
+            ],
+        ],
+    ],
+
 ];
