@@ -95,7 +95,7 @@ class MaterialController extends Controller
 
         $redirect = redirect()
             ->route('summaries.show', $summary)
-            ->with('status', 'Materi berhasil discan dan ringkasan sudah dibuat.');
+            ->with('status', 'Materi berhasil ditambahkan dan ringkasan sudah dibuat.');
 
         if ($usedManualFallback || $extracted['warning']) {
             $redirect->with('warning', $usedManualFallback

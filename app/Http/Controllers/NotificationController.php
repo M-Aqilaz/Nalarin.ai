@@ -11,6 +11,10 @@ class NotificationController extends Controller
 {
     public function index(Request $request): View
     {
+        $request->user()->unreadNotifications()->update([
+            'read_at' => now(),
+        ]);
+
         $notifications = $request->user()
             ->notifications()
             ->latest()

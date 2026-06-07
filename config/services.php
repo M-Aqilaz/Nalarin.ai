@@ -101,7 +101,7 @@ return [
         'qris_only' => env('PAKASIR_QRIS_ONLY', false),
         'plans' => [
             'pro_monthly' => [
-                'name' => 'Pro',
+                'name' => 'Premium',
                 'plan' => 'premium',
                 'amount' => (int) env('PAKASIR_PRO_MONTHLY_AMOUNT', 49000),
                 'duration_days' => 30,

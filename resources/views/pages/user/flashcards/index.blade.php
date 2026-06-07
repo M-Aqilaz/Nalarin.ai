@@ -7,7 +7,7 @@
             <div>
                 <p class="user-kicker text-[11px] text-pink-200/90">Flashcard Studio</p>
                 <h2 class="mt-2 font-outfit font-bold text-2xl leading-tight soft-gradient-text">
-                    {{ $deck ? $deck->title : 'Smart Flashcards' }}
+                    {{ $deck ? $deck->title : 'Smart Flashcard' }}
                 </h2>
                 <p class="mt-2 text-sm text-slate-300/80">
                     @if ($deck && $currentCard)
@@ -94,7 +94,7 @@
                 <form method="POST" action="{{ route('flashcards.generate') }}" class="mt-6">
                     @csrf
                     <input type="hidden" name="material_id" value="{{ $selectedMaterial->id }}">
-                    <button type="submit" class="user-primary-button px-6 py-3 text-sm">Buat Flashcards</button>
+                    <button type="submit" class="user-primary-button px-6 py-3 text-sm">Buat Flashcard</button>
                 </form>
             </section>
         @else

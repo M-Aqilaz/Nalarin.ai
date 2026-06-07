@@ -3,8 +3,8 @@ import './bootstrap';
 import Alpine from 'alpinejs';
 import { registerRealtimeChat } from './realtime-chat';
 
-const POMODORO_STORAGE_KEY = 'pelajarin-pomodoro-state-v1';
-const FOCUS_PLANNER_STORAGE_KEY = 'pelajarin-focus-planner-v1';
+const POMODORO_STORAGE_KEY = 'nalarin-pomodoro-state-v1';
+const FOCUS_PLANNER_STORAGE_KEY = 'nalarin-focus-planner-v1';
 
 const clamp = (value, min, max) => {
     const number = Number(value);

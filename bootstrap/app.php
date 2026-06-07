@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
         $middleware->alias([
             'room.limit' => \App\Http\Middleware\EnsureUserCanCreateRoom::class,
         ]);
