@@ -51,7 +51,7 @@ class AiMaterialCleaner
                 ->acceptJson()
                 ->withHeaders([
                     'HTTP-Referer' => config('app.url'),
-                    'X-Title' => config('app.name', 'Pelajarin.ai'),
+                    'X-Title' => config('app.name', 'Nalarin.ai'),
                 ])
                 ->post($baseUrl.'/chat/completions', [
                     'model' => $model,

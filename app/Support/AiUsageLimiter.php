@@ -20,7 +20,7 @@ class AiUsageLimiter
 
         if ($limits['per_day'] !== null && RateLimiter::tooManyAttempts($this->dailyKey($user), $limits['per_day'])) {
             return $this->denied(
-                'Limit AI untuk akun free hari ini sudah habis. Upgrade ke Pro untuk akses lebih banyak.',
+                'Limit AI untuk akun free hari ini sudah habis. Upgrade ke Premium untuk akses lebih banyak.',
                 RateLimiter::availableIn($this->dailyKey($user))
             );
         }

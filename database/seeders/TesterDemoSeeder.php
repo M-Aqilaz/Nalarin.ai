@@ -48,7 +48,7 @@ class TesterDemoSeeder extends Seeder
         $premiumUser = User::updateOrCreate(
             ['email' => 'pro@tester.com'],
             [
-                'name' => 'Pro Tester',
+                'name' => 'Premium Tester',
                 'password' => 'password',
                 'role' => 'user',
                 'plan' => 'premium',
@@ -163,7 +163,7 @@ class TesterDemoSeeder extends Seeder
         $deck = FlashcardDeck::updateOrCreate(
             ['material_id' => $material->id],
             [
-                'title' => 'Smart Flashcards: ' . $title,
+                'title' => 'Smart Flashcard: ' . $title,
                 'description' => 'Deck dummy untuk tester.',
                 'card_count' => 4,
             ]
@@ -214,7 +214,7 @@ class TesterDemoSeeder extends Seeder
             ],
             [
                 'prompt' => 'Fitur apa yang paling cocok setelah membaca materi?',
-                'choices' => ['Flashcards dan quiz', 'Belanja online', 'Edit video', 'Kalkulator pajak'],
+                'choices' => ['Flashcard dan quiz', 'Belanja online', 'Edit video', 'Kalkulator pajak'],
                 'correct_choice' => 0,
                 'explanation' => 'Deck dan kuis dipakai untuk retensi belajar.',
                 'sort_order' => 4,
@@ -277,7 +277,7 @@ class TesterDemoSeeder extends Seeder
             'Unggah Materi' => 18,
             'Ringkasan Otomatis' => 14,
             'AI Tutor Khusus' => 12,
-            'Smart Flashcards' => 11,
+            'Smart Flashcard' => 11,
             'Latihan Kuis' => 10,
             'Group Chat Kelas' => 8,
             'Study Matching' => 6,

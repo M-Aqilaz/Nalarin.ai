@@ -135,7 +135,7 @@ class StudyContentGenerator
                 ->acceptJson()
                 ->withHeaders([
                     'HTTP-Referer' => (string) $this->configValue('app.url', ''),
-                    'X-Title' => (string) $this->configValue('app.name', 'Pelajarin.ai'),
+                    'X-Title' => (string) $this->configValue('app.name', 'Nalarin.ai'),
                 ])
                 ->post(rtrim((string) $this->configValue('services.openai.base_url', 'https://openrouter.ai/api/v1'), '/').'/chat/completions', [
                     'model' => (string) $this->configValue('services.openai.model', 'openai/gpt-oss-120b:free'),

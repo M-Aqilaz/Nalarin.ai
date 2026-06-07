@@ -74,7 +74,7 @@ class FlashcardController extends Controller
         $deck = $material->flashcardDeck()->updateOrCreate(
             [],
             [
-                'title' => 'Smart Flashcards: ' . $material->title,
+                'title' => 'Smart Flashcard: ' . $material->title,
                 'description' => 'Deck belajar otomatis dari materi yang diunggah.',
                 'card_count' => count($cards),
             ]
@@ -85,7 +85,7 @@ class FlashcardController extends Controller
 
         return redirect()
             ->route('feature.flashcards', ['material_id' => $material->id])
-            ->with('status', 'Flashcards berhasil dibuat dari materi terpilih.');
+            ->with('status', 'Flashcard berhasil dibuat dari materi terpilih.');
     }
 
     public function review(Request $request, FlashcardDeck $deck, FlashcardReviewScheduler $scheduler): RedirectResponse

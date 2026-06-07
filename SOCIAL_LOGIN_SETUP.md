@@ -28,13 +28,13 @@ Bagian yang sudah dipasang:
 - package: `laravel/socialite`
 - package: `socialiteproviders/manager`
 - package: `socialiteproviders/discord`
-- controller: [app/Http/Controllers/Auth/SocialAuthController.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Http/Controllers/Auth/SocialAuthController.php)
-- provider bootstrap: [bootstrap/providers.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/bootstrap/providers.php)
-- provider listener: [app/Providers/AppServiceProvider.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Providers/AppServiceProvider.php)
-- route auth: [routes/auth.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/routes/auth.php)
-- config services: [config/services.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/config/services.php)
-- login page: [resources/views/auth/login.blade.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/resources/views/auth/login.blade.php)
-- users table update: [database/migrations/2026_04_21_100000_add_social_login_fields_to_users_table.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/database/migrations/2026_04_21_100000_add_social_login_fields_to_users_table.php)
+- controller: [app/Http/Controllers/Auth/SocialAuthController.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/app/Http/Controllers/Auth/SocialAuthController.php)
+- provider bootstrap: [bootstrap/providers.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/bootstrap/providers.php)
+- provider listener: [app/Providers/AppServiceProvider.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/app/Providers/AppServiceProvider.php)
+- route auth: [routes/auth.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/routes/auth.php)
+- config services: [config/services.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/config/services.php)
+- login page: [resources/views/auth/login.blade.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/resources/views/auth/login.blade.php)
+- users table update: [database/migrations/2026_04_21_100000_add_social_login_fields_to_users_table.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/database/migrations/2026_04_21_100000_add_social_login_fields_to_users_table.php)
 
 Kolom tambahan di `users`:
 
@@ -262,12 +262,12 @@ Project ini sudah memakai fitur reset password bawaan Laravel.
 
 Bagian yang sudah tersedia:
 
-- route forgot password: [routes/auth.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/routes/auth.php)
-- controller kirim link: [app/Http/Controllers/Auth/PasswordResetLinkController.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Http/Controllers/Auth/PasswordResetLinkController.php)
-- controller password baru: [app/Http/Controllers/Auth/NewPasswordController.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/app/Http/Controllers/Auth/NewPasswordController.php)
-- config mail: [config/mail.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/config/mail.php)
-- halaman forgot password: [resources/views/auth/forgot-password.blade.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/resources/views/auth/forgot-password.blade.php)
-- halaman reset password: [resources/views/auth/reset-password.blade.php](/C:/laragon/www/nalarin_ai/Pelajarin.ai/resources/views/auth/reset-password.blade.php)
+- route forgot password: [routes/auth.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/routes/auth.php)
+- controller kirim link: [app/Http/Controllers/Auth/PasswordResetLinkController.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/app/Http/Controllers/Auth/PasswordResetLinkController.php)
+- controller password baru: [app/Http/Controllers/Auth/NewPasswordController.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/app/Http/Controllers/Auth/NewPasswordController.php)
+- config mail: [config/mail.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/config/mail.php)
+- halaman forgot password: [resources/views/auth/forgot-password.blade.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/resources/views/auth/forgot-password.blade.php)
+- halaman reset password: [resources/views/auth/reset-password.blade.php](/C:/laragon/www/nalarin_ai/Nalarin.ai/resources/views/auth/reset-password.blade.php)
 - tabel token: `password_reset_tokens`
 
 ### Setup Gmail SMTP

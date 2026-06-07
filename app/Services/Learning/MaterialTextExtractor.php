@@ -52,10 +52,10 @@ class MaterialTextExtractor
 
         if ($text === '') {
             $warning = match ($extension) {
-                'pdf' => 'PDF ini belum bisa dibaca sebagai teks. Untuk PDF scan, install Poppler pdftoppm dan Tesseract, lalu upload ulang.',
-                'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp' => 'Gambar ini belum bisa dibaca. Install Tesseract dan pastikan OCR_LANGUAGES sudah sesuai.',
-                'doc', 'ppt', 'xls', 'odt', 'odp', 'ods', 'rtf' => 'Format Office lama belum didukung di mode ringan. Convert ke PDF, DOCX, PPTX, atau XLSX lalu upload ulang.',
-                default => 'Isi file belum bisa dibaca otomatis. Tempelkan teks materi agar fitur belajar bisa diproses.',
+                'pdf' => 'Isi PDF belum dapat dibaca. Coba gunakan file yang lebih jelas atau tempelkan teks materi secara langsung.',
+                'png', 'jpg', 'jpeg', 'webp', 'tif', 'tiff', 'bmp' => 'Tulisan pada gambar belum dapat dibaca. Coba gunakan gambar yang lebih jelas atau tempelkan teks materi.',
+                'doc', 'ppt', 'xls', 'odt', 'odp', 'ods', 'rtf' => 'Format file ini belum didukung. Simpan ulang sebagai PDF, DOCX, PPTX, atau XLSX, lalu coba lagi.',
+                default => 'Isi file belum dapat dibaca. Kamu dapat menempelkan teks materi secara langsung.',
             };
         }
 

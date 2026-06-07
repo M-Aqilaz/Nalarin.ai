@@ -20,7 +20,7 @@ class AiContentGenerationLimiter
 
         if ($limits['per_day'] !== null && RateLimiter::tooManyAttempts($this->dailyKey($user), $limits['per_day'])) {
             return $this->denied(
-                'Limit generate AI untuk akun free hari ini sudah habis. Upgrade ke Pro untuk generate lebih banyak.',
+                'Limit generate AI untuk akun free hari ini sudah habis. Upgrade ke Premium untuk generate lebih banyak.',
                 RateLimiter::availableIn($this->dailyKey($user))
             );
         }

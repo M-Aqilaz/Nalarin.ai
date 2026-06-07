@@ -32,6 +32,14 @@ Route::get('/', function () {
     return view('pages.public.welcome');
 });
 
+Route::get('/locale/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['id', 'en'], true), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('locale.update');
+
 Route::get('/pricing', PricingController::class)->name('pricing');
 Route::post('/track-feature', [FeatureUsageController::class, 'track'])
     ->withoutMiddleware([
