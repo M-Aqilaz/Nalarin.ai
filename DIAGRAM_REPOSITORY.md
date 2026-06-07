@@ -1,10 +1,10 @@
-# Diagram Pelajarin.ai dengan Bahasa Sederhana
+# Diagram Nalarin.ai dengan Bahasa Sederhana
 
-Dokumen ini menjelaskan alur aplikasi Pelajarin.ai berdasarkan isi repository. Bahasa yang dipakai sengaja dibuat sederhana agar mudah dipahami oleh pengguna, dosen, reviewer, atau tim non-teknis.
+Dokumen ini menjelaskan alur aplikasi Nalarin.ai berdasarkan isi repository. Bahasa yang dipakai sengaja dibuat sederhana agar mudah dipahami oleh pengguna, dosen, reviewer, atau tim non-teknis.
 
 ## 1. Gambaran Singkat Aplikasi
 
-Pelajarin.ai adalah aplikasi belajar yang membantu pengguna mengubah materi menjadi ringkasan, chat tutor AI, flashcard, kuis, sesi fokus, ruang belajar bersama, dan pencarian teman belajar.
+Nalarin.ai adalah aplikasi belajar yang membantu pengguna mengubah materi menjadi ringkasan, chat tutor AI, flashcard, kuis, sesi fokus, ruang belajar bersama, dan pencarian teman belajar.
 
 Secara umum, aplikasi ini punya beberapa bagian:
 
@@ -564,7 +564,7 @@ Kabar yang bisa muncul langsung:
 
 | Halaman | Fungsi |
 | --- | --- |
-| Halaman awal | Mengenalkan Pelajarin.ai |
+| Halaman awal | Mengenalkan Nalarin.ai |
 | Harga paket | Menampilkan pilihan paket |
 | Login dan register | Masuk dan membuat akun |
 | Dashboard | Ringkasan aktivitas belajar pengguna |
@@ -616,4 +616,3 @@ Kabar yang bisa muncul langsung:
 4. Timer fokus dan rencana belajar disimpan di browser pengguna, bukan di database.
 5. Chat langsung membutuhkan sistem real-time agar pesan bisa muncul tanpa refresh.
 6. Admin punya halaman khusus untuk memantau aplikasi dan mengelola data.
-
