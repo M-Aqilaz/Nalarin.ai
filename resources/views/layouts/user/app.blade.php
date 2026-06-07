@@ -151,8 +151,8 @@
                 </header>
             @endisset
 
-            <main class="relative flex-1 {{ $isPomodoroPage ? 'overflow-y-auto p-2 md:overflow-hidden md:p-3' : 'overflow-y-auto px-4 pb-8 pt-4 md:px-8 md:pb-10 md:pt-6' }}">
-                <div class="mx-auto h-full max-w-7xl">{{ $slot }}</div>
+            <main class="relative flex-1 {{ $isPomodoroPage ? 'overflow-y-auto p-2 md:overflow-hidden md:p-3' : 'overflow-y-auto bg-gradient-to-b from-transparent via-transparent to-white/80 px-4 pb-12 pt-4 md:px-8 md:pb-16 md:pt-6' }}">
+                <div class="mx-auto min-h-full max-w-7xl {{ $isPomodoroPage ? '' : 'pb-8 md:pb-12' }}">{{ $slot }}</div>
             </main>
         </div>
 
