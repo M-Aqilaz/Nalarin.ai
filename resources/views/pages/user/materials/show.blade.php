@@ -1,9 +1,9 @@
 ﻿<x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="user-kicker text-[11px] text-cyan-100/90">Material Detail</p>
+            <p class="user-kicker text-[11px] text-cyan-100/90">Detail Materi</p>
             <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">{{ $material->title }}</h2>
-            <p class="mt-2 text-sm text-slate-300/80">Detail materi, ringkasan terkait, thread chat, dan pintu masuk ke flashcard serta kuis.</p>
+            <p class="mt-2 text-sm text-slate-300/80">Lihat isi materi dan lanjutkan belajar melalui ringkasan, Flashcard, kuis, atau Tutor AI.</p>
         </div>
     </x-slot>
 
@@ -18,15 +18,18 @@
 
         <section class="feature-hero">
             <div class="max-w-3xl">
-                <p class="user-kicker text-[11px] text-cyan-100/90">Source of Truth</p>
-                <p class="mt-3 text-sm text-slate-100/80">Semua fitur turun dari teks materi ini. Kalau isi materinya rapi, kualitas ringkasan, kuis, flashcard, dan AI tutor juga ikut naik.</p>
+                <p class="user-kicker text-[11px] text-cyan-100/90">Materi Siap Dipelajari</p>
+                <p class="mt-3 text-sm text-slate-100/80">Tulisan yang jelas membantu Nalarin.ai memberikan ringkasan dan latihan yang lebih baik.</p>
             </div>
         </section>
 
         <section class="glass-panel accent-card-cyan rounded-[1.75rem] p-5 md:p-6">
             <div class="grid grid-cols-1 gap-4 text-sm text-slate-200 md:grid-cols-2">
                 <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Status</span>{{ $material->status }}</div>
-                <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">OCR</span>{{ $material->ocr_status }}{{ $material->ocr_engine ? ' via '.$material->ocr_engine : '' }}</div>
+                <div class="glass-panel rounded-2xl p-4">
+                    <span class="mb-1 block text-slate-400">Pemrosesan File</span>
+                    {{ $material->ocr_status === 'failed' ? 'Perlu diperiksa' : 'Selesai' }}
+                </div>
                 <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Pemilik</span>{{ $material->user->name }}</div>
                 <div class="glass-panel rounded-2xl break-all p-4"><span class="mb-1 block text-slate-400">File</span>{{ $material->original_filename ?? 'Tidak ada file' }}</div>
                 <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Ukuran</span>{{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
@@ -38,12 +41,12 @@
                 <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="accent-card-pink rounded-2xl border border-pink-500/20 p-4 transition hover:bg-pink-500/15">
                     <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcard</p>
                     <p class="text-white font-semibold mt-2">{{ $material->flashcardDeck ? $material->flashcardDeck->card_count . ' kartu siap dipakai' : 'Belum dibuat' }}</p>
-                    <p class="text-sm text-pink-100/70 mt-1">Buka dari sidebar atau klik kartu ini untuk generate dari materi ini.</p>
+                    <p class="text-sm text-pink-100/70 mt-1">Klik kartu ini untuk membuat latihan dari materi tersebut.</p>
                 </a>
                 <a href="{{ route('feature.quiz', ['material_id' => $material->id]) }}" class="accent-card-emerald rounded-2xl border border-emerald-500/20 p-4 transition hover:bg-emerald-500/15">
                     <p class="text-xs uppercase tracking-[0.2em] text-emerald-200">Latihan Kuis</p>
                     <p class="text-white font-semibold mt-2">{{ $material->quizSet ? $material->quizSet->question_count . ' soal siap dipakai' : 'Belum dibuat' }}</p>
-                    <p class="text-sm text-emerald-100/70 mt-1">Buka dari sidebar atau klik kartu ini untuk mulai generate soal.</p>
+                    <p class="text-sm text-emerald-100/70 mt-1">Klik kartu ini untuk membuat soal latihan.</p>
                 </a>
             </div>
             <div class="mt-6">
