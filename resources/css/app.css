@@ -722,4 +722,80 @@
             transform: translateX(240%);
         }
     }
+
+    .feature-marquee {
+        position: relative;
+        overflow: hidden;
+        padding-block: 0.5rem 1.25rem;
+        mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    }
+
+    .feature-marquee-track {
+        display: flex;
+        width: max-content;
+        gap: 1.5rem;
+        animation: feature-marquee-scroll 40s linear infinite;
+        will-change: transform;
+    }
+
+    .feature-marquee:hover .feature-marquee-track,
+    .feature-marquee-track.is-paused {
+        animation-play-state: paused;
+    }
+
+    @keyframes feature-marquee-scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(calc(-50% - 0.75rem));
+        }
+    }
+
+    .testimonial-marquee {
+        position: relative;
+        overflow: hidden;
+        padding-block: 0.5rem 1.25rem;
+        mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    }
+
+    .testimonial-marquee-track {
+        display: flex;
+        width: max-content;
+        gap: 1.5rem;
+        animation: testimonial-marquee-scroll 44s linear infinite;
+        will-change: transform;
+    }
+
+    .testimonial-marquee:hover .testimonial-marquee-track,
+    .testimonial-marquee-track.is-paused {
+        animation-play-state: paused;
+    }
+
+    @keyframes testimonial-marquee-scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(calc(-50% - 0.75rem));
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .feature-marquee,
+        .testimonial-marquee {
+            overflow-x: auto;
+            mask-image: none;
+            -webkit-mask-image: none;
+        }
+
+        .feature-marquee-track,
+        .testimonial-marquee-track {
+            animation: none;
+        }
+    }
 }

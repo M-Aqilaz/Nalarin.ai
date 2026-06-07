@@ -67,7 +67,7 @@
                                 <p class="mt-1 text-xl font-extrabold text-slate-950">Gratis</p>
                             </div>
                             <div class="rounded-2xl border border-purple-200 bg-white/75 p-4 shadow-sm">
-                                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Pro</p>
+                                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Premium</p>
                                 <p class="mt-1 text-xl font-extrabold text-slate-950">Rp {{ number_format($proAmount, 0, ',', '.') }}</p>
                             </div>
                             <div class="rounded-2xl border border-teal-200 bg-white/75 p-4 shadow-sm">
@@ -81,7 +81,7 @@
                         <div class="absolute left-8 top-8 w-72 rounded-2xl border border-purple-200 bg-white/90 p-5 shadow-lg shadow-purple-200/30">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-extrabold text-slate-950">Rekomendasi</p>
-                                <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">Pro</span>
+                                <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">Premium</span>
                             </div>
                             <p class="mt-4 text-3xl font-extrabold text-slate-950">Rp {{ number_format($proAmount, 0, ',', '.') }}<span class="text-base font-bold text-slate-500">/bulan</span></p>
                             <div class="mt-5 space-y-3 text-sm font-semibold text-slate-700">
@@ -97,7 +97,7 @@
                         <div class="absolute bottom-8 right-10 max-w-[230px] rounded-2xl border border-sky-200 bg-sky-50/90 px-5 py-4 shadow-md">
                             <p class="text-sm font-extrabold text-slate-950">Upgrade saat ritme belajarmu sudah butuh kuota lebih lega.</p>
                         </div>
-                        <img src="{{ asset('images/NALA.png') }}" class="absolute bottom-0 left-[55%] h-[340px] w-auto -translate-x-1/2 object-contain lg:h-[390px]" alt="Nalarin.ai AI assistant">
+                        <img src="{{ asset('images/nala_dashboard_chibi.png') }}" class="absolute bottom-[-1rem] left-[55%] h-[330px] w-[330px] -translate-x-1/2 rounded-full object-cover mix-blend-multiply lg:h-[370px] lg:w-[370px]" alt="Nalarin.ai AI assistant">
                     </section>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                             </div>
                             <div class="space-y-4 p-6 text-sm text-slate-700">
                                 <p>&#10003; Ringkasan Otomatis</p>
-                                <p>&#10003; 10 Smart Flashcards/bulan</p>
+                                <p>&#10003; 10 Smart Flashcard/bulan</p>
                                 <p>&#10003; Akses terbatas</p>
                                 <a href="{{ auth()->check() ? route('dashboard') : route('register') }}" class="mt-8 inline-flex w-full items-center justify-center rounded-lg border border-sky-700/60 px-5 py-3 font-bold text-sky-800 transition hover:bg-sky-50">Pilih Paket</a>
                             </div>
@@ -142,7 +142,7 @@
                         <article class="overflow-hidden rounded-2xl border border-purple-300 bg-white shadow-lg shadow-purple-200/50">
                             <div class="bg-purple-300 p-6">
                                 <div class="flex items-center justify-between">
-                                    <p class="text-lg font-semibold text-slate-900">Pro</p>
+                                    <p class="text-lg font-semibold text-slate-900">Premium</p>
                                     <span class="rounded-full bg-purple-600/70 px-3 py-1 text-xs font-bold text-white">Most Popular</span>
                                 </div>
                                 <h3 class="mt-2 text-3xl font-extrabold text-slate-950">Rp {{ number_format($proAmount, 0, ',', '.') }}<span class="text-lg font-semibold">/bulan</span></h3>
@@ -150,7 +150,7 @@
                             <div class="space-y-4 p-6 text-sm text-slate-700">
                                 <p>&#10003; Semua fitur Basic</p>
                                 <p>&#10003; AI Tutor 24/7</p>
-                                <p>&#10003; Unlimited Flashcards & Quiz</p>
+                                <p>&#10003; Unlimited Flashcard & Quiz</p>
                                 <p>&#10003; Prioritas Dukungan</p>
                                 @auth
                                     <form method="POST" action="{{ route('billing.checkout', 'pro_monthly') }}" class="mt-8">
@@ -172,7 +172,7 @@
                                 <h3 class="mt-2 text-3xl font-extrabold text-slate-950">Rp {{ number_format($ultimateAmount, 0, ',', '.') }}<span class="text-lg font-semibold">/tahun</span></h3>
                             </div>
                             <div class="space-y-4 p-6 text-sm text-slate-700">
-                                <p>&#10003; Semua fitur Pro</p>
+                                <p>&#10003; Semua fitur Premium</p>
                                 <p>&#10003; Analisis Belajar Lengkap</p>
                                 <p>&#10003; Konten Eksklusif</p>
                                 <p>&#10003; Hemat 20%</p>
@@ -200,7 +200,7 @@
                         @foreach ([
                             ['title' => 'Ringkasan Otomatis', 'text' => 'Ubah materi panjang menjadi poin penting yang lebih mudah dipelajari ulang.', 'icon' => 'doc'],
                             ['title' => 'AI Tutor 24/7', 'text' => 'Tanyakan bagian materi yang belum paham tanpa menunggu jadwal belajar berikutnya.', 'icon' => 'chat'],
-                            ['title' => 'Smart Flashcards', 'text' => 'Latih ingatan dengan kartu belajar yang dibuat dari materi yang kamu unggah.', 'icon' => 'brain'],
+                            ['title' => 'Smart Flashcard', 'text' => 'Latih ingatan dengan kartu belajar yang dibuat dari materi yang kamu unggah.', 'icon' => 'brain'],
                             ['title' => 'Interactive Quiz', 'text' => 'Uji pemahaman lewat soal latihan yang mengikuti isi materi belajarmu.', 'icon' => 'quiz'],
                         ] as $feature)
                             <article class="rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm">
@@ -227,7 +227,7 @@
                 <div class="mx-auto max-w-3xl px-5">
                     <h2 class="font-outfit text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Mulai dari Basic, upgrade kapan pun</h2>
                     <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-700">
-                        Coba dulu gratis. Saat butuh kuota dan fitur belajar yang lebih lengkap, pilih Pro atau Ultimate dari halaman ini.
+                        Coba dulu gratis. Saat butuh kuota dan fitur belajar yang lebih lengkap, pilih Premium atau Ultimate dari halaman ini.
                     </p>
                     <a href="{{ auth()->check() ? route('dashboard') : route('register') }}" class="mt-8 inline-flex items-center justify-center rounded-lg bg-sky-500 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">
                         Masuk Ruang Belajar

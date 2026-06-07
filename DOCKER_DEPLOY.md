@@ -14,14 +14,14 @@ Arsitektur ini mengikuti praktik umum dari dokumentasi resmi Docker untuk `multi
 
 ## File Yang Ditambahkan
 
-- [Dockerfile](/C:/laragon/www/nalarin_ai/Pelajarin.ai/Dockerfile)
-- [compose.yaml](/C:/laragon/www/nalarin_ai/Pelajarin.ai/compose.yaml)
-- [.dockerignore](/C:/laragon/www/nalarin_ai/Pelajarin.ai/.dockerignore)
-- [.env.docker.example](/C:/laragon/www/nalarin_ai/Pelajarin.ai/.env.docker.example)
-- [docker/nginx/default.conf](/C:/laragon/www/nalarin_ai/Pelajarin.ai/docker/nginx/default.conf)
-- [docker/php/app.ini](/C:/laragon/www/nalarin_ai/Pelajarin.ai/docker/php/app.ini)
-- [docker/php/opcache.ini](/C:/laragon/www/nalarin_ai/Pelajarin.ai/docker/php/opcache.ini)
-- [docker/php/entrypoint.sh](/C:/laragon/www/nalarin_ai/Pelajarin.ai/docker/php/entrypoint.sh)
+- [Dockerfile](/C:/laragon/www/nalarin_ai/Nalarin.ai/Dockerfile)
+- [compose.yaml](/C:/laragon/www/nalarin_ai/Nalarin.ai/compose.yaml)
+- [.dockerignore](/C:/laragon/www/nalarin_ai/Nalarin.ai/.dockerignore)
+- [.env.docker.example](/C:/laragon/www/nalarin_ai/Nalarin.ai/.env.docker.example)
+- [docker/nginx/default.conf](/C:/laragon/www/nalarin_ai/Nalarin.ai/docker/nginx/default.conf)
+- [docker/php/app.ini](/C:/laragon/www/nalarin_ai/Nalarin.ai/docker/php/app.ini)
+- [docker/php/opcache.ini](/C:/laragon/www/nalarin_ai/Nalarin.ai/docker/php/opcache.ini)
+- [docker/php/entrypoint.sh](/C:/laragon/www/nalarin_ai/Nalarin.ai/docker/php/entrypoint.sh)
 
 ## Cara Pakai
 
