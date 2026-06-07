@@ -18,6 +18,7 @@ use Illuminate\Notifications\Notifiable;
     'password',
     'role',
     'plan',
+    'plan_expires_at',
     'room_limit',
     'match_credits',
     'is_active',
@@ -44,6 +45,11 @@ class User extends Authenticatable
     public function chatThreads(): HasMany
     {
         return $this->hasMany(ChatThread::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 
     public function studyProfile(): HasOne
@@ -103,7 +109,8 @@ class User extends Authenticatable
 
     public function isPremium(): bool
     {
-        return $this->plan === 'premium';
+        return $this->plan === 'premium'
+            && ($this->plan_expires_at === null || $this->plan_expires_at->isFuture());
     }
 
     protected function casts(): array
@@ -111,6 +118,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'plan_expires_at' => 'datetime',
             'is_active' => 'boolean',
         ];
     }

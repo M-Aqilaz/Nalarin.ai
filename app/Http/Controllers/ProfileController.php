@@ -24,6 +24,7 @@ class ProfileController extends Controller
 
         return view('pages.user.profile.edit', [
             'user' => $user,
+            'recentPayments' => $user->payments()->latest()->take(3)->get(),
             'limitStats' => [
                 'room_limit' => $roomLimit,
                 'owned_room_count' => $ownedRoomCount,
