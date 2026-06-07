@@ -23,7 +23,7 @@ class StudyMatchingTest extends TestCase
             'bio' => 'Suka belajar kelompok',
             'availability' => 'Malam',
             'is_matchmaking_enabled' => '1',
-        ])->assertRedirect(route('matchmaking.index'));
+        ])->assertRedirect(route('matchmaking.roulette'));
 
         $this->assertDatabaseHas('study_profiles', [
             'user_id' => $user->id,
