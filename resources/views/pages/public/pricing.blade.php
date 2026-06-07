@@ -97,7 +97,7 @@
                         <div class="absolute bottom-8 right-10 max-w-[230px] rounded-2xl border border-sky-200 bg-sky-50/90 px-5 py-4 shadow-md">
                             <p class="text-sm font-extrabold text-slate-950">Upgrade saat ritme belajarmu sudah butuh kuota lebih lega.</p>
                         </div>
-                        <img src="{{ asset('images/NALA.png') }}" class="absolute bottom-0 left-[55%] h-[340px] w-auto -translate-x-1/2 object-contain lg:h-[390px]" alt="Nalarin.ai AI assistant">
+                        <img src="{{ asset('images/nala_dashboard_chibi.png') }}" class="absolute bottom-[-1rem] left-[55%] h-[330px] w-[330px] -translate-x-1/2 rounded-full object-cover mix-blend-multiply lg:h-[370px] lg:w-[370px]" alt="Nalarin.ai AI assistant">
                     </section>
                 </div>
             </div>

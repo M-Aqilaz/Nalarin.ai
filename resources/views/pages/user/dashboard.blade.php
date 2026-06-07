@@ -72,7 +72,7 @@
                     <p class="mt-2 text-sm leading-6 text-slate-600">{{ __('ui.launcher_description') }}</p>
                 </div>
                 <div class="hidden justify-center lg:flex">
-                    <img src="{{ asset('images/NALA.png') }}" class="h-36 w-auto object-contain drop-shadow-[0_18px_28px_rgba(14,116,144,0.18)]" alt="Nala">
+                    <img src="{{ asset('images/nala_dashboard_chibi.png') }}" class="h-40 w-40 rounded-full object-cover mix-blend-multiply drop-shadow-[0_18px_28px_rgba(14,116,144,0.18)]" alt="Nala">
                 </div>
             </div>
             <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">

@@ -29,7 +29,7 @@
                 </a>
 
                 <div class="mx-auto mt-8 flex h-[270px] w-[330px] items-center justify-center">
-                    <img src="{{ asset('images/NALA.png') }}" class="max-h-full w-auto object-contain drop-shadow-[0_24px_40px_rgba(14,116,144,0.22)]" alt="Nala">
+                    <img src="{{ asset('images/nala_dashboard_chibi.png') }}" class="max-h-full aspect-square w-auto rounded-full object-cover mix-blend-multiply drop-shadow-[0_24px_40px_rgba(14,116,144,0.22)]" alt="Nala">
                 </div>
 
                 <div class="mt-8 max-w-sm">
