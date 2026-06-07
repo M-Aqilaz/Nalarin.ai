@@ -130,7 +130,7 @@ Project ini sudah punya setup Docker berbasis:
 - `queue` untuk worker background
 - `reverb` untuk websocket realtime
 
-Lihat detail lengkap di [DOCKER_DEPLOY.md](/C:/laragon/www/nalarin_ai/Pelajarin.ai/DOCKER_DEPLOY.md).
+Lihat detail lengkap di [DOCKER_DEPLOY.md](/C:/laragon/www/nalarin_ai/Nalarin.ai/DOCKER_DEPLOY.md).
 
 Setup ini butuh env tambahan untuk:
 

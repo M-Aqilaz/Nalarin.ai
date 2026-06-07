@@ -11,7 +11,7 @@
     <nav class="flex-1 overflow-y-auto px-4 py-5" :class="sidebarCollapsed ? 'px-3' : 'px-4'">
         <div class="space-y-2">
             <a href="{{ route('dashboard') }}" title="Dashboard" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('dashboard') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#8962;</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="dashboard" class="h-4 w-4" /></span>
                 <span x-show="!sidebarCollapsed">Dashboard</span>
             </a>
         </div>
@@ -20,19 +20,19 @@
             <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">AI Learning</p>
             <div class="mt-4 space-y-2">
                 <a href="{{ route('feature.upload') }}" title="Unggah Materi" data-feature="Unggah Materi" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.upload') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#8679;</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="upload" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">Unggah Materi</span>
                 </a>
                 <a href="{{ route('feature.summary') }}" title="Ringkasan" data-feature="Ringkasan Otomatis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.summary', 'summaries.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">AI</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="summary" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">Ringkasan</span>
                 </a>
                 <a href="{{ route('feature.chat') }}" title="AI Tutor" data-feature="AI Tutor Khusus" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#9993;</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="tutor" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">AI Tutor</span>
                 </a>
                 <a href="{{ route('feature.flashcards') }}" title="Flashcards" data-feature="Smart Flashcards" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">&#9635;</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="flashcards" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">Flashcards</span>
                 </a>
             </div>
@@ -40,11 +40,11 @@
 
         <div class="mt-6 space-y-1">
             <a href="{{ route('feature.quiz') }}" title="Kuis" data-feature="Latihan Kuis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.quiz') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">?</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="quiz" class="h-4 w-4" /></span>
                 <span x-show="!sidebarCollapsed">Kuis</span>
             </a>
             <a href="{{ route('billing.index') }}" title="Billing" class="flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('billing.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm shadow-sm">Rp</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="billing" class="h-4 w-4" /></span>
                 <span x-show="!sidebarCollapsed">Billing</span>
             </a>
         </div>
@@ -53,15 +53,15 @@
             <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">Focus Section</p>
             <div class="mt-4 space-y-2">
                 <a href="{{ route('feature.pomodoro') }}" title="Pomodoro" data-feature="Pomodoro Timer" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="text-xl">&#9716;</span>
+                    <span class="flex h-6 w-6 items-center justify-center text-orange-500"><x-feature-icon name="pomodoro" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Pomodoro</span>
                 </a>
                 <a href="{{ route('feature.focus-planner') }}" title="Focus Planner" data-feature="Focus Planner" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="text-xl">&#9638;</span>
+                    <span class="flex h-6 w-6 items-center justify-center text-amber-500"><x-feature-icon name="planner" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Focus Planner</span>
                 </a>
                 <a href="{{ route('feature.focus-insights') }}" title="Focus Insights" data-feature="Focus Insights" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="text-xl">&#9636;</span>
+                    <span class="flex h-6 w-6 items-center justify-center text-indigo-500"><x-feature-icon name="insights" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Focus Insights</span>
                 </a>
                
@@ -73,11 +73,11 @@
             <div class="mt-4 space-y-2">
 
                 <a href="{{ route('matchmaking.roulette') }}" title="Study Matching" data-feature="Study Matching" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="text-xl text-rose-500">&#9825;</span>
+                    <span class="flex h-6 w-6 items-center justify-center text-rose-500"><x-feature-icon name="matching" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Study Matching</span>
                 </a>
                 <a href="{{ route('rooms.index') }}" title="Group Chat Kelas" data-feature="Group Chat Kelas" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('rooms.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                    <span class="text-xl">&#9993;</span>
+                    <span class="flex h-6 w-6 items-center justify-center text-violet-500"><x-feature-icon name="room" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Group Chat Kelas</span>
                 </a>
             </div>

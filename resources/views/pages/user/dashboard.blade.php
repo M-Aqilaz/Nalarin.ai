@@ -2,12 +2,12 @@
     @php
         $user = auth()->user();
         $shortcuts = [
-            ['label' => 'Unggah Materi', 'desc' => 'Masukkan PDF, gambar, atau teks baru.', 'href' => route('feature.upload'), 'tone' => 'from-sky-100 to-white', 'icon' => 'UP'],
-            ['label' => 'Ringkasan', 'desc' => 'Baca ulang hasil rangkuman AI.', 'href' => route('feature.summary'), 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'AI'],
-            ['label' => 'Tutor AI', 'desc' => 'Tanya Nala dari thread chat.', 'href' => route('feature.chat'), 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'N'],
-            ['label' => 'Flashcards', 'desc' => 'Latihan hafalan dari materi.', 'href' => route('feature.flashcards'), 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'FC'],
-            ['label' => 'Kuis', 'desc' => 'Uji pemahaman dengan soal.', 'href' => route('feature.quiz'), 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'QZ'],
-            ['label' => 'Study Matching', 'desc' => 'Cari partner belajar aktif.', 'href' => route('matchmaking.index'), 'tone' => 'from-emerald-100 to-cyan-50', 'icon' => 'SM'],
+            ['label' => 'Unggah Materi', 'desc' => 'Masukkan PDF, gambar, atau teks baru.', 'href' => route('feature.upload'), 'tone' => 'from-sky-100 to-white', 'icon' => 'upload'],
+            ['label' => 'Ringkasan', 'desc' => 'Baca ulang hasil rangkuman AI.', 'href' => route('feature.summary'), 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'summary'],
+            ['label' => 'Tutor AI', 'desc' => 'Tanya Nala dari thread chat.', 'href' => route('feature.chat'), 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'tutor'],
+            ['label' => 'Flashcards', 'desc' => 'Latihan hafalan dari materi.', 'href' => route('feature.flashcards'), 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'flashcards'],
+            ['label' => 'Kuis', 'desc' => 'Uji pemahaman dengan soal.', 'href' => route('feature.quiz'), 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'quiz'],
+            ['label' => 'Study Matching', 'desc' => 'Cari partner belajar aktif.', 'href' => route('matchmaking.index'), 'tone' => 'from-emerald-100 to-cyan-50', 'icon' => 'matching'],
         ];
     @endphp
 
@@ -38,7 +38,9 @@
             <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                 @foreach ($shortcuts as $shortcut)
                     <a href="{{ $shortcut['href'] }}" class="group min-h-[126px] rounded-[1.4rem] border border-sky-200 bg-gradient-to-br {{ $shortcut['tone'] }} p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_35px_rgba(14,116,144,0.14)]">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/80 text-sm font-extrabold text-sky-700 shadow-sm">{{ $shortcut['icon'] }}</span>
+                        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/80 text-sky-700 shadow-sm">
+                            <x-feature-icon :name="$shortcut['icon']" class="h-6 w-6" />
+                        </span>
                         <h4 class="mt-4 font-outfit text-lg font-extrabold text-slate-950">{{ $shortcut['label'] }}</h4>
                         <p class="mt-2 text-sm leading-6 text-slate-600">{{ $shortcut['desc'] }}</p>
                     </a>
@@ -48,11 +50,11 @@
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
             @foreach ([
-                ['label' => 'Materi', 'value' => $materialCount, 'tone' => 'from-sky-100 to-white', 'icon' => 'MT'],
-                ['label' => 'Ringkasan', 'value' => $summaryCount, 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'AI'],
-                ['label' => 'Thread AI', 'value' => $threadCount, 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'N'],
-                ['label' => 'Room Kelas', 'value' => $roomCount, 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'RM'],
-                ['label' => 'Match Aktif', 'value' => $activeMatchCount, 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'SM'],
+                ['label' => 'Materi', 'value' => $materialCount, 'tone' => 'from-sky-100 to-white', 'icon' => 'material'],
+                ['label' => 'Ringkasan', 'value' => $summaryCount, 'tone' => 'from-rose-100 to-pink-50', 'icon' => 'summary'],
+                ['label' => 'Thread AI', 'value' => $threadCount, 'tone' => 'from-violet-100 to-fuchsia-50', 'icon' => 'tutor'],
+                ['label' => 'Room Kelas', 'value' => $roomCount, 'tone' => 'from-cyan-100 to-teal-50', 'icon' => 'room'],
+                ['label' => 'Match Aktif', 'value' => $activeMatchCount, 'tone' => 'from-amber-100 to-yellow-50', 'icon' => 'matching'],
             ] as $stat)
                 <article class="min-h-[112px] rounded-[1.65rem] border border-sky-200 bg-gradient-to-br {{ $stat['tone'] }} p-5 shadow-[0_18px_35px_rgba(14,116,144,0.12)]">
                     <div class="flex items-start justify-between gap-4">
@@ -60,7 +62,9 @@
                             <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-700">{{ $stat['label'] }}</p>
                             <p class="mt-4 font-roboto text-3xl font-extrabold text-slate-950">{{ $stat['value'] }}</p>
                         </div>
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/75 text-sm font-extrabold text-sky-700 shadow-sm">{{ $stat['icon'] }}</div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/75 text-sky-700 shadow-sm">
+                            <x-feature-icon :name="$stat['icon']" class="h-6 w-6" />
+                        </div>
                     </div>
                 </article>
             @endforeach
@@ -101,7 +105,9 @@
                 <div class="divide-y divide-sky-100">
                     @forelse ($recentMaterials as $material)
                         <a href="{{ route('materials.show', $material) }}" class="flex items-center gap-4 p-4 transition hover:bg-sky-50">
-                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">AI</span>
+                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+                                <x-feature-icon name="material" class="h-6 w-6" />
+                            </span>
                             <span>
                                 <span class="block font-bold text-slate-950">{{ $material->title }}</span>
                                 <span class="mt-1 block text-sm text-slate-700">{{ $material->status }} | {{ $material->summaries->count() }} ringkasan</span>
