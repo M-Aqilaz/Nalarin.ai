@@ -18,7 +18,7 @@
             .landing-page a,
             .landing-page button,
             .landing-page [role="button"] {
-                cursor: url("{{ asset('images/nala_cursor_32_transparent.png') }}") 6 6, auto !important;
+                cursor: url("{{ asset('images/nala_cursor_chibi.png') }}") 20 8, auto !important;
             }
 
             .landing-page .feature-marquee,

@@ -11,9 +11,25 @@
         <style>
             .font-outfit { font-family: 'Outfit', sans-serif; }
             .font-inter { font-family: 'Inter', sans-serif; }
+
+            .pricing-page,
+            .pricing-page a,
+            .pricing-page button,
+            .pricing-page [role="button"] {
+                cursor: url("{{ asset('images/nala_cursor_chibi.png') }}") 20 8, auto !important;
+            }
+
+            @media (max-width: 768px), (pointer: coarse) {
+                .pricing-page,
+                .pricing-page a,
+                .pricing-page button,
+                .pricing-page [role="button"] {
+                    cursor: auto;
+                }
+            }
         </style>
     </head>
-    <body class="font-inter bg-white text-slate-950 antialiased selection:bg-sky-200">
+    <body class="pricing-page font-inter bg-white text-slate-950 antialiased selection:bg-sky-200">
         <x-page-loader />
         @php
             $proAmount = (int) config('services.pakasir.plans.pro_monthly.amount', 49000);
@@ -201,15 +217,21 @@
                             ['title' => __('ui.landing_feature_quiz_title'), 'text' => __('ui.pricing_benefit_quiz_description'), 'icon' => 'quiz'],
                         ] as $feature)
                             <article class="rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-sm">
-                                <div class="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-3xl shadow-sm">
+                                <div @class([
+                                    'mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm',
+                                    'text-sky-600' => $feature['icon'] === 'doc',
+                                    'text-cyan-600' => $feature['icon'] === 'chat',
+                                    'text-pink-500' => $feature['icon'] === 'brain',
+                                    'text-emerald-500' => $feature['icon'] === 'quiz',
+                                ])>
                                     @if ($feature['icon'] === 'doc')
-                                        <span class="font-extrabold text-sky-500">AI</span>
+                                        <x-feature-icon name="summary" class="h-8 w-8" />
                                     @elseif ($feature['icon'] === 'chat')
-                                        <span class="text-base font-extrabold text-sky-600">CHAT</span>
+                                        <x-feature-icon name="tutor" class="h-8 w-8" />
                                     @elseif ($feature['icon'] === 'brain')
-                                        <span class="text-base font-extrabold text-pink-500">CARD</span>
+                                        <x-feature-icon name="flashcards" class="h-8 w-8" />
                                     @else
-                                        <span class="text-4xl font-extrabold text-emerald-500">&#10003;</span>
+                                        <x-feature-icon name="quiz" class="h-8 w-8" />
                                     @endif
                                 </div>
                                 <h3 class="text-lg font-extrabold text-slate-950">{{ $feature['title'] }}</h3>
