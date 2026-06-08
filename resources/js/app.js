@@ -422,11 +422,13 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
-    Alpine.data('focusPlanner', () => ({
+    Alpine.data('focusPlanner', (options = {}) => ({
         storageKey: FOCUS_PLANNER_STORAGE_KEY,
-        planTitle: 'Sprint Fokus Hari Ini',
+        translations: options.translations || {},
+        presetAliases: options.presetAliases || [],
+        planTitle: options.translations?.defaultPlanTitle || 'Sprint Fokus Hari Ini',
         targetSessions: 4,
-        energyLabel: 'Prime time malam',
+        energyLabel: options.translations?.defaultEnergyLabel || 'Prime time malam',
         distractionCap: 2,
         tasks: [],
         blocks: [],
@@ -440,19 +442,45 @@ document.addEventListener('alpine:init', () => {
         newBlockDuration: 50,
         newBlockMode: 'deep-work',
         newBlockEnergy: 'prime',
-        notice: 'Susun prioritas singkat dan blok belajar yang realistis.',
+        notice: options.translations?.defaultNotice || 'Susun prioritas singkat dan blok belajar yang realistis.',
+
+        t(key, fallback = '') {
+            return this.translations[key] || fallback;
+        },
+
+        localizePresetText(value) {
+            const preset = this.presetAliases.find((item) => item.aliases.includes(value));
+
+            return preset?.value || value;
+        },
+
+        priorityLabel(priority) {
+            return this.t(`priority_${priority}`, priority);
+        },
+
+        categoryLabel(category) {
+            return this.t(`category_${category}`, category);
+        },
+
+        modeLabel(mode) {
+            return this.t(`mode_${mode}`, mode);
+        },
+
+        energyLevelLabel(energy) {
+            return this.t(`energy_${energy}`, energy);
+        },
 
         init() {
             this.restoreState();
 
             if (!this.tasks.length && !this.blocks.length) {
                 this.tasks = [
-                    { id: createLocalId(), title: 'Baca ulang ringkasan materi utama', estimate: 1, priority: 'high', category: 'concept', completed: false },
-                    { id: createLocalId(), title: 'Kerjakan 1 sesi latihan kuis', estimate: 1, priority: 'medium', category: 'practice', completed: false },
+                    { id: createLocalId(), title: this.t('defaultTaskSummary'), estimate: 1, priority: 'high', category: 'concept', completed: false },
+                    { id: createLocalId(), title: this.t('defaultTaskQuiz'), estimate: 1, priority: 'medium', category: 'practice', completed: false },
                 ];
                 this.blocks = [
-                    { id: createLocalId(), title: 'Deep work materi inti', duration: 50, mode: 'deep-work', energy: 'prime', completed: false },
-                    { id: createLocalId(), title: 'Review cepat flashcard', duration: 20, mode: 'review', energy: 'steady', completed: false },
+                    { id: createLocalId(), title: this.t('defaultBlockCore'), duration: 50, mode: 'deep-work', energy: 'prime', completed: false },
+                    { id: createLocalId(), title: this.t('defaultBlockFlashcard'), duration: 20, mode: 'review', energy: 'steady', completed: false },
                 ];
                 this.persistState();
             }
@@ -504,26 +532,26 @@ document.addEventListener('alpine:init', () => {
 
         get focusLoadLabel() {
             if (this.totalEstimatedSessions >= this.targetSessions + 3 || this.totalBlockMinutes >= 220) {
-                return 'Padat';
+                return this.t('focusLoadHeavy');
             }
 
             if (this.totalEstimatedSessions >= this.targetSessions || this.totalBlockMinutes >= 140) {
-                return 'Seimbang';
+                return this.t('focusLoadBalanced');
             }
 
-            return 'Ringan';
+            return this.t('focusLoadLight');
         },
 
         get plannerHealthLabel() {
             if (this.highPriorityTasksCount > 3) {
-                return 'Overplanned';
+                return this.t('planHealthOverplanned');
             }
 
             if (!this.tasks.length || !this.blocks.length) {
-                return 'Belum lengkap';
+                return this.t('planHealthIncomplete');
             }
 
-            return 'Fokus';
+            return this.t('planHealthFocused');
         },
 
         get readinessPercent() {
@@ -540,38 +568,38 @@ document.addEventListener('alpine:init', () => {
 
         get readinessLabel() {
             if (this.readinessPercent >= 85) {
-                return 'Siap ngebut';
+                return this.t('readinessReady');
             }
 
             if (this.readinessPercent >= 65) {
-                return 'Cukup siap';
+                return this.t('readinessAlmost');
             }
 
-            return 'Perlu dirapikan';
+            return this.t('readinessNeedsWork');
         },
 
         get plannerRecommendation() {
             if (!this.activeTasksCount && !this.activeBlocks.length && (this.completedTasksCount || this.completedBlocks.length)) {
-                return 'Semua task dan sesi sudah selesai. Kamu bisa tutup hari ini atau buat sprint baru untuk target berikutnya.';
+                return this.t('recommendationComplete');
             }
 
             if (this.highPriorityTasksCount > 3) {
-                return 'Kurangi task prioritas tinggi. Maksimal 2-3 task penting per hari biasanya lebih realistis.';
+                return this.t('recommendationPriorities');
             }
 
             if (this.activeBlockMinutes > 200) {
-                return 'Blok fokus terlalu panjang. Pecah menjadi sesi 20-50 menit agar lebih mudah dipatuhi.';
+                return this.t('recommendationBlocks');
             }
 
             if (this.activeTasksCount && this.activeTasks.every((task) => task.priority !== 'high')) {
-                return 'Tambahkan minimal satu task prioritas tinggi supaya arah sprint tetap tajam.';
+                return this.t('recommendationHighPriority');
             }
 
             if ((this.activeTasks.reduce((total, task) => total + task.estimate, 0)) < this.targetSessions && this.activeBlocks.length < 2) {
-                return 'Tambahkan 1 blok atau 1 task kecil supaya target sesi harian tidak kosong.';
+                return this.t('recommendationAddItem');
             }
 
-            return 'Planner sudah cukup sehat. Jalankan task prioritas tinggi di prime time lebih dulu.';
+            return this.t('recommendationHealthy');
         },
 
         get completionPercent() {
@@ -588,7 +616,7 @@ document.addEventListener('alpine:init', () => {
             const title = this.newTaskTitle.trim();
 
             if (!title) {
-                this.notice = 'Isi judul task dulu supaya planner tetap jelas.';
+                this.notice = this.t('noticeTaskTitle');
                 return;
             }
 
@@ -605,19 +633,19 @@ document.addEventListener('alpine:init', () => {
             this.newTaskEstimate = 1;
             this.newTaskPriority = 'high';
             this.newTaskCategory = 'concept';
-            this.notice = 'Task fokus baru ditambahkan.';
+            this.notice = this.t('noticeTaskAdded');
             this.persistState();
         },
 
         toggleTask(taskId) {
             this.tasks = this.tasks.map((task) => task.id === taskId ? { ...task, completed: !task.completed } : task);
-            this.notice = 'Status task diperbarui dan coach akan menyesuaikan sarannya.';
+            this.notice = this.t('noticeTaskUpdated');
             this.persistState();
         },
 
         removeTask(taskId) {
             this.tasks = this.tasks.filter((task) => task.id !== taskId);
-            this.notice = 'Task dihapus dari planner.';
+            this.notice = this.t('noticeTaskRemoved');
             this.persistState();
         },
 
@@ -646,7 +674,7 @@ document.addEventListener('alpine:init', () => {
             const [task] = reorderedTasks.splice(currentIndex, 1);
             reorderedTasks.splice(targetIndex, 0, task);
             this.tasks = reorderedTasks;
-            this.notice = 'Urutan task diperbarui.';
+            this.notice = this.t('noticeTaskReordered');
             this.persistState();
         },
 
@@ -666,7 +694,7 @@ document.addEventListener('alpine:init', () => {
             const [task] = reorderedTasks.splice(sourceIndex, 1);
             reorderedTasks.splice(targetIndex, 0, task);
             this.tasks = reorderedTasks;
-            this.notice = 'Urutan task diperbarui.';
+            this.notice = this.t('noticeTaskReordered');
             this.persistState();
         },
 
@@ -674,7 +702,7 @@ document.addEventListener('alpine:init', () => {
             const title = this.newBlockTitle.trim();
 
             if (!title) {
-                this.notice = 'Isi nama blok fokus dulu.';
+                this.notice = this.t('noticeBlockTitle');
                 return;
             }
 
@@ -691,19 +719,19 @@ document.addEventListener('alpine:init', () => {
             this.newBlockDuration = 50;
             this.newBlockMode = 'deep-work';
             this.newBlockEnergy = 'prime';
-            this.notice = 'Blok fokus baru siap dijalankan.';
+            this.notice = this.t('noticeBlockAdded');
             this.persistState();
         },
 
         toggleBlock(blockId) {
             this.blocks = this.blocks.map((block) => block.id === blockId ? { ...block, completed: !block.completed } : block);
-            this.notice = 'Status blok fokus diperbarui dan insight akan ikut sinkron.';
+            this.notice = this.t('noticeBlockUpdated');
             this.persistState();
         },
 
         removeBlock(blockId) {
             this.blocks = this.blocks.filter((block) => block.id !== blockId);
-            this.notice = 'Blok fokus dihapus.';
+            this.notice = this.t('noticeBlockRemoved');
             this.persistState();
         },
 
@@ -732,7 +760,7 @@ document.addEventListener('alpine:init', () => {
             const [block] = reorderedBlocks.splice(currentIndex, 1);
             reorderedBlocks.splice(targetIndex, 0, block);
             this.blocks = reorderedBlocks;
-            this.notice = 'Urutan blok fokus diperbarui.';
+            this.notice = this.t('noticeBlockReordered');
             this.persistState();
         },
 
@@ -752,63 +780,63 @@ document.addEventListener('alpine:init', () => {
             const [block] = reorderedBlocks.splice(sourceIndex, 1);
             reorderedBlocks.splice(targetIndex, 0, block);
             this.blocks = reorderedBlocks;
-            this.notice = 'Urutan blok fokus diperbarui.';
+            this.notice = this.t('noticeBlockReordered');
             this.persistState();
         },
 
         resetPlanner() {
-            this.planTitle = 'Sprint Fokus Hari Ini';
+            this.planTitle = this.t('defaultPlanTitle');
             this.targetSessions = 4;
-            this.energyLabel = 'Prime time malam';
+            this.energyLabel = this.t('defaultEnergyLabel');
             this.distractionCap = 2;
             this.tasks = [];
             this.blocks = [];
-            this.notice = 'Planner direset. Susun ulang dengan target yang lebih realistis.';
+            this.notice = this.t('noticeReset');
             this.persistState();
         },
 
         applyTemplate(template) {
             const templates = {
                 exam: {
-                    planTitle: 'Sprint Ujian',
+                    planTitle: this.t('examPlanTitle'),
                     targetSessions: 5,
-                    energyLabel: 'Prime time pagi',
+                    energyLabel: this.t('morningPrimeTime'),
                     distractionCap: 1,
                     tasks: [
-                        { title: 'Pahami ulang topik paling lemah', estimate: 2, priority: 'high', category: 'concept' },
-                        { title: 'Latihan soal inti', estimate: 2, priority: 'high', category: 'practice' },
+                        { title: this.t('examTaskWeakTopic'), estimate: 2, priority: 'high', category: 'concept' },
+                        { title: this.t('examTaskPractice'), estimate: 2, priority: 'high', category: 'practice' },
                     ],
                     blocks: [
-                        { title: 'Deep work konsep utama', duration: 50, mode: 'deep-work', energy: 'prime' },
-                        { title: 'Practice set singkat', duration: 30, mode: 'practice', energy: 'steady' },
+                        { title: this.t('examBlockConcept'), duration: 50, mode: 'deep-work', energy: 'prime' },
+                        { title: this.t('examBlockPractice'), duration: 30, mode: 'practice', energy: 'steady' },
                     ],
                 },
                 revision: {
-                    planTitle: 'Sprint Review Materi',
+                    planTitle: this.t('revisionPlanTitle'),
                     targetSessions: 4,
-                    energyLabel: 'Prime time malam',
+                    energyLabel: this.t('defaultEnergyLabel'),
                     distractionCap: 2,
                     tasks: [
-                        { title: 'Review catatan dan summary', estimate: 1, priority: 'high', category: 'review' },
-                        { title: 'Uji pemahaman dengan flashcard', estimate: 1, priority: 'medium', category: 'review' },
+                        { title: this.t('revisionTaskNotes'), estimate: 1, priority: 'high', category: 'review' },
+                        { title: this.t('revisionTaskFlashcard'), estimate: 1, priority: 'medium', category: 'review' },
                     ],
                     blocks: [
-                        { title: 'Review ringkasan aktif', duration: 25, mode: 'review', energy: 'light' },
-                        { title: 'Deep work poin sulit', duration: 45, mode: 'deep-work', energy: 'prime' },
+                        { title: this.t('revisionBlockSummary'), duration: 25, mode: 'review', energy: 'light' },
+                        { title: this.t('revisionBlockDifficult'), duration: 45, mode: 'deep-work', energy: 'prime' },
                     ],
                 },
                 project: {
-                    planTitle: 'Sprint Tugas / Project',
+                    planTitle: this.t('projectPlanTitle'),
                     targetSessions: 6,
-                    energyLabel: 'Prime time siang',
+                    energyLabel: this.t('afternoonPrimeTime'),
                     distractionCap: 1,
                     tasks: [
-                        { title: 'Pecah deliverable jadi subtask kecil', estimate: 1, priority: 'high', category: 'project' },
-                        { title: 'Kerjakan bagian inti project', estimate: 3, priority: 'high', category: 'project' },
+                        { title: this.t('projectTaskBreakdown'), estimate: 1, priority: 'high', category: 'project' },
+                        { title: this.t('projectTaskCore'), estimate: 3, priority: 'high', category: 'project' },
                     ],
                     blocks: [
-                        { title: 'Deep work implementasi', duration: 60, mode: 'deep-work', energy: 'prime' },
-                        { title: 'Review hasil dan revisi', duration: 30, mode: 'review', energy: 'steady' },
+                        { title: this.t('projectBlockImplementation'), duration: 60, mode: 'deep-work', energy: 'prime' },
+                        { title: this.t('projectBlockReview'), duration: 30, mode: 'review', energy: 'steady' },
                     ],
                 },
             };
@@ -839,15 +867,15 @@ document.addEventListener('alpine:init', () => {
                 energy: block.energy,
                 completed: false,
             }));
-            this.notice = 'Template fokus diterapkan. Tinggal sesuaikan detailnya.';
+            this.notice = this.t('noticeTemplateApplied');
             this.persistState();
         },
 
         persistState() {
             const payload = {
-                planTitle: this.planTitle.trim() || 'Sprint Fokus Hari Ini',
+                planTitle: this.planTitle.trim() || this.t('defaultPlanTitle'),
                 targetSessions: clamp(this.targetSessions, 1, 12),
-                energyLabel: this.energyLabel.trim() || 'Prime time malam',
+                energyLabel: this.energyLabel.trim() || this.t('defaultEnergyLabel'),
                 distractionCap: clamp(this.distractionCap, 0, 8),
                 tasks: this.tasks.map((task) => ({
                     id: task.id,
@@ -883,17 +911,17 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.planTitle = typeof savedState.planTitle === 'string' && savedState.planTitle.trim()
-                ? savedState.planTitle.trim()
+                ? this.localizePresetText(savedState.planTitle.trim())
                 : this.planTitle;
             this.targetSessions = clamp(savedState.targetSessions, 1, 12);
             this.energyLabel = typeof savedState.energyLabel === 'string' && savedState.energyLabel.trim()
-                ? savedState.energyLabel.trim()
+                ? this.localizePresetText(savedState.energyLabel.trim())
                 : this.energyLabel;
             this.distractionCap = clamp(savedState.distractionCap, 0, 8);
             this.tasks = Array.isArray(savedState.tasks)
                 ? savedState.tasks.map((task) => ({
                     id: task.id || createLocalId(),
-                    title: String(task.title || '').trim(),
+                    title: this.localizePresetText(String(task.title || '').trim()),
                     estimate: clamp(task.estimate, 1, 6),
                     priority: ['high', 'medium', 'low'].includes(task.priority) ? task.priority : 'high',
                     category: ['concept', 'practice', 'review', 'project'].includes(task.category) ? task.category : 'concept',
@@ -903,25 +931,33 @@ document.addEventListener('alpine:init', () => {
             this.blocks = Array.isArray(savedState.blocks)
                 ? savedState.blocks.map((block) => ({
                     id: block.id || createLocalId(),
-                    title: String(block.title || '').trim(),
+                    title: this.localizePresetText(String(block.title || '').trim()),
                     duration: clamp(block.duration, 15, 120),
                     mode: ['deep-work', 'review', 'practice'].includes(block.mode) ? block.mode : 'deep-work',
                     energy: ['prime', 'steady', 'light'].includes(block.energy) ? block.energy : 'prime',
                     completed: Boolean(block.completed),
                 })).filter((block) => block.title)
                 : [];
-            this.notice = typeof savedState.notice === 'string' && savedState.notice.trim()
-                ? savedState.notice.trim()
-                : this.notice;
+            this.notice = this.t('defaultNotice');
         },
     }));
 
-    Alpine.data('focusInsights', () => ({
+    Alpine.data('focusInsights', (options = {}) => ({
         pomodoroKey: POMODORO_STORAGE_KEY,
         plannerKey: FOCUS_PLANNER_STORAGE_KEY,
+        locale: options.locale || 'id',
+        translations: options.translations || {},
         pomodoro: null,
         planner: null,
         lastSyncLabel: '',
+
+        t(key, fallback = '') {
+            return this.translations[key] || fallback;
+        },
+
+        modeLabel(mode) {
+            return this.t(`mode_${mode}`, mode);
+        },
 
         init() {
             this.refresh();
@@ -1019,23 +1055,23 @@ document.addEventListener('alpine:init', () => {
 
         get focusScoreLabel() {
             if (this.focusScore >= 80) {
-                return 'Sangat stabil';
+                return this.t('scoreVeryStable');
             }
 
             if (this.focusScore >= 60) {
-                return 'Cukup stabil';
+                return this.t('scoreStable');
             }
 
             if (this.focusScore >= 40) {
-                return 'Masih goyah';
+                return this.t('scoreUnstable');
             }
 
-            return 'Belum kebentuk';
+            return this.t('scoreNotFormed');
         },
 
         get strongestMode() {
             if (!Array.isArray(this.planner?.blocks) || !this.planner.blocks.length) {
-                return 'Belum ada';
+                return this.t('noMode');
             }
 
             const modeCount = this.planner.blocks.reduce((result, block) => {
@@ -1044,45 +1080,45 @@ document.addEventListener('alpine:init', () => {
                 return result;
             }, {});
 
-            return Object.entries(modeCount).sort((a, b) => b[1] - a[1])[0][0];
+            return this.modeLabel(Object.entries(modeCount).sort((a, b) => b[1] - a[1])[0][0]);
         },
 
         get coachMessage() {
             if (this.focusScore >= 80) {
-                return 'Ritme fokusmu sudah kuat. Pertahankan urutan: high priority dulu, review ringan di akhir.';
+                return this.t('coachStrong');
             }
 
             if (this.completedFocusSessions < Math.max(1, Math.ceil(this.cycleTarget / 2))) {
-                return 'Mulai dari satu sesi Pomodoro penuh. Kamu butuh momentum lebih dulu sebelum mengejar task lain.';
+                return this.t('coachMomentum');
             }
 
             if (this.taskCompletionPercent < this.blockCompletionPercent) {
-                return 'Kamu lebih banyak jalan di blok waktu daripada menyelesaikan task. Fokuskan sesi berikutnya ke satu output yang jelas.';
+                return this.t('coachOutput');
             }
 
-            return 'Struktur sudah lumayan. Tinggal naikkan konsistensi penyelesaian task prioritas utama.';
+            return this.t('coachConsistency');
         },
 
         get recommendation() {
             if (this.completedFocusSessions >= this.cycleTarget) {
-                return 'Target fokus hari ini sudah tercapai. Ambil long break atau review ringan.';
+                return this.t('recommendationTargetReached');
             }
 
             if (this.completedTaskCount < this.taskCount) {
-                return 'Selesaikan prioritas utama dulu sebelum menambah sesi baru.';
+                return this.t('recommendationFinishPriority');
             }
 
             if (this.completedMinutes < this.plannedMinutes) {
-                return 'Masih ada blok belajar yang belum tuntas. Lanjutkan deep work berikutnya.';
+                return this.t('recommendationContinueBlock');
             }
 
-            return 'Data fokus masih tipis. Jalankan minimal satu sesi Pomodoro untuk mulai membangun ritme.';
+            return this.t('recommendationStartPomodoro');
         },
 
         refresh() {
             this.pomodoro = parseStoredJson(this.pomodoroKey);
             this.planner = parseStoredJson(this.plannerKey);
-            this.lastSyncLabel = new Intl.DateTimeFormat('id-ID', {
+            this.lastSyncLabel = new Intl.DateTimeFormat(this.locale === 'en' ? 'en-US' : 'id-ID', {
                 hour: '2-digit',
                 minute: '2-digit',
             }).format(new Date());
