@@ -136,9 +136,9 @@ document.addEventListener('alpine:init', () => {
 
         get currentModeDescription() {
             return {
-                focus: 'Satu sesi fokus penuh tanpa distraksi.',
-                shortBreak: 'Jeda singkat untuk rehat sebentar.',
-                longBreak: 'Waktu recharge yang lebih panjang setelah 4 sesi.',
+                focus: 'Fokus penuh tanpa distraksi.',
+                shortBreak: 'Rehat singkat sebelum lanjut.',
+                longBreak: 'Rehat panjang setelah 4 sesi.',
             }[this.mode];
         },
 
