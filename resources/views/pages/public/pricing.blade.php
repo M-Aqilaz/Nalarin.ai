@@ -16,7 +16,7 @@
             .pricing-page a,
             .pricing-page button,
             .pricing-page [role="button"] {
-                cursor: url("{{ asset('images/nala_cursor_chibi.png') }}") 20 8, auto !important;
+                cursor: url("{{ asset('images/nala_cursor_chibi.png') }}") 12 3, auto !important;
             }
 
             @media (max-width: 768px), (pointer: coarse) {
