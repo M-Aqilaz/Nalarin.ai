@@ -141,6 +141,8 @@ const buildBaseChat = (options) => {
         currentUserName,
         enableTyping,
     } = options;
+    const translations = options.translations ?? {};
+    const translate = (key, fallback) => translations[key] ?? fallback;
 
     return {
     messages: normalizeMessages(initialMessages),
@@ -161,7 +163,12 @@ const buildBaseChat = (options) => {
     isSubmitting: false,
     booted: false,
     error: null,
-    connectionState: 'Menghubungkan koneksi waktu nyata...',
+    translations,
+    locale: options.locale ?? 'id',
+    t(key, fallback = '') {
+        return this.translations[key] ?? fallback;
+    },
+    connectionState: translate('connectionConnecting', 'Menghubungkan koneksi waktu nyata...'),
     currentUserId: currentUserId ?? null,
     currentUserName: currentUserName ?? null,
     enableTyping: Boolean(enableTyping ?? false),
@@ -187,7 +194,7 @@ const buildBaseChat = (options) => {
 
     connectRealtime() {
         if (!window.Echo) {
-            this.enablePolling('Koneksi waktu nyata belum tersedia. Pengambilan data otomatis aktif.');
+            this.enablePolling(this.t('connectionFallback', 'Pembaruan otomatis aktif.'));
             return;
         }
 
@@ -207,28 +214,28 @@ const buildBaseChat = (options) => {
             const connection = window.Echo.connector?.pusher?.connection;
 
             if (!connection) {
-                this.enablePolling('Koneksi waktu nyata tidak stabil. Pengambilan data otomatis aktif.');
+                this.enablePolling(this.t('connectionFallback', 'Pembaruan otomatis aktif.'));
                 return;
             }
 
             const syncState = (state) => {
                 if (state === 'connected') {
-                    this.disablePolling('Koneksi waktu nyata aktif.');
+                    this.disablePolling(this.t('connectionActive', 'Koneksi waktu nyata aktif.'));
                     return;
                 }
 
                 if (state === 'connecting' || state === 'initialized') {
-                    this.connectionState = 'Menghubungkan koneksi waktu nyata...';
+                    this.connectionState = this.t('connectionConnecting', 'Menghubungkan koneksi waktu nyata...');
                     return;
                 }
 
-                this.enablePolling('Koneksi waktu nyata terputus. Pengambilan data otomatis aktif.');
+                this.enablePolling(this.t('connectionFallback', 'Pembaruan otomatis aktif.'));
             };
 
             connection.bind('state_change', ({ current }) => syncState(current));
             window.setTimeout(() => syncState(connection.state), 1000);
         } catch (error) {
-            this.enablePolling('Koneksi waktu nyata gagal dimuat. Pengambilan data otomatis aktif.');
+            this.enablePolling(this.t('connectionFallback', 'Pembaruan otomatis aktif.'));
         }
     },
 
@@ -535,7 +542,7 @@ export function registerRealtimeChat(Alpine) {
         aiStatusClasses: 'border-blue-500/30 bg-blue-500/10 text-blue-200',
         nalaFaces: options.nalaFaces ?? {},
         nalaMood: 'flat',
-        nalaLine: 'Aku Nala. Aku bantu kamu belajar... bukan karena aku khawatir, ya.',
+        nalaLine: options.translations?.nalaDefaultLine ?? 'Aku Nala. Aku siap membantumu belajar.',
         nalaVoiceEnabled: false,
         nalaVoiceSupported: false,
         nalaVoiceName: '',
@@ -582,7 +589,7 @@ export function registerRealtimeChat(Alpine) {
         },
 
         roleLabel(message) {
-            return message.role === 'assistant' ? 'Nala' : 'Anda';
+            return message.role === 'assistant' ? 'Nala' : this.t('you', 'Anda');
         },
 
         openThreadMenu(threadId) {
@@ -605,25 +612,25 @@ export function registerRealtimeChat(Alpine) {
 
         get nalaMoodLabel() {
             return {
-                happy: 'Senang',
-                flat: 'Fokus',
-                angry: 'Jutek mode',
-                sad: 'Khawatir',
-                cute: 'Gemes',
-                shy: 'Malu-malu',
-                silly: 'Bingung mode',
-                sorry: 'Minta maaf',
-            }[this.nalaMood] || 'Fokus';
+                happy: this.t('moodHappy', 'Senang'),
+                flat: this.t('moodFlat', 'Fokus'),
+                angry: this.t('moodAngry', 'Kesal'),
+                sad: this.t('moodSad', 'Khawatir'),
+                cute: this.t('moodCute', 'Gemes'),
+                shy: this.t('moodShy', 'Malu'),
+                silly: this.t('moodSilly', 'Bingung'),
+                sorry: this.t('moodSorry', 'Minta maaf'),
+            }[this.nalaMood] || this.t('moodFlat', 'Fokus');
         },
 
         get voiceStatusLabel() {
             if (!this.nalaVoiceSupported) {
-                return 'Voice tidak didukung browser ini';
+                return this.t('voiceUnsupported', 'Suara tidak didukung browser ini');
             }
 
             return this.nalaVoiceEnabled
-                ? `Voice on${this.nalaVoiceName ? ` - ${this.nalaVoiceName}` : ''}`
-                : 'Voice off';
+                ? `${this.t('voiceOn', 'Suara aktif')}${this.nalaVoiceName ? ` - ${this.nalaVoiceName}` : ''}`
+                : this.t('voiceOff', 'Suara nonaktif');
         },
 
         initializeNalaVoice() {
@@ -638,7 +645,7 @@ export function registerRealtimeChat(Alpine) {
 
             const refreshVoice = () => {
                 this.nalaVoice = chooseNalaVoice();
-                this.nalaVoiceName = this.nalaVoice?.name || 'Default browser';
+                this.nalaVoiceName = this.nalaVoice?.name || this.t('defaultBrowser', 'Bawaan browser');
             };
 
             refreshVoice();
@@ -658,7 +665,7 @@ export function registerRealtimeChat(Alpine) {
                 return;
             }
 
-            this.speakNalaLine('Hmph. Baiklah, mulai sekarang Nala bacakan jawabannya. Dengar baik-baik, ya.');
+            this.speakNalaLine(this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'));
         },
 
         replayNalaVoice() {
@@ -688,7 +695,7 @@ export function registerRealtimeChat(Alpine) {
                 utterance.voice = voice;
             }
 
-            utterance.lang = 'id-ID';
+            utterance.lang = this.locale === 'en' ? 'en-US' : 'id-ID';
             utterance.pitch = 1.28;
             utterance.rate = 1.03;
             utterance.volume = 1;
@@ -708,41 +715,41 @@ export function registerRealtimeChat(Alpine) {
             if (/(bingung|susah|sulit|gak ngerti|ga ngerti|tidak ngerti|tidak paham|gagal|stress|stres|pusing)/.test(text)) {
                 return {
                     mood: /(gagal|stress|stres|pusing)/.test(text) ? 'sorry' : 'sad',
-                    line: 'Aduh... kamu bingung, ya? Nala bantu pelan-pelan. Jangan nyerah dulu.',
+                    line: this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'),
                 };
             }
 
             if (/(typo|salah ketik|kok aneh|maksudnya apa|ini apa|hah|lah|loh|bingungin)/.test(text)) {
                 return {
                     mood: 'silly',
-                    line: 'Eh... Nala perlu baca pelan-pelan dulu. Coba kasih konteksnya sedikit lagi, ya.',
+                    line: this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'),
                 };
             }
 
             if (/(malas|males|terserah|gatau|ga tau|nggak tau|tidak tahu|skip aja|bodo)/.test(text) || text.length < 8) {
                 return {
                     mood: 'angry',
-                    line: 'Hmph, jangan malas. Kasih Nala pertanyaan yang jelas biar aku bisa bantu.',
+                    line: this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'),
                 };
             }
 
             if (/(makasih|terima kasih|thanks|thank you|paham|mengerti|berhasil|bisa sekarang|sip)/.test(text)) {
                 return {
                     mood: /(makasih|terima kasih|thanks|thank you)/.test(text) ? 'shy' : 'cute',
-                    line: 'Y-ya bagus kalau kamu paham. Bukan berarti Nala senang banget, sih.',
+                    line: this.t('nalaAnsweredLine', 'Nala sudah menjawab. Baca perlahan agar lebih mudah dipahami.'),
                 };
             }
 
             if (/(cantik|imut|lucu|keren|bagus banget|pinter|pintar|nala hebat)/.test(text)) {
                 return {
                     mood: 'shy',
-                    line: 'H-hmph... pujian begitu tidak bikin Nala salah tingkah kok. Lanjut belajar.',
+                    line: this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'),
                 };
             }
 
             return {
                 mood: 'flat',
-                line: 'Oke, Nala cek dulu. Kamu tinggal ikuti penjelasanku baik-baik.',
+                line: this.t('nalaDefaultLine', 'Aku Nala. Aku siap membantumu belajar.'),
             };
         },
 
@@ -760,7 +767,7 @@ export function registerRealtimeChat(Alpine) {
             }
 
             if (latestAssistant?.content && Number(latestAssistant.id) > Number(this.lastSpokenMessageId)) {
-                this.setNalaMood('cute', 'Sudah Nala jawab. Dibaca pelan-pelan, jangan cuma diskip.');
+                this.setNalaMood('cute', this.t('nalaAnsweredLine', 'Nala sudah menjawab. Baca perlahan agar lebih mudah dipahami.'));
 
                 if (shouldSpeak) {
                     this.lastSpokenMessageId = Number(latestAssistant.id);
@@ -778,7 +785,7 @@ export function registerRealtimeChat(Alpine) {
 
             if (message.role === 'assistant') {
                 this.latestAssistantText = message.content || '';
-                this.setNalaMood('cute', 'Sudah Nala jawab. Dibaca pelan-pelan, jangan cuma diskip.');
+                this.setNalaMood('cute', this.t('nalaAnsweredLine', 'Nala sudah menjawab. Baca perlahan agar lebih mudah dipahami.'));
 
                 if (isNew && Number(message.id) > Number(this.lastSpokenMessageId)) {
                     this.lastSpokenMessageId = Number(message.id);
@@ -792,25 +799,25 @@ export function registerRealtimeChat(Alpine) {
             this.hasAiNotice = this.aiStatus === 'failed' || Boolean(this.aiError);
 
             if (this.aiStatus === 'queued') {
-                this.aiStatusText = 'Nala sedang menyiapkan jawaban...';
+                this.aiStatusText = this.t('nalaQueued', 'Nala sedang menyiapkan jawaban...');
                 this.aiStatusClasses = 'border-blue-500/30 bg-blue-500/10 text-blue-200';
                 this.lastSpokenError = '';
-                this.setNalaMood('flat', 'Hmph, tunggu sebentar. Nala lagi mikir.');
+                this.setNalaMood('flat', this.t('nalaThinkingLine', 'Tunggu sebentar, Nala sedang berpikir.'));
                 return;
             }
 
             if (this.aiStatus === 'processing') {
-                this.aiStatusText = 'Nala sedang mengetik...';
+                this.aiStatusText = this.t('nalaProcessing', 'Nala sedang mengetik...');
                 this.aiStatusClasses = 'border-blue-500/30 bg-blue-500/10 text-blue-200';
                 this.lastSpokenError = '';
-                this.setNalaMood('flat', 'Hmph, tunggu sebentar. Nala lagi mikir.');
+                this.setNalaMood('flat', this.t('nalaThinkingLine', 'Tunggu sebentar, Nala sedang berpikir.'));
                 return;
             }
 
             if (this.aiStatus === 'failed') {
-                this.aiStatusText = this.aiError || 'Nala gagal menjawab. Coba kirim ulang pesan.';
+                this.aiStatusText = this.aiError || this.t('nalaFailed', 'Nala gagal menjawab. Coba kirim ulang pesan.');
                 this.aiStatusClasses = 'border-red-500/30 bg-red-500/10 text-red-200';
-                this.setNalaMood('sorry', 'Aduh... Nala gagal jawab. Coba kirim ulang ya.');
+                this.setNalaMood('sorry', this.t('nalaFailed', 'Nala gagal menjawab. Coba kirim ulang pesan.'));
 
                 if (this.aiStatusText !== this.lastSpokenError) {
                     this.lastSpokenError = this.aiStatusText;
