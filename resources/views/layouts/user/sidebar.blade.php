@@ -35,14 +35,14 @@
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="flashcards" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.flashcards') }}</span>
                 </a>
+                <a href="{{ route('feature.quiz') }}" title="{{ __('ui.quiz') }}" data-feature="{{ __('ui.quiz') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.quiz') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="quiz" class="h-4 w-4" /></span>
+                    <span x-show="!sidebarCollapsed">{{ __('ui.quiz') }}</span>
+                </a>
             </div>
         </div>
 
-        <div class="mt-6 space-y-1">
-            <a href="{{ route('feature.quiz') }}" title="Kuis" data-feature="Latihan Kuis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.quiz') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="quiz" class="h-4 w-4" /></span>
-                <span x-show="!sidebarCollapsed">{{ __('ui.quiz') }}</span>
-            </a>
+        <div class="mt-2 space-y-1">
             <a href="{{ route('billing.index') }}" title="Billing" class="flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('billing.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                 <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="billing" class="h-4 w-4" /></span>
                 <span x-show="!sidebarCollapsed">{{ __('ui.billing') }}</span>
