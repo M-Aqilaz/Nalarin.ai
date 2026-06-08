@@ -85,8 +85,9 @@ window.Alpine = Alpine;
 document.addEventListener('alpine:init', () => {
     registerRealtimeChat(Alpine);
 
-    Alpine.data('pomodoroTimer', () => ({
+    Alpine.data('pomodoroTimer', (options = {}) => ({
         storageKey: POMODORO_STORAGE_KEY,
+        translations: options.translations || {},
         cycleTarget: 4,
         durations: {
             focus: 25,
@@ -100,10 +101,15 @@ document.addEventListener('alpine:init', () => {
         timerId: null,
         completedFocusSessions: 0,
         dailyProgressDate: formatDateKey(),
-        notice: 'Siap untuk memulai sesi fokus.',
+        notice: options.translations?.noticeInitial || 'Siap untuk memulai sesi fokus.',
 
         init() {
             this.restoreState();
+            this.notice = this.isRunning
+                ? this.t('noticeRunning', { mode: this.currentModeLabel })
+                : this.remainingSeconds < this.durationFor(this.mode)
+                    ? this.t('noticePaused')
+                    : this.t('noticeReady', { mode: this.currentModeLabel });
             this.syncDailyProgress();
 
             if (this.isRunning && this.endsAt) {
@@ -128,17 +134,25 @@ document.addEventListener('alpine:init', () => {
 
         get currentModeLabel() {
             return {
-                focus: 'Fokus',
-                shortBreak: 'Istirahat Pendek',
-                longBreak: 'Istirahat Panjang',
+                focus: this.translations.focus || 'Fokus',
+                shortBreak: this.translations.shortBreak || 'Istirahat Pendek',
+                longBreak: this.translations.longBreak || 'Istirahat Panjang',
             }[this.mode];
+        },
+
+        get modeOptions() {
+            return [
+                { value: 'focus', label: this.translations.focus || 'Fokus' },
+                { value: 'shortBreak', label: this.translations.shortBreak || 'Istirahat Pendek' },
+                { value: 'longBreak', label: this.translations.longBreak || 'Istirahat Panjang' },
+            ];
         },
 
         get currentModeDescription() {
             return {
-                focus: 'Fokus penuh tanpa distraksi.',
-                shortBreak: 'Rehat singkat sebelum lanjut.',
-                longBreak: 'Rehat panjang setelah 4 sesi.',
+                focus: this.translations.focusDescription || 'Fokus penuh tanpa distraksi.',
+                shortBreak: this.translations.shortBreakDescription || 'Rehat singkat sebelum lanjut.',
+                longBreak: this.translations.longBreakDescription || 'Rehat panjang setelah 4 sesi.',
             }[this.mode];
         },
 
@@ -154,10 +168,12 @@ document.addEventListener('alpine:init', () => {
 
         get primaryActionLabel() {
             if (this.isRunning) {
-                return 'Jeda';
+                return this.translations.pause || 'Jeda';
             }
 
-            return this.remainingSeconds < this.durationFor(this.mode) ? 'Lanjutkan' : 'Mulai';
+            return this.remainingSeconds < this.durationFor(this.mode)
+                ? this.translations.resume || 'Lanjutkan'
+                : this.translations.start || 'Mulai';
         },
 
         get dailyProgressPercent() {
@@ -180,22 +196,44 @@ document.addEventListener('alpine:init', () => {
             return completedInCycle === 0 ? this.cycleTarget : this.cycleTarget - completedInCycle;
         },
 
+        get sessionsUntilLongBreakLabel() {
+            return this.t('sessions', { count: this.sessionsUntilLongBreak });
+        },
+
         get upcomingModeLabel() {
             if (this.mode !== 'focus') {
-                return 'Fokus';
+                return this.translations.focus || 'Fokus';
             }
 
             const completedAfterCurrent = this.completedFocusSessions + 1;
 
-            return completedAfterCurrent % this.cycleTarget === 0 ? 'Istirahat Panjang' : 'Istirahat Pendek';
+            return completedAfterCurrent % this.cycleTarget === 0
+                ? this.translations.longBreak || 'Istirahat Panjang'
+                : this.translations.shortBreak || 'Istirahat Pendek';
         },
 
         get timerStatusLabel() {
             if (this.isRunning) {
-                return 'Sedang berjalan';
+                return this.translations.running || 'Sedang berjalan';
             }
 
-            return this.remainingSeconds < this.durationFor(this.mode) ? 'Dijeda' : 'Siap dimulai';
+            return this.remainingSeconds < this.durationFor(this.mode)
+                ? this.translations.paused || 'Dijeda'
+                : this.translations.ready || 'Siap dimulai';
+        },
+
+        t(key, replacements = {}) {
+            let value = this.translations[key] || '';
+
+            Object.entries(replacements).forEach(([name, replacement]) => {
+                value = value.replace(`:${name}`, replacement);
+            });
+
+            return value;
+        },
+
+        minutesRange(min, max) {
+            return this.t('minutesRange', { min, max });
         },
 
         durationFor(mode) {
@@ -213,7 +251,7 @@ document.addEventListener('alpine:init', () => {
             this.completedFocusSessions = 0;
 
             if (!this.isRunning) {
-                this.notice = 'Hari baru dimulai. Target fokus direset.';
+                this.notice = this.t('noticeNewDay');
             }
 
             this.persistState();
@@ -225,7 +263,7 @@ document.addEventListener('alpine:init', () => {
             this.isRunning = false;
             this.endsAt = null;
             this.remainingSeconds = this.durationFor(mode);
-            this.notice = `${this.currentModeLabel} siap dimulai.`;
+            this.notice = this.t('noticeReady', { mode: this.currentModeLabel });
             this.persistState();
         },
 
@@ -247,7 +285,7 @@ document.addEventListener('alpine:init', () => {
 
             this.isRunning = true;
             this.endsAt = Date.now() + (this.remainingSeconds * 1000);
-            this.notice = `${this.currentModeLabel} sedang berjalan.`;
+            this.notice = this.t('noticeRunning', { mode: this.currentModeLabel });
             this.startTicker();
             this.persistState();
         },
@@ -257,7 +295,7 @@ document.addEventListener('alpine:init', () => {
             this.isRunning = false;
             this.endsAt = null;
             this.stopTicker();
-            this.notice = 'Timer dijeda. Lanjutkan kapan saja.';
+            this.notice = this.t('noticePaused');
             this.persistState();
         },
 
@@ -266,7 +304,7 @@ document.addEventListener('alpine:init', () => {
             this.isRunning = false;
             this.endsAt = null;
             this.remainingSeconds = this.durationFor(this.mode);
-            this.notice = `${this.currentModeLabel} direset ke awal.`;
+            this.notice = this.t('noticeReset', { mode: this.currentModeLabel });
             this.persistState();
         },
 
@@ -338,14 +376,14 @@ document.addEventListener('alpine:init', () => {
                 this.mode = nextMode;
                 this.remainingSeconds = this.durationFor(nextMode);
                 this.notice = skipped
-                    ? 'Sesi fokus dilewati. Kamu bisa mulai ulang atau ambil jeda.'
-                    : 'Sesi fokus selesai. Saatnya istirahat.';
+                    ? this.t('noticeFocusSkipped')
+                    : this.t('noticeFocusComplete');
             } else {
                 this.mode = 'focus';
                 this.remainingSeconds = this.durationFor('focus');
                 this.notice = skipped
-                    ? 'Istirahat dilewati. Waktunya kembali fokus.'
-                    : 'Istirahat selesai. Siap masuk sesi fokus berikutnya.';
+                    ? this.t('noticeBreakSkipped')
+                    : this.t('noticeBreakComplete');
             }
 
             this.persistState();
@@ -365,11 +403,13 @@ document.addEventListener('alpine:init', () => {
                 this.remainingSeconds = this.durationFor(mode);
             }
 
-            this.notice = `Durasi ${{
-                focus: 'fokus',
-                shortBreak: 'istirahat pendek',
-                longBreak: 'istirahat panjang',
-            }[mode]} diperbarui.`;
+            this.notice = this.t('noticeDurationUpdated', {
+                mode: {
+                    focus: this.translations.focus || 'Fokus',
+                    shortBreak: this.translations.shortBreak || 'Istirahat Pendek',
+                    longBreak: this.translations.longBreak || 'Istirahat Panjang',
+                }[mode],
+            });
             this.persistState();
         },
 
@@ -415,7 +455,6 @@ document.addEventListener('alpine:init', () => {
                     ? Math.max(0, Math.round(parsedState.completedFocusSessions))
                     : 0;
                 this.dailyProgressDate = parsedState?.dailyProgressDate || formatDateKey();
-                this.notice = parsedState?.notice || this.notice;
             } catch (error) {
                 window.localStorage.removeItem(this.storageKey);
             }

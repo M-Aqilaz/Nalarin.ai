@@ -1,3 +1,33 @@
+@php
+    $pomodoroTranslations = [
+        'focus' => __('ui.pomodoro_focus'),
+        'shortBreak' => __('ui.pomodoro_short_break'),
+        'longBreak' => __('ui.pomodoro_long_break'),
+        'focusDescription' => __('ui.pomodoro_focus_description'),
+        'shortBreakDescription' => __('ui.pomodoro_short_break_description'),
+        'longBreakDescription' => __('ui.pomodoro_long_break_description'),
+        'start' => __('ui.pomodoro_start'),
+        'pause' => __('ui.pomodoro_pause'),
+        'resume' => __('ui.pomodoro_resume'),
+        'ready' => __('ui.pomodoro_ready'),
+        'running' => __('ui.pomodoro_running'),
+        'paused' => __('ui.pomodoro_paused'),
+        'sessions' => __('ui.pomodoro_sessions'),
+        'minutesRange' => __('ui.pomodoro_minutes_range'),
+        'noticeInitial' => __('ui.pomodoro_notice_initial'),
+        'noticeNewDay' => __('ui.pomodoro_notice_new_day'),
+        'noticeReady' => __('ui.pomodoro_notice_ready'),
+        'noticeRunning' => __('ui.pomodoro_notice_running'),
+        'noticePaused' => __('ui.pomodoro_notice_paused'),
+        'noticeReset' => __('ui.pomodoro_notice_reset'),
+        'noticeFocusSkipped' => __('ui.pomodoro_notice_focus_skipped'),
+        'noticeFocusComplete' => __('ui.pomodoro_notice_focus_complete'),
+        'noticeBreakSkipped' => __('ui.pomodoro_notice_break_skipped'),
+        'noticeBreakComplete' => __('ui.pomodoro_notice_break_complete'),
+        'noticeDurationUpdated' => __('ui.pomodoro_notice_duration_updated'),
+    ];
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
@@ -7,8 +37,8 @@
                 </svg>
             </div>
             <div>
-                <p class="user-kicker text-[11px] text-orange-100/90">Study Rhythm</p>
-                <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text">Pomodoro Timer</h2>
+                <p class="user-kicker text-[11px] text-orange-100/90">{{ __('ui.pomodoro_kicker') }}</p>
+                <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text">{{ __('ui.pomodoro_title') }}</h2>
             </div>
         </div>
     </x-slot>
@@ -98,7 +128,7 @@
     </style>
 
     <div
-        x-data="pomodoroTimer()"
+        x-data="pomodoroTimer({ translations: @js($pomodoroTranslations) })"
         x-init="init()"
         :data-mode="mode"
         class="pomodoro-page readable-study-page relative min-h-full overflow-hidden"
@@ -110,8 +140,8 @@
                 <div class="mb-3">
                     <x-nala-guide
                         mood="flat"
-                        title="Mode fokus dimulai dari niat kecil"
-                        message="Pilih durasi yang realistis, lalu jalankan satu sesi penuh. Kalau baru mulai, jangan sok kuat ambil terlalu lama."
+                        :title="__('ui.pomodoro_guide_title')"
+                        :message="__('ui.pomodoro_guide_description')"
                         image-class="h-20 w-20 rounded-2xl object-cover sm:h-20 sm:w-20"
                         class="!rounded-3xl !p-3"
                         compact
@@ -122,7 +152,7 @@
                     <main class="pomodoro-timer-card overflow-hidden rounded-[2rem] border border-sky-200/80 p-4 shadow-[0_18px_50px_rgba(14,116,144,0.1)]">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div class="inline-flex w-full rounded-2xl border border-sky-200 bg-white/80 p-1 sm:w-auto">
-                                <template x-for="option in [{ value: 'focus', label: 'Fokus' }, { value: 'shortBreak', label: 'Istirahat Pendek' }, { value: 'longBreak', label: 'Istirahat Panjang' }]" :key="option.value">
+                                <template x-for="option in modeOptions" :key="option.value">
                                     <button
                                         type="button"
                                         @click="selectMode(option.value)"
@@ -143,11 +173,11 @@
                         <div class="mt-3 flex flex-col items-center text-center">
                             <div class="flex w-full items-start justify-between gap-4 text-left">
                                 <div>
-                                    <p class="text-[11px] font-bold uppercase tracking-[0.26em] text-sky-700">Focus Flow</p>
-                                    <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">Satu sesi, satu tujuan.</h3>
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.26em] text-sky-700">{{ __('ui.pomodoro_focus_flow') }}</p>
+                                    <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">{{ __('ui.pomodoro_flow_title') }}</h3>
                                 </div>
                                 <div class="rounded-2xl border border-sky-200 bg-white/80 px-3 py-2 text-right">
-                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Siklus</p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('ui.pomodoro_cycle') }}</p>
                                     <p class="mt-1 font-outfit text-xl font-bold text-slate-950">
                                         <span x-text="completedCycleSessions"></span>
                                         <span class="text-sm text-slate-400">/ <span x-text="cycleTarget"></span></span>
@@ -181,8 +211,8 @@
                                     </svg>
                                     <span x-text="primaryActionLabel"></span>
                                 </button>
-                                <button type="button" @click="resetTimer()" class="inline-flex h-11 items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50">Reset</button>
-                                <button type="button" @click="skipMode()" class="inline-flex h-11 items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50">Lewati</button>
+                                <button type="button" @click="resetTimer()" class="inline-flex h-11 items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50">{{ __('ui.pomodoro_reset') }}</button>
+                                <button type="button" @click="skipMode()" class="inline-flex h-11 items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50">{{ __('ui.pomodoro_skip') }}</button>
                             </div>
 
                             <p class="mt-2 min-h-5 text-xs font-medium text-slate-500" x-text="notice"></p>
@@ -193,13 +223,13 @@
                         <section class="rounded-[1.75rem] border border-sky-200 bg-white/85 p-3 shadow-[0_16px_40px_rgba(14,116,144,0.08)]">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
-                                    <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">Hari Ini</p>
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">{{ __('ui.pomodoro_today') }}</p>
                                     <p class="mt-1 font-outfit text-3xl font-extrabold text-slate-950">
                                         <span x-text="completedFocusSessions"></span>
                                         <span class="text-lg text-slate-400">/ <span x-text="cycleTarget"></span></span>
                                     </p>
                                 </div>
-                                <span class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">Tersimpan otomatis</span>
+                                <span class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">{{ __('ui.pomodoro_auto_saved') }}</span>
                             </div>
 
                             <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
@@ -208,33 +238,33 @@
 
                             <div class="mt-2 grid grid-cols-2 gap-2">
                                 <div class="rounded-2xl bg-sky-50 p-2.5">
-                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700">Berikutnya</p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700">{{ __('ui.pomodoro_next') }}</p>
                                     <p class="mt-1 font-outfit text-base font-bold leading-tight text-slate-950" x-text="upcomingModeLabel"></p>
                                 </div>
                                 <div class="rounded-2xl bg-emerald-50 p-2.5">
-                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">Long Break</p>
-                                    <p class="mt-1 font-outfit text-base font-bold leading-tight text-slate-950" x-text="`${sessionsUntilLongBreak} sesi`"></p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">{{ __('ui.pomodoro_long_break') }}</p>
+                                    <p class="mt-1 font-outfit text-base font-bold leading-tight text-slate-950" x-text="sessionsUntilLongBreakLabel"></p>
                                 </div>
                             </div>
                         </section>
 
                         <section class="rounded-[1.75rem] border border-sky-200 bg-white/85 p-3 shadow-[0_16px_40px_rgba(14,116,144,0.08)]">
                             <div>
-                                <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">Pengaturan</p>
-                                <h3 class="mt-1 font-outfit text-lg font-extrabold text-slate-950">Durasi Sesi</h3>
-                                <p class="text-xs text-slate-500">Sesuaikan durasi setiap mode belajar.</p>
+                                <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">{{ __('ui.pomodoro_settings') }}</p>
+                                <h3 class="mt-1 font-outfit text-lg font-extrabold text-slate-950">{{ __('ui.pomodoro_session_duration') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('ui.pomodoro_duration_description') }}</p>
                             </div>
 
                             <div class="mt-2 space-y-1.5">
                                 <template x-for="field in [
-                                    { key: 'focus', label: 'Fokus', min: 10, max: 90 },
-                                    { key: 'shortBreak', label: 'Istirahat Pendek', min: 1, max: 30 },
-                                    { key: 'longBreak', label: 'Istirahat Panjang', min: 5, max: 60 }
+                                    { key: 'focus', label: translations.focus, min: 10, max: 90 },
+                                    { key: 'shortBreak', label: translations.shortBreak, min: 1, max: 30 },
+                                    { key: 'longBreak', label: translations.longBreak, min: 5, max: 60 }
                                 ]" :key="field.key">
                                     <label class="flex items-center justify-between gap-3 rounded-2xl border border-sky-100 bg-sky-50/70 px-3 py-1.5">
                                         <div class="min-w-0">
                                             <p class="text-sm font-bold text-slate-900" x-text="field.label"></p>
-                                            <p class="text-[11px] text-slate-400" x-text="`${field.min}-${field.max} menit`"></p>
+                                            <p class="text-[11px] text-slate-400" x-text="minutesRange(field.min, field.max)"></p>
                                         </div>
                                         <div class="flex w-24 items-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-1">
                                             <input
@@ -245,7 +275,7 @@
                                                 @change="updateDuration(field.key, durations[field.key])"
                                                 class="pomodoro-input w-full border-0 bg-transparent text-right font-bold text-slate-950 outline-none focus:outline-none focus:ring-0"
                                             >
-                                            <span class="text-xs font-bold text-slate-400">m</span>
+                                            <span class="text-xs font-bold text-slate-400">{{ __('ui.pomodoro_minutes_short') }}</span>
                                         </div>
                                     </label>
                                 </template>
