@@ -3,7 +3,7 @@
         <a href="{{ url('/') }}" class="flex min-w-0 items-center">
             <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-11 w-auto object-contain transition-all" :class="sidebarCollapsed ? 'max-w-[42px]' : 'max-w-[170px]'" alt="Nalarin.ai Logo">
         </a>
-        <button type="button" class="hidden shrink-0 items-center justify-center border border-sky-200 bg-white/90 text-slate-700 shadow-sm transition hover:bg-white md:inline-flex" :class="sidebarCollapsed ? 'absolute -right-3 top-6 h-7 w-7 rounded-full' : 'h-8 w-8 rounded-xl'" @click="toggleSidebar" :aria-label="sidebarCollapsed ? 'Buka sidebar' : 'Tutup sidebar'">
+        <button type="button" class="hidden shrink-0 items-center justify-center border border-sky-200 bg-white/90 text-slate-700 shadow-sm transition hover:bg-white md:inline-flex" :class="sidebarCollapsed ? 'absolute -right-3 top-6 h-7 w-7 rounded-full' : 'h-8 w-8 rounded-xl'" @click="toggleSidebar" :aria-label="sidebarCollapsed ? @js(__('ui.sidebar_open')) : @js(__('ui.sidebar_close'))">
             <svg class="h-4 w-4 transition-transform" :class="sidebarCollapsed ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" d="M15 19l-7-7 7-7"></path></svg>
         </button>
     </div>
@@ -19,11 +19,11 @@
         <div class="mt-6">
             <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">{{ __('ui.ai_learning') }}</p>
             <div class="mt-4 space-y-2">
-                <a href="{{ route('feature.upload') }}" title="Unggah Materi" data-feature="Unggah Materi" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.upload') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.upload') }}" title="{{ __('ui.upload_material') }}" data-feature="Unggah Materi" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.upload') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="upload" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.upload_material') }}</span>
                 </a>
-                <a href="{{ route('feature.summary') }}" title="Ringkasan" data-feature="Ringkasan Otomatis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.summary', 'summaries.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.summary') }}" title="{{ __('ui.summary') }}" data-feature="Ringkasan Otomatis" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.summary', 'summaries.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="summary" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.summary') }}</span>
                 </a>
@@ -96,19 +96,19 @@
                 'label' => 'Ultimate',
                 'short' => 'U',
                 'tone' => 'border-teal-200 bg-teal-50 text-teal-800',
-                'description' => '999 credit/bulan',
+                'description' => __('ui.monthly_credits', ['count' => 999]),
             ],
             'pro_monthly' => [
                 'label' => __('ui.premium'),
                 'short' => 'P',
                 'tone' => 'border-purple-200 bg-purple-50 text-purple-800',
-                'description' => '99 credit/bulan',
+                'description' => __('ui.monthly_credits', ['count' => 99]),
             ],
             default => [
                 'label' => 'Free',
                 'short' => 'F',
                 'tone' => 'border-sky-200 bg-sky-50 text-sky-800',
-                'description' => '3 credit awal',
+                'description' => __('ui.initial_credits', ['count' => 3]),
             ],
         };
     @endphp
@@ -118,40 +118,46 @@
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border text-xs font-extrabold {{ $planMeta['tone'] }}" title="{{ $planMeta['label'] }}">{{ $planMeta['short'] }}</span>
         </div>
 
-        <div x-show="!sidebarCollapsed" class="mb-2 rounded-[18px] border p-3 shadow-sm {{ $planMeta['tone'] }}">
-            <div class="flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.2em]">{{ $planMeta['label'] }}</p>
-                    <p class="mt-1 truncate text-xs font-bold">{{ $planMeta['description'] }}</p>
-                </div>
-                <span class="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold">{{ $planMeta['short'] }}</span>
-            </div>
-            <div class="mt-2 space-y-1 text-[11px] font-semibold opacity-80">
-                <p>{{ __('ui.match') }} {{ $authUser->match_credits }}</p>
-                @if ($authUser->plan_expires_at)
-                    <p>Aktif sampai {{ $authUser->plan_expires_at->format('d M Y') }}</p>
-                @endif
-                @if ($planKey === 'ultimate_yearly' && $authUser->match_credits_reset_at)
-                    <p>Reset credit {{ $authUser->match_credits_reset_at->format('d M Y') }}</p>
-                @endif
-            </div>
-        </div>
-
         @if ($planKey === 'free')
-            <a href="{{ route('pricing') }}" x-show="!sidebarCollapsed" class="block rounded-[18px] border border-cyan-200 bg-gradient-to-br from-white via-sky-50 to-cyan-50 p-3 shadow-sm transition duration-200 hover:bg-white hover:shadow-md">
-                <div class="flex items-start justify-between gap-3">
+            <a href="{{ route('pricing') }}" x-show="!sidebarCollapsed" class="mb-2 block rounded-[18px] border border-cyan-200 bg-gradient-to-br from-white via-sky-50 to-cyan-50 p-3 shadow-sm transition duration-200 hover:bg-white hover:shadow-md">
+                <div class="flex items-center justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-cyan-700">{{ __('ui.free_plan') }}</p>
-                        <p class="mt-1 truncate text-sm font-extrabold leading-5 text-slate-950">{{ __('ui.upgrade_to_premium') }}</p>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-cyan-700">{{ $planMeta['label'] }}</p>
+                        <p class="mt-1 truncate text-xs font-bold text-sky-800">{{ $planMeta['description'] }} · {{ __('ui.match') }} {{ $authUser->match_credits }}</p>
                     </div>
+                    <span class="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold text-sky-800">{{ $planMeta['short'] }}</span>
+                </div>
+
+                <div class="my-2 border-t border-sky-200/80"></div>
+
+                <div class="flex items-center justify-between gap-2">
+                    <p class="min-w-0 truncate text-sm font-extrabold text-slate-950">{{ __('ui.upgrade_to_premium') }}</p>
                     <span class="shrink-0 rounded-full bg-sky-100 px-2.5 py-1 text-[11px] font-bold text-sky-700">{{ __('ui.premium') }}</span>
                 </div>
-                <p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-600">{{ __('ui.upgrade_description') }}</p>
                 <span class="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-bold text-white shadow-sm shadow-sky-500/20">{{ __('ui.upgrade') }}</span>
             </a>
+        @else
+            <div x-show="!sidebarCollapsed" class="mb-2 rounded-[18px] border p-3 shadow-sm {{ $planMeta['tone'] }}">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em]">{{ $planMeta['label'] }}</p>
+                        <p class="mt-1 truncate text-xs font-bold">{{ $planMeta['description'] }}</p>
+                    </div>
+                    <span class="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold">{{ $planMeta['short'] }}</span>
+                </div>
+                <div class="mt-2 space-y-1 text-[11px] font-semibold opacity-80">
+                    <p>{{ __('ui.match') }} {{ $authUser->match_credits }}</p>
+                    @if ($authUser->plan_expires_at)
+                        <p>{{ __('ui.plan_active_until', ['date' => $authUser->plan_expires_at->translatedFormat('d M Y')]) }}</p>
+                    @endif
+                    @if ($planKey === 'ultimate_yearly' && $authUser->match_credits_reset_at)
+                        <p>{{ __('ui.credits_reset_on', ['date' => $authUser->match_credits_reset_at->translatedFormat('d M Y')]) }}</p>
+                    @endif
+                </div>
+            </div>
         @endif
         <details class="group relative z-40 mt-2 flex flex-col-reverse">
-            <summary title="Profil" style="list-style: none;" class="flex w-full cursor-pointer items-center gap-3 rounded-[18px] border border-sky-200/80 bg-sky-50/80 p-3 text-left shadow-sm transition duration-200 hover:bg-sky-100/80 [&::-webkit-details-marker]:hidden" :class="sidebarCollapsed ? 'justify-center p-2.5' : ''">
+            <summary title="{{ __('ui.profile') }}" style="list-style: none;" class="flex w-full cursor-pointer items-center gap-3 rounded-[18px] border border-sky-200/80 bg-sky-50/80 p-3 text-left shadow-sm transition duration-200 hover:bg-sky-100/80 [&::-webkit-details-marker]:hidden" :class="sidebarCollapsed ? 'justify-center p-2.5' : ''">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500 text-sm font-extrabold text-white shadow-sm">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                 <span x-show="!sidebarCollapsed" class="min-w-0 flex-1">
                     <span class="block truncate text-[15px] font-bold leading-5 text-slate-950">{{ $authUser->name }}</span>
@@ -169,7 +175,7 @@
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" title="Keluar" class="flex w-full items-center justify-center rounded-xl border border-red-100 bg-red-50/70 px-3 py-2 text-xs font-bold text-red-600 transition duration-150 hover:border-red-200 hover:bg-red-100">
+                    <button type="submit" title="{{ __('ui.logout') }}" class="flex w-full items-center justify-center rounded-xl border border-red-100 bg-red-50/70 px-3 py-2 text-xs font-bold text-red-600 transition duration-150 hover:border-red-200 hover:bg-red-100">
                         {{ __('ui.logout') }}
                     </button>
                 </form>

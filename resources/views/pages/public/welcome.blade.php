@@ -192,18 +192,19 @@
                     <a href="{{ url('/') }}" class="inline-flex items-center">
                         <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[190px] object-contain sm:h-10" alt="Nalarin.ai Logo">
                     </a>
-                    <div class="flex items-center gap-3">
-                        <div class="hidden items-center gap-8 text-sm font-semibold text-slate-700 md:flex">
-                            <a href="#fitur" class="transition hover:text-sky-600">Fitur</a>
-                            <a href="{{ route('pricing') }}" class="transition hover:text-sky-600">Harga</a>
-                            <a href="#testimoni" class="transition hover:text-sky-600">Testimoni</a>
-                        </div>
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <a href="{{ route('pricing') }}" class="hidden rounded-xl px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-white/70 hover:text-sky-600 sm:inline-flex">
+                            {{ app()->getLocale() === 'en' ? 'Pricing' : 'Harga' }}
+                        </a>
+                        <x-language-switch />
                         @auth
-                            <a href="{{ route('dashboard') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">Dashboard</a>
-                            <a href="{{ route('dashboard') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">Ruang Belajar</a>
+                            <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">
+                                {{ app()->getLocale() === 'en' ? 'Dashboard' : 'Dashboard' }}
+                            </a>
                         @else
-                            <a href="{{ route('login') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">masuk</a>
-                            <a href="{{ route('login') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">daftar</a>
+                            <a href="{{ route('login') }}" class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">
+                                {{ app()->getLocale() === 'en' ? 'Log In' : 'Masuk' }}
+                            </a>
                         @endauth
                     </div>
                 </nav>
