@@ -94,7 +94,7 @@ class StudyMatchingController extends Controller
             'is_matchmaking_enabled' => $request->boolean('is_matchmaking_enabled'),
         ]);
 
-        return redirect()->route('matchmaking.roulette')->with('status', 'Profil study matching siap. Kamu bisa mulai cari partner belajar.');
+        return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_profile_ready_status'));
     }
 
     public function search(Request $request, StudyMatchingService $matchingService): RedirectResponse
@@ -112,17 +112,17 @@ class StudyMatchingController extends Controller
         }
 
         if ($result['match']) {
-            return redirect()->route('matches.show', $result['match'])->with('status', 'Partner belajar ditemukan.');
+            return redirect()->route('matches.show', $result['match'])->with('status', __('ui.match_found_status'));
         }
 
-        return redirect()->route('matchmaking.index')->with('status', 'Kamu masuk antrean study matching.');
+        return redirect()->route('matchmaking.index')->with('status', __('ui.match_queue_joined_status'));
     }
 
     public function cancel(Request $request, StudyMatchingService $matchingService): RedirectResponse
     {
         $matchingService->cancel($request->user());
 
-        return redirect()->route('matchmaking.index')->with('status', 'Antrean study matching dibatalkan.');
+        return redirect()->route('matchmaking.index')->with('status', __('ui.match_queue_cancelled_status'));
     }
 
     public function rouletteStart(Request $request, StudyMatchingService $matchingService): RedirectResponse
@@ -134,10 +134,10 @@ class StudyMatchingController extends Controller
         }
 
         if ($result['match']) {
-            return redirect()->route('matchmaking.roulette')->with('status', 'Partner belajar ditemukan.');
+            return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_found_status'));
         }
 
-        return redirect()->route('matchmaking.roulette')->with('status', 'Sedang mencari partner belajar baru.');
+        return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_searching_status_message'));
     }
 
     public function rouletteNext(Request $request, StudyMatchingService $matchingService): RedirectResponse
@@ -157,10 +157,10 @@ class StudyMatchingController extends Controller
         }
 
         if ($result['match']) {
-            return redirect()->route('matchmaking.roulette')->with('status', 'Partner baru ditemukan.');
+            return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_new_partner_found_status'));
         }
 
-        return redirect()->route('matchmaking.roulette')->with('status', 'Mencari partner berikutnya.');
+        return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_searching_next_status'));
     }
 
     public function rouletteStop(Request $request, StudyMatchingService $matchingService): RedirectResponse
@@ -174,7 +174,7 @@ class StudyMatchingController extends Controller
 
         $matchingService->cancelRoulette($user);
 
-        return redirect()->route('matchmaking.roulette')->with('status', 'Study Roulette dihentikan.');
+        return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_stopped_status'));
     }
 
     public function show(StudyMatch $match): View
@@ -241,7 +241,7 @@ class StudyMatchingController extends Controller
             ]);
         }
 
-        return redirect()->route('matches.show', $match)->with('status', 'Pesan match terkirim.');
+        return redirect()->route('matches.show', $match)->with('status', __('ui.match_message_sent_status'));
     }
 
     public function end(StudyMatch $match): RedirectResponse
@@ -249,7 +249,7 @@ class StudyMatchingController extends Controller
         abort_unless($match->involves(auth()->user()), 403);
         $match->update(['status' => 'completed']);
 
-        return redirect()->route('matchmaking.index')->with('status', 'Sesi belajar ditutup.');
+        return redirect()->route('matchmaking.index')->with('status', __('ui.match_session_closed_status'));
     }
 
     public function block(Request $request, StudyMatch $match): RedirectResponse
@@ -266,7 +266,7 @@ class StudyMatchingController extends Controller
 
         $match->update(['status' => 'cancelled']);
 
-        return redirect()->route('matchmaking.index')->with('status', 'Partner diblokir dan match ditutup.');
+        return redirect()->route('matchmaking.index')->with('status', __('ui.match_partner_blocked_status'));
     }
 
     public function report(Request $request, StudyMatch $match): RedirectResponse
@@ -288,6 +288,6 @@ class StudyMatchingController extends Controller
             'status' => 'open',
         ]);
 
-        return redirect()->route('matches.show', $match)->with('status', 'Laporan berhasil dikirim ke admin.');
+        return redirect()->route('matches.show', $match)->with('status', __('ui.match_report_sent_status'));
     }
 }

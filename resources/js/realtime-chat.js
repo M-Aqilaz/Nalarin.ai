@@ -10,25 +10,29 @@ const normalizeMessages = (messages = []) => {
         .sort((left, right) => left.id - right.id);
 };
 
-const buildTypingText = (names = []) => {
+const buildTypingText = (names = [], translations = {}) => {
     if (names.length === 0) {
         return '';
     }
 
     if (names.length === 1) {
-        return `${names[0]} sedang mengetik...`;
+        return (translations.typingOne || ':name sedang mengetik...').replace(':name', names[0]);
     }
 
     if (names.length === 2) {
-        return `${names[0]} dan ${names[1]} sedang mengetik...`;
+        return (translations.typingTwo || ':first dan :second sedang mengetik...')
+            .replace(':first', names[0])
+            .replace(':second', names[1]);
     }
 
-    return `${names[0]}, ${names[1]}, dan lainnya sedang mengetik...`;
+    return (translations.typingMany || ':first, :second, dan lainnya sedang mengetik...')
+        .replace(':first', names[0])
+        .replace(':second', names[1]);
 };
 
 const timestampLabel = () => new Date().toLocaleTimeString();
 
-const extractErrorMessage = (error) => {
+const extractErrorMessage = (error, fallback = 'Permintaan gagal diproses. Coba lagi.') => {
     const message = error?.response?.data?.message;
 
     if (typeof message === 'string' && message.trim() !== '') {
@@ -41,7 +45,7 @@ const extractErrorMessage = (error) => {
         return validationMessage;
     }
 
-    return 'Permintaan gagal diproses. Coba lagi.';
+    return fallback;
 };
 
 const NALA_VOICE_STORAGE_KEY = 'nalarin:nalaVoiceEnabled';
@@ -268,9 +272,9 @@ const buildBaseChat = (options) => {
 
         this.typingUsers = {
             ...this.typingUsers,
-            [userKey]: event.user_name || 'Seseorang',
+            [userKey]: event.user_name || this.t('someone', 'Seseorang'),
         };
-        this.typingText = buildTypingText(Object.values(this.typingUsers));
+        this.typingText = buildTypingText(Object.values(this.typingUsers), this.translations);
 
         if (this.typingTimers[userKey]) {
             window.clearTimeout(this.typingTimers[userKey]);
@@ -280,7 +284,7 @@ const buildBaseChat = (options) => {
             const nextTypingUsers = { ...this.typingUsers };
             delete nextTypingUsers[userKey];
             this.typingUsers = nextTypingUsers;
-            this.typingText = buildTypingText(Object.values(this.typingUsers));
+            this.typingText = buildTypingText(Object.values(this.typingUsers), this.translations);
 
             const nextTimers = { ...this.typingTimers };
             delete nextTimers[userKey];
@@ -296,11 +300,11 @@ const buildBaseChat = (options) => {
                 return;
             }
 
-            nextTypingUsers[String(entry.user_id)] = entry.user_name || 'Seseorang';
+            nextTypingUsers[String(entry.user_id)] = entry.user_name || this.t('someone', 'Seseorang');
         });
 
         this.typingUsers = nextTypingUsers;
-        this.typingText = buildTypingText(Object.values(this.typingUsers));
+        this.typingText = buildTypingText(Object.values(this.typingUsers), this.translations);
     },
 
     enablePolling(label) {
@@ -313,8 +317,8 @@ const buildBaseChat = (options) => {
         this.pollTimer = window.setInterval(() => this.pollMessages(), POLL_INTERVAL);
     },
 
-    disablePolling(label = 'Realtime aktif.') {
-        this.connectionState = label;
+    disablePolling(label = null) {
+        this.connectionState = label || this.t('connectionActive', 'Realtime aktif.');
 
         if (!this.pollTimer) {
             return;
@@ -348,7 +352,7 @@ const buildBaseChat = (options) => {
                 this.updateExtraState(data);
             }
         } catch (error) {
-            this.connectionState = 'Realtime terputus. Polling otomatis aktif.';
+            this.connectionState = this.t('connectionFallback', 'Pembaruan otomatis aktif.');
         } finally {
             this.isPolling = false;
         }
@@ -392,7 +396,7 @@ const buildBaseChat = (options) => {
             this.typingUsers = {};
             this.typingText = '';
         } catch (error) {
-            this.error = extractErrorMessage(error);
+            this.error = extractErrorMessage(error, this.t('requestFailed', 'Permintaan gagal diproses. Coba lagi.'));
         } finally {
             this.isSubmitting = false;
         }
