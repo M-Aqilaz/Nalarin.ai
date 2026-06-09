@@ -38,7 +38,7 @@
                     type="button"
                     x-data=""
                     x-on:click.prevent="$dispatch('open-modal', 'confirm-admin-user-deletion')"
-                    class="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:bg-red-500/15"
+                    class="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-500/15"
                 >
                     Hapus Akun
                 </button>
