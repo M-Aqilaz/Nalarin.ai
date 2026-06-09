@@ -13,7 +13,7 @@
             <section class="glass-panel rounded-2xl border border-white/5 p-6 xl:col-span-1">
                 <div class="flex items-center gap-4">
                     <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10">
-                        <span class="font-outfit text-2xl font-bold text-purple-200">{{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}</span>
+                        <span class="font-outfit text-2xl font-bold text-purple-700">{{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}</span>
                     </div>
                     <div class="min-w-0">
                         <p class="truncate font-outfit text-xl font-semibold text-white">{{ $user->name }}</p>
@@ -24,11 +24,11 @@
                 <div class="mt-6 grid grid-cols-2 gap-3">
                     <div class="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
                         <p class="text-xs uppercase tracking-wide text-zinc-500">Role</p>
-                        <p class="mt-2 text-sm font-semibold text-purple-200">{{ ucfirst($user->role) }}</p>
+                        <p class="mt-2 text-sm font-semibold text-purple-700">{{ ucfirst($user->role) }}</p>
                     </div>
                     <div class="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
                         <p class="text-xs uppercase tracking-wide text-zinc-500">Status</p>
-                        <p class="mt-2 text-sm font-semibold {{ $user->is_active ? 'text-green-300' : 'text-red-300' }}">
+                        <p class="mt-2 text-sm font-semibold {{ $user->is_active ? 'text-green-700' : 'text-red-600' }}">
                             {{ $user->is_active ? 'Active' : 'Suspended' }}
                         </p>
                     </div>
