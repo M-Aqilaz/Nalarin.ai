@@ -39,6 +39,25 @@
         font-family: 'Roboto', sans-serif;
     }
 
+    body {
+        cursor: url('/images/nala_cursor_chibi.png') 12 3, auto;
+    }
+
+    a,
+    button,
+    summary,
+    label,
+    select,
+    [role='button'] {
+        cursor: url('/images/nala_cursor_chibi.png') 12 3, pointer !important;
+    }
+
+    input:not([type='button']):not([type='submit']):not([type='reset']),
+    textarea,
+    [contenteditable='true'] {
+        cursor: text;
+    }
+
     body.user-theme {
         font-family: 'Inter', sans-serif;
         background:
@@ -74,6 +93,24 @@
         bottom: -10rem;
         left: -8rem;
         background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(255, 255, 255, 0.7));
+    }
+
+    @media (max-width: 768px), (pointer: coarse) {
+        body,
+        a,
+        button,
+        summary,
+        label,
+        select,
+        [role='button'] {
+            cursor: auto !important;
+        }
+
+        input:not([type='button']):not([type='submit']):not([type='reset']),
+        textarea,
+        [contenteditable='true'] {
+            cursor: text !important;
+        }
     }
 }
 

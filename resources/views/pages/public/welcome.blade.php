@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Nalarin.ai - Platform Belajar AI untuk Siswa Indonesia</title>
+        <title>{{ __('ui.landing_meta_title') }}</title>
         <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|outfit:600,700,800" rel="stylesheet" />
@@ -18,7 +18,7 @@
             .landing-page a,
             .landing-page button,
             .landing-page [role="button"] {
-                cursor: url("{{ asset('images/nala_cursor_32_transparent.png') }}") 6 6, auto !important;
+                cursor: url("{{ asset('images/nala_cursor_chibi.png') }}") 12 3, auto !important;
             }
 
             .landing-page .feature-marquee,
@@ -192,18 +192,19 @@
                     <a href="{{ url('/') }}" class="inline-flex items-center">
                         <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[190px] object-contain sm:h-10" alt="Nalarin.ai Logo">
                     </a>
-                    <div class="flex items-center gap-3">
-                        <div class="hidden items-center gap-8 text-sm font-semibold text-slate-700 md:flex">
-                            <a href="#fitur" class="transition hover:text-sky-600">Fitur</a>
-                            <a href="{{ route('pricing') }}" class="transition hover:text-sky-600">Harga</a>
-                            <a href="#testimoni" class="transition hover:text-sky-600">Testimoni</a>
-                        </div>
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <a href="{{ route('pricing') }}" class="hidden rounded-xl px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-white/70 hover:text-sky-600 sm:inline-flex">
+                            {{ __('ui.landing_pricing') }}
+                        </a>
+                        <x-language-switch />
                         @auth
-                            <a href="{{ route('dashboard') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">Dashboard</a>
-                            <a href="{{ route('dashboard') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">Ruang Belajar</a>
+                            <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">
+                                {{ app()->getLocale() === 'en' ? 'Dashboard' : 'Dashboard' }}
+                            </a>
                         @else
-                            <a href="{{ route('login') }}" class="hidden rounded-lg px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-sky-600 sm:inline-flex">masuk</a>
-                            <a href="{{ route('login') }}" class="inline-flex rounded-lg bg-sky-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">daftar</a>
+                            <a href="{{ route('login') }}" class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition hover:bg-sky-600">
+                                {{ __('ui.landing_login') }}
+                            </a>
                         @endauth
                     </div>
                 </nav>
@@ -211,17 +212,17 @@
                 <div class="grid min-h-[560px] items-center gap-10 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:py-16">
                     <section class="max-w-2xl">
                         <h1 class="font-outfit text-4xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                            Transformasi Cara Belajarmu dengan Kecerdasan Buatan
+                            {{ __('ui.landing_hero_title') }}
                         </h1>
                         <p class="mt-6 max-w-xl text-base leading-7 text-slate-700 sm:text-lg">
-                            Satu platform untuk semua kebutuhan belajarmu. Upload materi apapun, dapatkan ringkasan, flashcard, dan kuis dalam sekejap tanpa repot.
+                            {{ __('ui.landing_hero_description') }}
                         </p>
                         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                             <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-lg bg-sky-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">
-                                Mulai Belajar Sekarang
+                                {{ __('ui.landing_start_learning') }}
                             </a>
                             <a href="#fitur" class="inline-flex items-center justify-center rounded-lg border border-sky-700/50 bg-white/60 px-6 py-3 text-sm font-bold text-sky-900 transition hover:bg-white">
-                                Lihat Demo
+                                {{ __('ui.landing_view_demo') }}
                             </a>
                         </div>
                     </section>
@@ -238,20 +239,20 @@
             <section id="fitur" class="py-20 sm:py-24">
                 <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
                     <h2 class="font-outfit text-center text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-                        Belajar Lebih Cerdas, Bukan Lebih Keras
+                        {{ __('ui.landing_features_title') }}
                     </h2>
                 </div>
 
                 @php
                     $features = [
-                        ['title' => 'Ringkasan Otomatis', 'desc' => 'Ubah materi panjang menjadi poin penting yang mudah dipahami.', 'tone' => 'text-sky-600', 'icon' => 'summary'],
-                        ['title' => 'AI Tutor 24/7', 'desc' => 'Tanyakan konsep sulit dan dapatkan penjelasan yang lebih sederhana.', 'tone' => 'text-cyan-600', 'icon' => 'chat'],
-                        ['title' => 'Smart Flashcard', 'desc' => 'Buat kartu hafalan otomatis dari materi yang kamu unggah.', 'tone' => 'text-pink-500', 'icon' => 'cards'],
-                        ['title' => 'Interactive Quiz', 'desc' => 'Latih pemahaman lewat kuis yang dibuat dari materi belajarmu.', 'tone' => 'text-emerald-500', 'icon' => 'quiz'],
-                        ['title' => 'Pomodoro Fokus', 'desc' => 'Atur sesi belajar dan istirahat agar fokus tetap terjaga.', 'tone' => 'text-orange-500', 'icon' => 'pomodoro'],
-                        ['title' => 'Focus Planner', 'desc' => 'Susun target dan agenda belajar harian secara lebih terarah.', 'tone' => 'text-amber-500', 'icon' => 'planner'],
-                        ['title' => 'Study Matching', 'desc' => 'Temukan partner belajar dengan tujuan dan minat yang sesuai.', 'tone' => 'text-rose-500', 'icon' => 'matching'],
-                        ['title' => 'Room Kelas', 'desc' => 'Belajar dan berdiskusi bersama dalam ruang kelas virtual.', 'tone' => 'text-violet-500', 'icon' => 'room'],
+                        ['title' => __('ui.landing_feature_summary_title'), 'desc' => __('ui.landing_feature_summary_description'), 'tone' => 'text-sky-600', 'icon' => 'summary'],
+                        ['title' => __('ui.landing_feature_tutor_title'), 'desc' => __('ui.landing_feature_tutor_description'), 'tone' => 'text-cyan-600', 'icon' => 'chat'],
+                        ['title' => __('ui.landing_feature_flashcard_title'), 'desc' => __('ui.landing_feature_flashcard_description'), 'tone' => 'text-pink-500', 'icon' => 'cards'],
+                        ['title' => __('ui.landing_feature_quiz_title'), 'desc' => __('ui.landing_feature_quiz_description'), 'tone' => 'text-emerald-500', 'icon' => 'quiz'],
+                        ['title' => __('ui.landing_feature_pomodoro_title'), 'desc' => __('ui.landing_feature_pomodoro_description'), 'tone' => 'text-orange-500', 'icon' => 'pomodoro'],
+                        ['title' => __('ui.landing_feature_planner_title'), 'desc' => __('ui.landing_feature_planner_description'), 'tone' => 'text-amber-500', 'icon' => 'planner'],
+                        ['title' => __('ui.landing_feature_matching_title'), 'desc' => __('ui.landing_feature_matching_description'), 'tone' => 'text-rose-500', 'icon' => 'matching'],
+                        ['title' => __('ui.landing_feature_room_title'), 'desc' => __('ui.landing_feature_room_description'), 'tone' => 'text-violet-500', 'icon' => 'room'],
                     ];
                 @endphp
 
@@ -263,7 +264,7 @@
                     @touchstart.passive="paused = true"
                     @touchend.passive="paused = false"
                     @touchcancel.passive="paused = false"
-                    aria-label="Fitur Nalarin.ai"
+                    aria-label="{{ __('ui.landing_features_label') }}"
                 >
                     <div class="feature-marquee-track" :class="{ 'is-paused': paused }">
                         @foreach (array_merge($features, $features) as $index => $feature)
@@ -326,7 +327,7 @@
             <section id="testimoni" class="py-16 sm:py-20">
                 <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
                     <h2 class="font-outfit text-center text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-                        Dipakai dan Disukai Siswa
+                        {{ __('ui.landing_testimonials_title') }}
                     </h2>
                 </div>
 
@@ -339,6 +340,14 @@
                         ['name' => 'Fajar Nugraha', 'role' => 'Mahasiswa Teknik', 'text' => 'Ringkasan otomatis sangat membantu saat harus memahami banyak modul dalam waktu singkat.'],
                         ['name' => 'Sarah Amelia', 'role' => 'Tutor Privat', 'text' => 'Flashcard dan kuisnya cocok untuk mengulang materi bersama murid secara lebih menarik.'],
                     ];
+
+                    if (app()->getLocale() === 'en') {
+                        $testimonials = array_merge($testimonials, [
+                            ['name' => 'Emily Carter', 'role' => 'High School Student', 'text' => 'The summaries and flashcards help me review difficult lessons much faster before exams.'],
+                            ['name' => 'Daniel Lee', 'role' => 'University Student', 'text' => 'AI Tutor explains complex topics clearly, while the quizzes help me check what I truly understand.'],
+                            ['name' => 'Sophie Martin', 'role' => 'Private Tutor', 'text' => 'Nalarin.ai makes lesson reviews more structured and engaging for my students.'],
+                        ]);
+                    }
                 @endphp
 
                 <div
@@ -349,7 +358,7 @@
                     @touchstart.passive="paused = true"
                     @touchend.passive="paused = false"
                     @touchcancel.passive="paused = false"
-                    aria-label="Testimoni pengguna Nalarin.ai"
+                    aria-label="{{ __('ui.landing_testimonials_label') }}"
                 >
                     <div class="testimonial-marquee-track" :class="{ 'is-paused': paused }">
                         @foreach (array_merge($testimonials, $testimonials) as $index => $testimonial)
@@ -373,12 +382,12 @@
                         <img src="{{ asset('images/nala_cta.png') }}" class="pointer-events-none h-[360px] w-[360px] object-cover object-top xl:h-[390px] xl:w-[390px]" alt="Nala guide">
                     </div>
                     <div class="self-center py-20 text-center lg:px-8">
-                        <h2 class="font-outfit text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Siap Revolusi Cara Belajarmu?</h2>
+                        <h2 class="font-outfit text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">{{ __('ui.landing_cta_title') }}</h2>
                         <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-700">
-                            Satu platform untuk semua kebutuhan belajarmu. Upload materi apapun, dapatkan ringkasan, flashcard, dan kuis dalam sekejap.
+                            {{ __('ui.landing_cta_description') }}
                         </p>
                         <a href="{{ route('login') }}" class="mt-8 inline-flex items-center justify-center rounded-lg bg-sky-500 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">
-                            Masuk Ruang Belajar
+                            {{ __('ui.landing_enter_learning_space') }}
                         </a>
                     </div>
                 </div>
@@ -388,7 +397,7 @@
         <footer class="bg-gradient-to-br from-sky-50 via-white to-cyan-100">
             <div class="mx-auto flex max-w-7xl flex-col gap-6 border-t border-sky-200 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
                 <img src="{{ asset('images/nalarin_ai_logo_new.png') }}" class="h-9 w-auto max-w-[190px] object-contain" alt="Nalarin.ai Logo">
-                <p class="text-sm font-medium text-slate-700">&copy; Copyright All. All rights reserved.</p>
+                <p class="text-sm font-medium text-slate-700">&copy; {{ date('Y') }} Nalarin.ai. {{ __('ui.landing_footer_rights') }}</p>
             </div>
         </footer>
     </body>

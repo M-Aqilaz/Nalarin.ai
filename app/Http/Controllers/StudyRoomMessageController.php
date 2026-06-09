@@ -73,7 +73,7 @@ class StudyRoomMessageController extends Controller
             ]);
         }
 
-        return redirect()->route('rooms.show', $room)->with('status', 'Pesan room terkirim.');
+        return redirect()->route('rooms.show', $room)->with('status', __('ui.room_message_sent_status'));
     }
 
     private function canReadMessages(int $userId, StudyRoom $room): bool

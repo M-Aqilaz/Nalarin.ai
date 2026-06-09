@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="user-kicker text-[11px] text-fuchsia-100/90">Study Roulette</p>
-            <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">Partner Belajar Acak</h2>
-            <p class="mt-2 text-sm text-slate-300/80">Masuk, temukan partner, ngobrol singkat, lalu lanjut atau ganti partner. Mode cepat seperti OmeTV, tapi tetap fokus belajar.</p>
+            <p class="user-kicker text-[11px] text-fuchsia-100/90">{{ __('ui.match_roulette') }}</p>
+            <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">{{ __('ui.match_random_partner') }}</h2>
+            <p class="mt-2 text-sm text-slate-300/80">{{ __('ui.match_roulette_description') }}</p>
         </div>
     </x-slot>
 
@@ -37,6 +37,17 @@
                     channelName: 'match.{{ $activeMatch->id }}',
                     currentUserId: {{ auth()->id() }},
                     currentUserName: {{ \Illuminate\Support\Js::from(auth()->user()->name) }},
+                    locale: @js(app()->getLocale()),
+                    translations: @js([
+                        'connectionConnecting' => __('ui.connection_connecting'),
+                        'connectionActive' => __('ui.connection_active'),
+                        'connectionFallback' => __('ui.connection_fallback'),
+                        'requestFailed' => __('ui.request_failed'),
+                        'someone' => __('ui.match_someone'),
+                        'typingOne' => __('ui.match_typing_one'),
+                        'typingTwo' => __('ui.match_typing_two'),
+                        'typingMany' => __('ui.match_typing_many'),
+                    ]),
                 })"
                 class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]"
             >
@@ -45,20 +56,20 @@
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">Connected</span>
+                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">{{ __('ui.match_connected') }}</span>
                                     <span class="rounded-full border border-sky-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600" x-text="connectionState"></span>
                                 </div>
-                                <h3 class="mt-2 font-outfit text-xl font-extrabold text-slate-950">Sesi belajar dengan {{ $partner?->name ?? 'Partner' }}</h3>
+                                <h3 class="mt-2 font-outfit text-xl font-extrabold text-slate-950">{{ __('ui.match_session_with', ['name' => $partner?->name ?? __('ui.match_partner')]) }}</h3>
                             </div>
 
                             <div class="flex flex-wrap gap-2">
                                 <form method="POST" action="{{ route('matchmaking.roulette.next') }}">
                                     @csrf
-                                    <button class="inline-flex h-11 items-center justify-center rounded-2xl bg-sky-500 px-5 text-sm font-extrabold text-white shadow-lg shadow-sky-500/20 transition hover:bg-sky-600">Next</button>
+                                    <button class="inline-flex h-11 items-center justify-center rounded-2xl bg-sky-500 px-5 text-sm font-extrabold text-white shadow-lg shadow-sky-500/20 transition hover:bg-sky-600">{{ __('ui.match_next') }}</button>
                                 </form>
                                 <form method="POST" action="{{ route('matchmaking.roulette.stop') }}">
                                     @csrf
-                                    <button class="inline-flex h-11 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-5 text-sm font-extrabold text-red-700 transition hover:bg-red-100">Stop</button>
+                                    <button class="inline-flex h-11 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-5 text-sm font-extrabold text-red-700 transition hover:bg-red-100">{{ __('ui.match_stop') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -66,42 +77,42 @@
 
                     <div class="grid gap-3 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-3 md:grid-cols-2 md:p-5">
                         <article class="relative min-h-[320px] overflow-hidden rounded-[1.75rem] border border-sky-100 bg-gradient-to-br from-white to-sky-100 p-5 shadow-sm">
-                            <div class="absolute right-5 top-5 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-slate-600">Kamu</div>
+                            <div class="absolute right-5 top-5 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-slate-600">{{ __('ui.you') }}</div>
                             <div class="flex h-full flex-col items-center justify-center text-center">
                                 <div class="flex h-28 w-28 items-center justify-center rounded-full bg-slate-950 text-4xl font-extrabold text-white shadow-xl shadow-slate-950/10">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                 </div>
                                 <h4 class="mt-5 font-outfit text-2xl font-extrabold text-slate-950">{{ auth()->user()->name }}</h4>
-                                <p class="mt-2 text-sm text-slate-600">{{ $profile?->primary_subject ?? 'Subjek belum diisi' }}</p>
+                                <p class="mt-2 text-sm text-slate-600">{{ $profile?->primary_subject ?? __('ui.match_subject_empty') }}</p>
                                 <div class="mt-5 grid w-full max-w-sm gap-2 text-left">
                                     <div class="rounded-2xl border border-sky-100 bg-white/80 p-3">
-                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Target</p>
-                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->goal ?? 'Belum ada target' }}</p>
+                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_goal') }}</p>
+                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->goal ?? __('ui.match_goal_empty') }}</p>
                                     </div>
                                     <div class="rounded-2xl border border-sky-100 bg-white/80 p-3">
-                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Gaya</p>
-                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->study_style ?? 'Belum diisi' }}</p>
+                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_style') }}</p>
+                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->study_style ?? __('ui.match_not_filled') }}</p>
                                     </div>
                                 </div>
                             </div>
                         </article>
 
                         <article class="relative min-h-[320px] overflow-hidden rounded-[1.75rem] border border-cyan-100 bg-gradient-to-br from-cyan-50 to-white p-5 shadow-sm">
-                            <div class="absolute right-5 top-5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">Partner</div>
+                            <div class="absolute right-5 top-5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{{ __('ui.match_partner') }}</div>
                             <div class="flex h-full flex-col items-center justify-center text-center">
                                 <div class="flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-400 text-4xl font-extrabold text-white shadow-xl shadow-sky-500/20">
                                     {{ strtoupper(substr($partner?->name ?? 'P', 0, 1)) }}
                                 </div>
-                                <h4 class="mt-5 font-outfit text-2xl font-extrabold text-slate-950">{{ $partner?->name ?? 'Partner tidak tersedia' }}</h4>
-                                <p class="mt-2 text-sm text-slate-600">{{ $partnerProfile?->primary_subject ?? 'Subjek belum diisi' }}</p>
+                                <h4 class="mt-5 font-outfit text-2xl font-extrabold text-slate-950">{{ $partner?->name ?? __('ui.match_partner_unavailable') }}</h4>
+                                <p class="mt-2 text-sm text-slate-600">{{ $partnerProfile?->primary_subject ?? __('ui.match_subject_empty') }}</p>
                                 <div class="mt-5 grid w-full max-w-sm gap-2 text-left">
                                     <div class="rounded-2xl border border-cyan-100 bg-white/80 p-3">
-                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Target</p>
-                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $partnerProfile?->goal ?? 'Belum ada target' }}</p>
+                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_goal') }}</p>
+                                        <p class="mt-1 text-sm font-semibold text-slate-800">{{ $partnerProfile?->goal ?? __('ui.match_goal_empty') }}</p>
                                     </div>
                                     <div class="rounded-2xl border border-cyan-100 bg-white/80 p-3">
-                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Bio</p>
-                                        <p class="mt-1 line-clamp-3 text-sm font-semibold leading-6 text-slate-800">{{ $partnerProfile?->bio ?? 'Belum ada bio' }}</p>
+                                        <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_bio') }}</p>
+                                        <p class="mt-1 line-clamp-3 text-sm font-semibold leading-6 text-slate-800">{{ $partnerProfile?->bio ?? __('ui.match_bio_empty') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -112,23 +123,23 @@
                         <div class="grid gap-3 md:grid-cols-4">
                             <form method="POST" action="{{ route('matchmaking.roulette.next') }}">
                                 @csrf
-                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-sky-200 bg-sky-50 px-4 text-sm font-extrabold text-sky-700 transition hover:bg-sky-100">Partner Baru</button>
+                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-sky-200 bg-sky-50 px-4 text-sm font-extrabold text-sky-700 transition hover:bg-sky-100">{{ __('ui.match_new_partner') }}</button>
                             </form>
                             <form method="POST" action="{{ route('matchmaking.roulette.stop') }}">
                                 @csrf
-                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-4 text-sm font-extrabold text-red-700 transition hover:bg-red-100">Akhiri</button>
+                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-4 text-sm font-extrabold text-red-700 transition hover:bg-red-100">{{ __('ui.match_end') }}</button>
                             </form>
                             <details class="md:col-span-1">
-                                <summary class="inline-flex h-12 w-full cursor-pointer list-none items-center justify-center rounded-2xl border border-amber-200 bg-amber-50 px-4 text-sm font-extrabold text-amber-700 transition hover:bg-amber-100">Report</summary>
+                                <summary class="inline-flex h-12 w-full cursor-pointer list-none items-center justify-center rounded-2xl border border-amber-200 bg-amber-50 px-4 text-sm font-extrabold text-amber-700 transition hover:bg-amber-100">{{ __('ui.match_report') }}</summary>
                                 <form method="POST" action="{{ route('matches.report', $activeMatch) }}" class="mt-3 rounded-2xl border border-amber-100 bg-white p-3">
                                     @csrf
-                                    <textarea name="reason" rows="3" class="w-full rounded-xl border border-amber-200 px-3 py-2 text-sm text-slate-950 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100" placeholder="Alasan laporan" required></textarea>
-                                    <button class="mt-2 w-full rounded-xl bg-amber-500 px-3 py-2 text-sm font-extrabold text-white">Kirim Report</button>
+                                    <textarea name="reason" rows="3" class="w-full rounded-xl border border-amber-200 px-3 py-2 text-sm text-slate-950 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100" placeholder="{{ __('ui.match_report_reason') }}" required></textarea>
+                                    <button class="mt-2 w-full rounded-xl bg-amber-500 px-3 py-2 text-sm font-extrabold text-white">{{ __('ui.match_send_report') }}</button>
                                 </form>
                             </details>
-                            <form method="POST" action="{{ route('matches.block', $activeMatch) }}" onsubmit="return confirm('Blokir partner ini dan tutup sesi?')">
+                            <form method="POST" action="{{ route('matches.block', $activeMatch) }}" onsubmit="return confirm('{{ addslashes(__('ui.match_block_confirm')) }}')">
                                 @csrf
-                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">Block</button>
+                                <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">{{ __('ui.match_block') }}</button>
                             </form>
                         </div>
                     </div>
@@ -136,8 +147,8 @@
 
                 <aside class="flex min-h-[calc(100vh-13rem)] flex-col overflow-hidden rounded-[2rem] border border-sky-200 bg-white/90 shadow-[0_24px_70px_rgba(14,116,144,0.12)]">
                     <div class="border-b border-sky-100 bg-sky-50/90 px-5 py-4">
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Live Chat</p>
-                        <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">{{ $partner?->name ?? 'Partner' }}</h3>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">{{ __('ui.match_live_chat') }}</p>
+                        <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">{{ $partner?->name ?? __('ui.match_partner') }}</h3>
                     </div>
 
                     <div x-ref="messageList" class="min-h-0 flex-1 space-y-3 overflow-y-auto bg-gradient-to-b from-white to-sky-50/70 p-4">
@@ -148,13 +159,13 @@
                                     <p class="whitespace-pre-line break-words text-sm leading-6">{{ $message->content }}</p>
                                 </div>
                             @empty
-                                <div class="rounded-2xl border border-dashed border-sky-200 bg-white p-4 text-sm leading-6 text-slate-600">Mulai dengan sapaan singkat dan target belajarmu hari ini.</div>
+                                <div class="rounded-2xl border border-dashed border-sky-200 bg-white p-4 text-sm leading-6 text-slate-600">{{ __('ui.match_chat_empty') }}</div>
                             @endforelse
                         </div>
 
                         <div x-cloak x-show="booted" class="space-y-3">
                             <template x-if="messages.length === 0">
-                                <div class="rounded-2xl border border-dashed border-sky-200 bg-white p-4 text-sm leading-6 text-slate-600">Mulai dengan sapaan singkat dan target belajarmu hari ini.</div>
+                                <div class="rounded-2xl border border-dashed border-sky-200 bg-white p-4 text-sm leading-6 text-slate-600">{{ __('ui.match_chat_empty') }}</div>
                             </template>
 
                             <template x-for="message in messages" :key="message.id">
@@ -175,10 +186,10 @@
 
                     <form action="{{ route('matches.messages.store', $activeMatch) }}" method="POST" class="border-t border-sky-100 bg-white p-4" @submit.prevent="submitMessage">
                         @csrf
-                        <textarea x-model="form.content" @input="notifyTyping" name="content" rows="3" class="min-h-[92px] w-full resize-none rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100" placeholder="Ketik pesan..." required></textarea>
+                        <textarea x-model="form.content" @input="notifyTyping" name="content" rows="3" class="min-h-[92px] w-full resize-none rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100" placeholder="{{ __('ui.match_message_placeholder') }}" required></textarea>
                         <div x-cloak x-show="error" class="mt-3 rounded-2xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-700" x-text="error"></div>
                         <button class="mt-3 inline-flex h-11 w-full items-center justify-center rounded-2xl bg-sky-500 px-5 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600 disabled:opacity-60" :disabled="isSubmitting">
-                            <span x-text="isSubmitting ? 'Mengirim...' : 'Kirim'"></span>
+                            <span x-text="isSubmitting ? @js(__('ui.sending')) : @js(__('ui.send'))"></span>
                         </button>
                     </form>
                 </aside>
@@ -188,7 +199,7 @@
                 <div class="grid min-h-[calc(100vh-14rem)] lg:grid-cols-[minmax(0,1fr)_340px]">
                     <main class="relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-sky-50 via-white to-cyan-100 p-5">
                         <div class="absolute left-8 top-8 rounded-full bg-white/80 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-sky-700">
-                            {{ $isSearching ? 'Searching' : 'Idle' }}
+                            {{ $isSearching ? __('ui.match_searching_status') : __('ui.match_idle_status') }}
                         </div>
 
                         <div class="mx-auto max-w-2xl text-center">
@@ -197,56 +208,56 @@
                             </div>
 
                             <h3 class="mt-8 font-outfit text-4xl font-extrabold leading-tight text-slate-950 md:text-5xl">
-                                {{ $isSearching ? 'Nala sedang mencari partner...' : 'Siap cari partner belajar?' }}
+                                {{ $isSearching ? __('ui.match_searching_title') : __('ui.match_ready_title') }}
                             </h3>
                             <p class="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-700">
-                                {{ $isSearching ? 'Tetap di halaman ini. Kalau ada user lain yang cocok, sesi belajar akan muncul di sini.' : 'Tekan mulai untuk masuk antrean cepat. Tidak perlu topik panjang, profil belajarmu akan dipakai sebagai konteks.' }}
+                                {{ $isSearching ? __('ui.match_searching_description') : __('ui.match_ready_description') }}
                             </p>
 
                             <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                                 @if ($isSearching)
                                     <form method="POST" action="{{ route('matchmaking.roulette.stop') }}">
                                         @csrf
-                                        <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-6 text-sm font-extrabold text-red-700 transition hover:bg-red-100 sm:w-auto">Stop Search</button>
+                                        <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-6 text-sm font-extrabold text-red-700 transition hover:bg-red-100 sm:w-auto">{{ __('ui.match_stop_search') }}</button>
                                     </form>
                                 @else
                                     <form method="POST" action="{{ route('matchmaking.roulette.start') }}">
                                         @csrf
-                                        <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-sky-500 px-8 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600 sm:w-auto">Mulai Cari Partner</button>
+                                        <button class="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-sky-500 px-8 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600 sm:w-auto">{{ __('ui.match_start_search') }}</button>
                                     </form>
                                 @endif
-                                <a href="{{ route('matchmaking.index') }}" class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50 sm:w-auto">Atur Profil</a>
+                                <a href="{{ route('matchmaking.index') }}" class="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-sky-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-sky-50 sm:w-auto">{{ __('ui.match_manage_profile') }}</a>
                             </div>
                         </div>
                     </main>
 
                     <aside class="border-t border-sky-100 bg-white p-5 lg:border-l lg:border-t-0">
                         <div class="rounded-[1.75rem] border border-sky-200 bg-sky-50/70 p-5">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Profil Matching</p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">{{ __('ui.match_profile') }}</p>
                             <h4 class="mt-2 font-outfit text-xl font-extrabold text-slate-950">{{ auth()->user()->name }}</h4>
                             <div class="mt-5 space-y-3">
                                 <div class="rounded-2xl bg-white p-4">
-                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Subjek</p>
-                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->primary_subject ?? 'Belum diisi' }}</p>
+                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_subject') }}</p>
+                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->primary_subject ?? __('ui.match_not_filled') }}</p>
                                 </div>
                                 <div class="rounded-2xl bg-white p-4">
-                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Target</p>
-                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->goal ?? 'Belum diisi' }}</p>
+                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_goal') }}</p>
+                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ $profile?->goal ?? __('ui.match_not_filled') }}</p>
                                 </div>
                                 <div class="rounded-2xl bg-white p-4">
-                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">Kuota</p>
-                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ auth()->user()->match_credits }} match tersisa</p>
+                                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('ui.match_quota') }}</p>
+                                    <p class="mt-1 text-sm font-semibold text-slate-800">{{ __('ui.match_remaining', ['count' => auth()->user()->match_credits]) }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-4 rounded-[1.75rem] border border-sky-200 bg-white p-5">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-slate-500">Aturan Singkat</p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ __('ui.match_quick_rules') }}</p>
                             <div class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-                                <p>Mulai untuk masuk antrean cepat.</p>
-                                <p>Next untuk ganti partner.</p>
-                                <p>Stop untuk keluar dari antrean atau menutup sesi.</p>
-                                <p>Report dan block tersedia saat sesi aktif.</p>
+                                <p>{{ __('ui.match_rule_start') }}</p>
+                                <p>{{ __('ui.match_rule_next') }}</p>
+                                <p>{{ __('ui.match_rule_stop') }}</p>
+                                <p>{{ __('ui.match_rule_safety') }}</p>
                             </div>
                         </div>
                     </aside>
