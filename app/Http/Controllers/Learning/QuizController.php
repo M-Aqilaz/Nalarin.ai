@@ -65,7 +65,7 @@ class QuizController extends Controller
         if (count($questions) < 4) {
             return redirect()
                 ->route('feature.quiz', ['material_id' => $material->id])
-                ->withErrors(['material_id' => 'Materi ini belum cukup kuat untuk dibuat kuis. Tambahkan materi yang lebih lengkap.']);
+                ->withErrors(['material_id' => __('ui.quiz_material_insufficient')]);
         }
 
         $limiter->hit($request->user(), 'quiz');
@@ -73,8 +73,8 @@ class QuizController extends Controller
         $quiz = $material->quizSet()->updateOrCreate(
             [],
             [
-                'title' => 'Latihan Kuis: ' . $material->title,
-                'description' => 'Soal pilihan ganda otomatis dari materi belajar.',
+                'title' => __('ui.quiz_title_for', ['material' => $material->title]),
+                'description' => __('ui.quiz_ready_description'),
                 'question_count' => count($questions),
             ]
         );
@@ -85,7 +85,7 @@ class QuizController extends Controller
 
         return redirect()
             ->route('feature.quiz', ['material_id' => $material->id])
-            ->with('status', 'Kuis berhasil dibuat dari materi terpilih.');
+            ->with('status', __('ui.quiz_created'));
     }
 
     public function start(QuizSet $quizSet): RedirectResponse
@@ -121,7 +121,7 @@ class QuizController extends Controller
         if (! $currentQuestion || $currentQuestion->id !== (int) $validated['question_id']) {
             return redirect()
                 ->route('feature.quiz', ['material_id' => $quizSet->material_id])
-                ->withErrors(['choice' => 'Urutan kuis berubah. Mulai ulang kuis terlebih dahulu.']);
+                ->withErrors(['choice' => __('ui.quiz_order_changed')]);
         }
 
         $attempt['answers'][$currentQuestion->id] = (int) $validated['choice'];
