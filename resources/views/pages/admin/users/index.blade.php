@@ -23,7 +23,7 @@
         <div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <a href="{{ route('admin.users.index') }}" class="rounded-2xl border p-4 transition {{ $selectedPlan === 'all' ? 'border-purple-500/40 bg-purple-500/10' : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-700' }}">
                 <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Semua User</p>
-                <p class="mt-2 font-outfit text-2xl font-bold text-white">{{ $planStats['all'] }}</p>
+                <p class="mt-2 font-outfit text-2xl font-bold text-purple-700">{{ $planStats['all'] }}</p>
             </a>
             <a href="{{ route('admin.users.index', ['plan' => 'free']) }}" class="rounded-2xl border p-4 transition {{ $selectedPlan === 'free' ? 'border-cyan-500/40 bg-cyan-500/10' : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-700' }}">
                 <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Freemium</p>
