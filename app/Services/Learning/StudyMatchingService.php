@@ -14,11 +14,11 @@ class StudyMatchingService
     public function enqueue(User $user, array $payload): array
     {
         if (! $user->studyProfile?->is_matchmaking_enabled) {
-            return ['queue' => null, 'match' => null, 'error' => 'Aktifkan profil study matching terlebih dahulu.'];
+            return ['queue' => null, 'match' => null, 'error' => __('ui.match_enable_profile_error')];
         }
 
         if ($user->match_credits < 1) {
-            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching sudah habis.'];
+            return ['queue' => null, 'match' => null, 'error' => __('ui.match_quota_empty_error')];
         }
 
         $this->expireOldEntries();
@@ -78,11 +78,11 @@ class StudyMatchingService
     public function enqueueRoulette(User $user): array
     {
         if (! $user->studyProfile?->is_matchmaking_enabled) {
-            return ['queue' => null, 'match' => null, 'error' => 'Aktifkan profil study matching terlebih dahulu.'];
+            return ['queue' => null, 'match' => null, 'error' => __('ui.match_enable_profile_error')];
         }
 
         if ($user->match_credits < 1) {
-            return ['queue' => null, 'match' => null, 'error' => 'Kuota study matching sudah habis.'];
+            return ['queue' => null, 'match' => null, 'error' => __('ui.match_quota_empty_error')];
         }
 
         $this->expireOldEntries();
