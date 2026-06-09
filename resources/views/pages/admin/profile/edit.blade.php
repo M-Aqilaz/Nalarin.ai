@@ -82,7 +82,7 @@
                 <button type="button" x-on:click="$dispatch('close')" class="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-2.5 text-sm text-white transition hover:bg-white/[0.12]">
                     Batal
                 </button>
-                <button type="submit" class="rounded-xl bg-red-500/14 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:bg-red-500/20">
+                <button type="submit" class="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 shadow-sm">
                     Hapus Akun
                 </button>
             </div>
