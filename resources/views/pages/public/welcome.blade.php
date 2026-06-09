@@ -226,9 +226,23 @@
                         </div>
                     </section>
 
-                    <section class="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-white lg:min-h-[540px]">
-                        <div class="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-cyan-100/70 to-transparent"></div>
-                        <img src="{{ asset('images/nala_teacher.png') }}" class="absolute inset-0 h-full w-full object-contain" alt="Nala, AI assistant Nalarin.ai">
+                    <section class="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-cyan-50/50 lg:min-h-[540px]">
+                        <div class="absolute left-10 top-16 rounded-2xl border border-sky-200 bg-white/80 p-3 shadow-sm">
+                            <svg class="h-12 w-12 text-sky-500" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                                <rect x="7" y="10" width="34" height="26" rx="4" fill="#E0F2FE" stroke="currentColor" stroke-width="2"/>
+                                <path d="M14 18h12M14 24h8M30 29l4-5 5 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="absolute right-8 top-10 rounded-2xl border border-cyan-200 bg-white/80 px-4 py-3 text-2xl font-extrabold text-cyan-600 shadow-sm">AI</div>
+                        <div class="absolute right-14 top-36 rounded-2xl border border-sky-200 bg-white/80 p-3 shadow-sm">
+                            <svg class="h-10 w-10 text-sky-500" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                                <path d="M24 7v6M24 35v6M7 24h6M35 24h6M12 12l4 4M32 32l4 4M36 12l-4 4M16 32l-4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="24" cy="24" r="8" fill="#BAE6FD" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2">
+                            <img src="{{ asset('images/nala_body.png') }}" class="animate-nala-float h-[360px] w-auto max-w-none object-contain sm:h-[400px] lg:h-[500px]" alt="Nala, AI assistant Nalarin.ai">
+                        </div>
                     </section>
                 </div>
             </div>
