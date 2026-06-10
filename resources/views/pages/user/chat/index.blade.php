@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <div>
             <p class="user-kicker text-[11px] text-violet-200/90">{{ __('ui.chat_page_kicker') }}</p>

@@ -13,7 +13,7 @@
             <section class="glass-panel rounded-2xl border border-white/5 p-6 xl:col-span-1">
                 <div class="flex items-center gap-4">
                     <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10">
-                        <span class="font-outfit text-2xl font-bold text-purple-200">{{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}</span>
+                        <span class="font-outfit text-2xl font-bold text-purple-700">{{ strtoupper(substr($user->name ?? 'A', 0, 1)) }}</span>
                     </div>
                     <div class="min-w-0">
                         <p class="truncate font-outfit text-xl font-semibold text-white">{{ $user->name }}</p>
@@ -24,11 +24,11 @@
                 <div class="mt-6 grid grid-cols-2 gap-3">
                     <div class="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
                         <p class="text-xs uppercase tracking-wide text-zinc-500">Role</p>
-                        <p class="mt-2 text-sm font-semibold text-purple-200">{{ ucfirst($user->role) }}</p>
+                        <p class="mt-2 text-sm font-semibold text-purple-700">{{ ucfirst($user->role) }}</p>
                     </div>
                     <div class="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4">
                         <p class="text-xs uppercase tracking-wide text-zinc-500">Status</p>
-                        <p class="mt-2 text-sm font-semibold {{ $user->is_active ? 'text-green-300' : 'text-red-300' }}">
+                        <p class="mt-2 text-sm font-semibold {{ $user->is_active ? 'text-green-700' : 'text-red-600' }}">
                             {{ $user->is_active ? 'Active' : 'Suspended' }}
                         </p>
                     </div>
@@ -38,7 +38,7 @@
                     type="button"
                     x-data=""
                     x-on:click.prevent="$dispatch('open-modal', 'confirm-admin-user-deletion')"
-                    class="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:bg-red-500/15"
+                    class="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-500/15"
                 >
                     Hapus Akun
                 </button>
@@ -82,7 +82,7 @@
                 <button type="button" x-on:click="$dispatch('close')" class="rounded-xl border border-white/10 bg-white/[0.08] px-4 py-2.5 text-sm text-white transition hover:bg-white/[0.12]">
                     Batal
                 </button>
-                <button type="submit" class="rounded-xl bg-red-500/14 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:bg-red-500/20">
+                <button type="submit" class="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 shadow-sm">
                     Hapus Akun
                 </button>
             </div>
