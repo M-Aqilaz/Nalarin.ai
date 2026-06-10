@@ -10,6 +10,7 @@ use App\Models\ChatThread;
 use App\Services\Analytics\AnalyticsTracker;
 use App\Support\AiUsageLimiter;
 use App\Support\RealtimePayloads;
+use App\Support\SafeBroadcast;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -106,8 +107,8 @@ class ChatMessageController extends Controller
             'has_image' => (bool) $uploadedImage,
         ], $request);
 
-        broadcast(new ThreadMessageCreated($message));
-        broadcast(new ThreadAiStatusUpdated($chatThread->fresh()));
+        SafeBroadcast::event(new ThreadMessageCreated($message));
+        SafeBroadcast::event(new ThreadAiStatusUpdated($chatThread->fresh()));
         GenerateThreadAiReply::dispatch($chatThread->id);
 
         if ($request->expectsJson()) {
