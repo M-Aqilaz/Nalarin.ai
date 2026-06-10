@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudyRoom;
+use App\Services\Analytics\AnalyticsTracker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,7 +24,7 @@ class StudyRoomController extends Controller
         return view('pages.user.rooms.index', compact('rooms', 'myRooms'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -50,6 +51,12 @@ class StudyRoomController extends Controller
             'joined_at' => now(),
         ]);
 
+        $analytics->trackFeature($request->user(), 'study_room_create', 'Group Chat Kelas', 'created', [
+            'room_id' => $room->id,
+            'visibility' => $room->visibility,
+            'max_members' => $room->max_members,
+        ], $request);
+
         return redirect()->route('rooms.show', $room)->with('status', __('ui.room_created_status'));
     }
 
@@ -69,7 +76,7 @@ class StudyRoomController extends Controller
         return view('pages.user.rooms.show', compact('room', 'messages', 'isMember'));
     }
 
-    public function join(Request $request, StudyRoom $room): RedirectResponse
+    public function join(Request $request, StudyRoom $room, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($room->is_active, 404);
 
@@ -88,12 +95,20 @@ class StudyRoomController extends Controller
             $membership->forceFill(['status' => 'active', 'joined_at' => now()])->save();
         }
 
+        $analytics->trackFeature($request->user(), 'study_room_join', 'Group Chat Kelas', 'joined', [
+            'room_id' => $room->id,
+        ], $request);
+
         return redirect()->route('rooms.show', $room)->with('status', __('ui.room_joined_status'));
     }
 
-    public function leave(Request $request, StudyRoom $room): RedirectResponse
+    public function leave(Request $request, StudyRoom $room, AnalyticsTracker $analytics): RedirectResponse
     {
         $room->members()->where('user_id', $request->user()->id)->update(['status' => 'left']);
+
+        $analytics->trackFeature($request->user(), 'study_room_leave', 'Group Chat Kelas', 'left', [
+            'room_id' => $room->id,
+        ], $request);
 
         return redirect()->route('rooms.index')->with('status', __('ui.room_left_status'));
     }

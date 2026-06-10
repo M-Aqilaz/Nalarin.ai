@@ -7,6 +7,7 @@ use App\Events\ThreadMessageCreated;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateThreadAiReply;
 use App\Models\ChatThread;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Support\AiUsageLimiter;
 use App\Support\RealtimePayloads;
 use Illuminate\Http\JsonResponse;
@@ -36,7 +37,7 @@ class ChatMessageController extends Controller
         ]);
     }
 
-    public function store(Request $request, ChatThread $chatThread, AiUsageLimiter $aiUsageLimiter): RedirectResponse|JsonResponse
+    public function store(Request $request, ChatThread $chatThread, AiUsageLimiter $aiUsageLimiter, AnalyticsTracker $analytics): RedirectResponse|JsonResponse
     {
         abort_unless($chatThread->user_id === $request->user()->id, 403);
 
@@ -99,6 +100,12 @@ class ChatMessageController extends Controller
         $chatThread->forceFill($nextThreadState)->save();
 
         $message->refresh();
+        $analytics->trackFeature($request->user(), 'ai_tutor_chat', 'AI Tutor Khusus', 'message_sent', [
+            'thread_id' => $chatThread->id,
+            'message_id' => $message->id,
+            'has_image' => (bool) $uploadedImage,
+        ], $request);
+
         broadcast(new ThreadMessageCreated($message));
         broadcast(new ThreadAiStatusUpdated($chatThread->fresh()));
         GenerateThreadAiReply::dispatch($chatThread->id);

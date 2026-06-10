@@ -44,6 +44,16 @@ class Material extends Model
         return $this->hasMany(AiSummary::class)->latest();
     }
 
+    public function aiRequests(): HasMany
+    {
+        return $this->hasMany(AiRequest::class);
+    }
+
+    public function quizAttempts(): HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
     public function chatThreads(): HasMany
     {
         return $this->hasMany(ChatThread::class)->latest();

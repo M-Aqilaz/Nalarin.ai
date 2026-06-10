@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Learning;
 use App\Http\Controllers\Controller;
 use App\Models\AiSummary;
 use App\Models\Material;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Services\Learning\AiMaterialCleaner;
 use App\Services\Learning\MaterialTextExtractor;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +31,7 @@ class MaterialController extends Controller
         return view('pages.user.materials.create');
     }
 
-    public function store(Request $request, MaterialTextExtractor $textExtractor, AiMaterialCleaner $aiMaterialCleaner): RedirectResponse
+    public function store(Request $request, MaterialTextExtractor $textExtractor, AiMaterialCleaner $aiMaterialCleaner, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -60,7 +61,7 @@ class MaterialController extends Controller
         }
 
         $aiCleaned = $file && $fileText !== ''
-            ? $aiMaterialCleaner->clean($validated['title'], $rawText)
+            ? $aiMaterialCleaner->clean($validated['title'], $rawText, $user)
             : null;
         $rawText = $aiCleaned['text'] ?? $rawText;
         $storedPath = $file?->store('materials');
@@ -83,7 +84,13 @@ class MaterialController extends Controller
             'ocr_completed_at' => $extracted['used_ocr'] ? now() : null,
         ]);
 
-        $aiSummary = $aiMaterialCleaner->summarize($material->title, $rawText);
+        $analytics->trackFeature($user, 'upload_material', 'Unggah Materi', 'completed', [
+            'material_id' => $material->id,
+            'used_file' => (bool) $file,
+            'used_ocr' => (bool) $extracted['used_ocr'],
+        ], $request);
+
+        $aiSummary = $aiMaterialCleaner->summarize($material->title, $rawText, $user, $material);
 
         $summary = AiSummary::create([
             'material_id' => $material->id,
@@ -92,6 +99,12 @@ class MaterialController extends Controller
             'summary_text' => $aiSummary['text'] ?? $this->buildSummary($rawText),
             'model' => $aiSummary['model'] ?? ($aiCleaned['model'] ?? 'local-placeholder'),
         ]);
+
+        $analytics->trackFeature($user, 'summary_created', 'Ringkasan Otomatis', 'created', [
+            'material_id' => $material->id,
+            'summary_id' => $summary->id,
+            'model' => $summary->model,
+        ], $request);
 
         $redirect = redirect()
             ->route('summaries.show', $summary)

@@ -4,8 +4,11 @@
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">
                 Monitoring AI Usage
             </h2>
-            <p class="text-sm text-gray-400 mt-1">Pantau penggunaan dan performa AI hari ini.</p>
+            <p class="text-sm text-gray-400 mt-1">Pantau penggunaan dan performa AI untuk {{ $analyticsFilter['label'] }}.</p>
         </div>
+    </x-slot>
+    <x-slot name="headerActions">
+        @include('pages.admin.partials.analytics-filter')
     </x-slot>
 
     <div class="space-y-6">
@@ -38,7 +41,7 @@
 
         <div class="glass-panel p-6 rounded-2xl border border-white/5 bg-gradient-to-b from-gray-800/80 to-gray-900/80 mt-6">
             <h3 class="font-outfit font-bold text-xl text-white mb-2">Trend AI Requests</h3>
-            <p class="text-sm text-gray-400 mb-6">Jumlah ringkasan, quiz, flashcard, dan balasan AI dalam 7 hari terakhir.</p>
+            <p class="text-sm text-gray-400 mb-6">Jumlah request AI untuk {{ $analyticsFilter['label'] }}.</p>
             <div class="w-full relative h-64 rounded-xl border border-white/10 bg-white/5 p-4">
                 <canvas id="aiTrendChart"></canvas>
             </div>

@@ -40,6 +40,21 @@ class User extends Authenticatable
         return $this->hasMany(Material::class);
     }
 
+    public function featureEvents(): HasMany
+    {
+        return $this->hasMany(FeatureEvent::class);
+    }
+
+    public function aiRequests(): HasMany
+    {
+        return $this->hasMany(AiRequest::class);
+    }
+
+    public function quizAttempts(): HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
     public function summaries(): HasMany
     {
         return $this->hasMany(AiSummary::class);
