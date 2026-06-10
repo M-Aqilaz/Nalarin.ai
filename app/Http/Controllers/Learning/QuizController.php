@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Learning;
 
 use App\Http\Controllers\Controller;
 use App\Models\Material;
+use App\Models\QuizAttempt;
 use App\Models\QuizSet;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Services\Learning\StudyContentGenerator;
 use App\Support\AiContentGenerationLimiter;
 use Illuminate\Http\RedirectResponse;
@@ -42,7 +44,7 @@ class QuizController extends Controller
         ]);
     }
 
-    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter): RedirectResponse
+    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'material_id' => ['required', 'exists:materials,id'],
@@ -83,24 +85,47 @@ class QuizController extends Controller
         $quiz->questions()->createMany($questions);
         session()->forget($this->sessionKey($quiz));
 
+        $analytics->trackFeature($request->user(), 'quiz_generate', 'Latihan Kuis', 'generated', [
+            'material_id' => $material->id,
+            'quiz_set_id' => $quiz->id,
+            'question_count' => count($questions),
+        ], $request);
+
         return redirect()
             ->route('feature.quiz', ['material_id' => $material->id])
             ->with('status', __('ui.quiz_created'));
     }
 
-    public function start(QuizSet $quizSet): RedirectResponse
+    public function start(QuizSet $quizSet, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($quizSet->material->user_id === auth()->id(), 403);
+        $questionCount = $quizSet->questions()->count();
+        $attempt = QuizAttempt::create([
+            'user_id' => auth()->id(),
+            'quiz_set_id' => $quizSet->id,
+            'material_id' => $quizSet->material_id,
+            'status' => QuizAttempt::STATUS_IN_PROGRESS,
+            'total_questions' => $questionCount,
+            'started_at' => now(),
+        ]);
+
         session()->put($this->sessionKey($quizSet), [
+            'attempt_id' => $attempt->id,
             'current_index' => 0,
             'answers' => [],
             'completed' => false,
         ]);
 
+        $analytics->trackFeature(auth()->user(), 'quiz_start', 'Latihan Kuis', 'started', [
+            'material_id' => $quizSet->material_id,
+            'quiz_set_id' => $quizSet->id,
+            'quiz_attempt_id' => $attempt->id,
+        ], request());
+
         return redirect()->route('feature.quiz', ['material_id' => $quizSet->material_id]);
     }
 
-    public function answer(Request $request, QuizSet $quizSet): RedirectResponse
+    public function answer(Request $request, QuizSet $quizSet, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($quizSet->material->user_id === $request->user()->id, 403);
         $validated = $request->validate([
@@ -128,6 +153,37 @@ class QuizController extends Controller
         $attempt['current_index'] = $currentIndex + 1;
         $attempt['completed'] = $attempt['current_index'] >= $questions->count();
 
+        $quizAttempt = $this->resolveAttempt($quizSet, $request->user()->id, $attempt);
+        $quizAttempt->answers()->updateOrCreate(
+            ['quiz_question_id' => $currentQuestion->id],
+            [
+                'selected_choice' => (int) $validated['choice'],
+                'correct_choice' => (int) $currentQuestion->correct_choice,
+                'is_correct' => (int) $validated['choice'] === (int) $currentQuestion->correct_choice,
+                'answered_at' => now(),
+            ],
+        );
+
+        $attempt['attempt_id'] = $quizAttempt->id;
+
+        $analytics->trackFeature($request->user(), 'quiz_answer', 'Latihan Kuis', 'answered', [
+            'material_id' => $quizSet->material_id,
+            'quiz_set_id' => $quizSet->id,
+            'quiz_attempt_id' => $quizAttempt->id,
+            'question_id' => $currentQuestion->id,
+        ], $request);
+
+        if ($attempt['completed']) {
+            $this->completeAttempt($quizAttempt, $quizSet);
+            $analytics->trackFeature($request->user(), 'quiz_complete', 'Latihan Kuis', 'completed', [
+                'material_id' => $quizSet->material_id,
+                'quiz_set_id' => $quizSet->id,
+                'quiz_attempt_id' => $quizAttempt->id,
+                'score' => $quizAttempt->fresh()->score,
+                'total_questions' => $questions->count(),
+            ], $request);
+        }
+
         session()->put($this->sessionKey($quizSet), $attempt);
 
         return redirect()->route('feature.quiz', ['material_id' => $quizSet->material_id]);
@@ -144,6 +200,45 @@ class QuizController extends Controller
     private function sessionKey(QuizSet $quizSet): string
     {
         return 'quiz_attempts.' . $quizSet->id;
+    }
+
+    private function resolveAttempt(QuizSet $quizSet, int $userId, array $sessionAttempt): QuizAttempt
+    {
+        $attemptId = (int) ($sessionAttempt['attempt_id'] ?? 0);
+
+        if ($attemptId > 0) {
+            $attempt = QuizAttempt::query()
+                ->where('user_id', $userId)
+                ->where('quiz_set_id', $quizSet->id)
+                ->find($attemptId);
+
+            if ($attempt) {
+                return $attempt;
+            }
+        }
+
+        return QuizAttempt::create([
+            'user_id' => $userId,
+            'quiz_set_id' => $quizSet->id,
+            'material_id' => $quizSet->material_id,
+            'status' => QuizAttempt::STATUS_IN_PROGRESS,
+            'total_questions' => $quizSet->questions()->count(),
+            'started_at' => now(),
+        ]);
+    }
+
+    private function completeAttempt(QuizAttempt $attempt, QuizSet $quizSet): void
+    {
+        $total = $quizSet->questions()->count();
+        $score = $attempt->answers()->where('is_correct', true)->count();
+
+        $attempt->update([
+            'status' => QuizAttempt::STATUS_COMPLETED,
+            'score' => $score,
+            'total_questions' => $total,
+            'percentage' => $total > 0 ? round(($score / $total) * 100, 2) : 0,
+            'completed_at' => now(),
+        ]);
     }
 
     private function buildResults(QuizSet $quizSet, array $attempt): array

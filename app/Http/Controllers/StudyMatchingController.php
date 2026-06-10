@@ -8,6 +8,7 @@ use App\Models\StudyMatch;
 use App\Models\UserBlock;
 use App\Models\UserReport;
 use App\Notifications\StudyMatchMessageNotification;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Services\Learning\StudyMatchingService;
 use App\Support\RealtimePayloads;
 use App\Support\TypingStateStore;
@@ -78,7 +79,7 @@ class StudyMatchingController extends Controller
         ]);
     }
 
-    public function updateProfile(Request $request): RedirectResponse
+    public function updateProfile(Request $request, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'education_level' => ['nullable', 'string', 'max:80'],
@@ -94,10 +95,14 @@ class StudyMatchingController extends Controller
             'is_matchmaking_enabled' => $request->boolean('is_matchmaking_enabled'),
         ]);
 
+        $analytics->trackFeature($request->user(), 'study_matching_profile', 'Study Matching', 'profile_updated', [
+            'enabled' => $request->boolean('is_matchmaking_enabled'),
+        ], $request);
+
         return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_profile_ready_status'));
     }
 
-    public function search(Request $request, StudyMatchingService $matchingService): RedirectResponse
+    public function search(Request $request, StudyMatchingService $matchingService, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'selected_topic' => ['required', 'string', 'max:120'],
@@ -111,6 +116,11 @@ class StudyMatchingController extends Controller
             return redirect()->route('matchmaking.index')->withErrors(['matchmaking' => $result['error']]);
         }
 
+        $analytics->trackFeature($request->user(), 'study_matching_search', 'Study Matching', $result['match'] ? 'matched' : 'queued', [
+            'selected_topic' => $validated['selected_topic'],
+            'match_id' => $result['match']?->id,
+        ], $request);
+
         if ($result['match']) {
             return redirect()->route('matches.show', $result['match'])->with('status', __('ui.match_found_status'));
         }
@@ -118,20 +128,26 @@ class StudyMatchingController extends Controller
         return redirect()->route('matchmaking.index')->with('status', __('ui.match_queue_joined_status'));
     }
 
-    public function cancel(Request $request, StudyMatchingService $matchingService): RedirectResponse
+    public function cancel(Request $request, StudyMatchingService $matchingService, AnalyticsTracker $analytics): RedirectResponse
     {
         $matchingService->cancel($request->user());
+
+        $analytics->trackFeature($request->user(), 'study_matching_cancel', 'Study Matching', 'cancelled', [], $request);
 
         return redirect()->route('matchmaking.index')->with('status', __('ui.match_queue_cancelled_status'));
     }
 
-    public function rouletteStart(Request $request, StudyMatchingService $matchingService): RedirectResponse
+    public function rouletteStart(Request $request, StudyMatchingService $matchingService, AnalyticsTracker $analytics): RedirectResponse
     {
         $result = $matchingService->enqueueRoulette($request->user()->load('studyProfile'));
 
         if ($result['error']) {
             return redirect()->route('matchmaking.roulette')->withErrors(['matchmaking' => $result['error']]);
         }
+
+        $analytics->trackFeature($request->user(), 'study_matching_roulette_start', 'Study Matching', $result['match'] ? 'matched' : 'queued', [
+            'match_id' => $result['match']?->id,
+        ], $request);
 
         if ($result['match']) {
             return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_found_status'));
@@ -140,7 +156,7 @@ class StudyMatchingController extends Controller
         return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_searching_status_message'));
     }
 
-    public function rouletteNext(Request $request, StudyMatchingService $matchingService): RedirectResponse
+    public function rouletteNext(Request $request, StudyMatchingService $matchingService, AnalyticsTracker $analytics): RedirectResponse
     {
         $user = $request->user();
         $activeMatch = $matchingService->findRouletteMatchFor($user);
@@ -156,6 +172,10 @@ class StudyMatchingController extends Controller
             return redirect()->route('matchmaking.roulette')->withErrors(['matchmaking' => $result['error']]);
         }
 
+        $analytics->trackFeature($request->user(), 'study_matching_roulette_next', 'Study Matching', $result['match'] ? 'matched' : 'queued', [
+            'match_id' => $result['match']?->id,
+        ], $request);
+
         if ($result['match']) {
             return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_new_partner_found_status'));
         }
@@ -163,7 +183,7 @@ class StudyMatchingController extends Controller
         return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_searching_next_status'));
     }
 
-    public function rouletteStop(Request $request, StudyMatchingService $matchingService): RedirectResponse
+    public function rouletteStop(Request $request, StudyMatchingService $matchingService, AnalyticsTracker $analytics): RedirectResponse
     {
         $user = $request->user();
         $activeMatch = $matchingService->findRouletteMatchFor($user);
@@ -173,6 +193,10 @@ class StudyMatchingController extends Controller
         }
 
         $matchingService->cancelRoulette($user);
+
+        $analytics->trackFeature($request->user(), 'study_matching_roulette_stop', 'Study Matching', 'stopped', [
+            'match_id' => $activeMatch?->id,
+        ], $request);
 
         return redirect()->route('matchmaking.roulette')->with('status', __('ui.match_stopped_status'));
     }
@@ -218,7 +242,7 @@ class StudyMatchingController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    public function sendMessage(Request $request, StudyMatch $match): RedirectResponse|JsonResponse
+    public function sendMessage(Request $request, StudyMatch $match, AnalyticsTracker $analytics): RedirectResponse|JsonResponse
     {
         abort_unless($match->involves($request->user()), 403);
 
@@ -232,6 +256,11 @@ class StudyMatchingController extends Controller
         ]);
 
         $message->load('user');
+        $analytics->trackFeature($request->user(), 'study_matching_message', 'Study Matching', 'message_sent', [
+            'match_id' => $match->id,
+            'message_id' => $message->id,
+        ], $request);
+
         broadcast(new StudyMatchMessageCreated($message));
         $match->partnerFor($request->user())?->notify(new StudyMatchMessageNotification($message));
 
@@ -244,15 +273,19 @@ class StudyMatchingController extends Controller
         return redirect()->route('matches.show', $match)->with('status', __('ui.match_message_sent_status'));
     }
 
-    public function end(StudyMatch $match): RedirectResponse
+    public function end(Request $request, StudyMatch $match, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($match->involves(auth()->user()), 403);
         $match->update(['status' => 'completed']);
 
+        $analytics->trackFeature($request->user(), 'study_matching_end', 'Study Matching', 'completed', [
+            'match_id' => $match->id,
+        ], $request);
+
         return redirect()->route('matchmaking.index')->with('status', __('ui.match_session_closed_status'));
     }
 
-    public function block(Request $request, StudyMatch $match): RedirectResponse
+    public function block(Request $request, StudyMatch $match, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($match->involves($request->user()), 403);
         $partner = $match->partnerFor($request->user());
@@ -266,10 +299,15 @@ class StudyMatchingController extends Controller
 
         $match->update(['status' => 'cancelled']);
 
+        $analytics->trackFeature($request->user(), 'study_matching_block', 'Study Matching', 'blocked', [
+            'match_id' => $match->id,
+            'blocked_user_id' => $partner?->id,
+        ], $request);
+
         return redirect()->route('matchmaking.index')->with('status', __('ui.match_partner_blocked_status'));
     }
 
-    public function report(Request $request, StudyMatch $match): RedirectResponse
+    public function report(Request $request, StudyMatch $match, AnalyticsTracker $analytics): RedirectResponse
     {
         abort_unless($match->involves($request->user()), 403);
 
@@ -287,6 +325,11 @@ class StudyMatchingController extends Controller
             'reason' => $validated['reason'],
             'status' => 'open',
         ]);
+
+        $analytics->trackFeature($request->user(), 'study_matching_report', 'Study Matching', 'reported', [
+            'match_id' => $match->id,
+            'reported_user_id' => $partner?->id,
+        ], $request);
 
         return redirect()->route('matches.show', $match)->with('status', __('ui.match_report_sent_status'));
     }

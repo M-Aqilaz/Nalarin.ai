@@ -3,6 +3,7 @@
 namespace App\Services\Learning;
 
 use App\Models\Material;
+use App\Services\Analytics\AiRequestLogger;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -77,7 +78,7 @@ class StudyContentGenerator
                 'role' => 'user',
                 'content' => 'Buat '.$limit.' flashcard dari materi berikut. Variasi seed: '.$seed.'. Hindari istilah yang sudah pernah dibuat: '.$this->avoidList($avoidFronts).'. Format JSON: {"flashcards":[{"front":"Istilah jelas","back":"Definisi singkat","example":"Konteks pendek","difficulty":"Dasar|Menengah|Sulit"}]}.'."\n\nMateri:\n".$this->trimForPrompt($material->raw_text ?? ''),
             ],
-        ]);
+        ], 'flashcards', $material);
 
         $items = data_get($payload, 'flashcards', []);
 
@@ -105,7 +106,7 @@ class StudyContentGenerator
                 'role' => 'user',
                 'content' => 'Buat '.$limit.' soal kuis dari materi berikut. Variasi seed: '.$seed.'. Jangan ulangi pertanyaan ini: '.$this->avoidList($avoidPrompts).'. Format JSON: {"questions":[{"prompt":"Pertanyaan","choices":["A","B","C","D"],"correct_choice":0,"explanation":"Alasan singkat"}]}.'."\n\nMateri:\n".$this->trimForPrompt($material->raw_text ?? ''),
             ],
-        ]);
+        ], 'quiz', $material);
 
         $items = data_get($payload, 'questions', []);
 
@@ -121,13 +122,27 @@ class StudyContentGenerator
             ->all();
     }
 
-    private function askAi(array $messages): ?array
+    private function askAi(array $messages, string $feature, Material $material): ?array
     {
         $apiKey = (string) $this->configValue('services.openai.api_key', '');
 
         if (! $apiKey) {
             return null;
         }
+
+        $baseUrl = rtrim((string) $this->configValue('services.openai.base_url', 'https://openrouter.ai/api/v1'), '/');
+        $model = (string) $this->configValue('services.openai.model', 'openai/gpt-oss-120b:free');
+        $logger = $this->aiRequestLogger();
+        $aiRequest = $logger?->start([
+            'user_id' => $material->user_id,
+            'material_id' => $material->id,
+            'feature' => $feature,
+            'provider' => $logger?->providerFromBaseUrl($baseUrl),
+            'model' => $model,
+            'metadata' => [
+                'source' => 'study_content_generator',
+            ],
+        ]);
 
         try {
             $response = Http::withToken($apiKey)
@@ -137,8 +152,8 @@ class StudyContentGenerator
                     'HTTP-Referer' => (string) $this->configValue('app.url', ''),
                     'X-Title' => (string) $this->configValue('app.name', 'Nalarin.ai'),
                 ])
-                ->post(rtrim((string) $this->configValue('services.openai.base_url', 'https://openrouter.ai/api/v1'), '/').'/chat/completions', [
-                    'model' => (string) $this->configValue('services.openai.model', 'openai/gpt-oss-120b:free'),
+                ->post($baseUrl.'/chat/completions', [
+                    'model' => $model,
                     'messages' => $messages,
                     'temperature' => 0.55,
                     'top_p' => 0.85,
@@ -146,14 +161,38 @@ class StudyContentGenerator
                 ]);
 
             if (! $response->successful()) {
+                if ($aiRequest) {
+                    $logger?->failed($aiRequest, 'HTTP '.$response->status().': '.((string) $response->body()));
+                }
+
                 return null;
             }
 
             $content = trim((string) data_get($response->json(), 'choices.0.message.content'));
             $decoded = json_decode($this->extractJson($content), true);
 
-            return is_array($decoded) ? $decoded : null;
-        } catch (\Throwable) {
+            if (! is_array($decoded)) {
+                if ($aiRequest) {
+                    $logger?->failed($aiRequest, 'Provider AI mengembalikan JSON yang tidak valid.');
+                }
+
+                return null;
+            }
+
+            if ($aiRequest) {
+                $logger?->success($aiRequest, [
+                    'input_tokens' => $response->json('usage.prompt_tokens'),
+                    'output_tokens' => $response->json('usage.completion_tokens'),
+                    'response_id' => $response->json('id'),
+                ]);
+            }
+
+            return $decoded;
+        } catch (\Throwable $throwable) {
+            if ($aiRequest) {
+                $logger?->failed($aiRequest, $throwable);
+            }
+
             return null;
         }
     }
@@ -585,5 +624,18 @@ class StudyContentGenerator
         }
 
         return $default;
+    }
+
+    private function aiRequestLogger(): ?AiRequestLogger
+    {
+        if (! function_exists('app')) {
+            return null;
+        }
+
+        try {
+            return app(AiRequestLogger::class);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

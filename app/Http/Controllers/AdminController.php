@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AiRequest;
 use App\Models\AiSummary;
 use App\Models\ChatMessage;
-use App\Models\ChatThread;
-use App\Models\FeatureUsage;
+use App\Models\FeatureEvent;
 use App\Models\FlashcardDeck;
 use App\Models\Material;
+use App\Models\QuizAttempt;
 use App\Models\QuizQuestion;
-use App\Models\QuizSet;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $this->ensureFeatureUsageData();
-
-        $featureUsages = FeatureUsage::orderBy('click_count', 'desc')->get();
-        $totalUsers = User::count();
-        $totalAiRequests = $this->aiRequestCount();
+        $analyticsFilter = $this->analyticsFilter($request);
+        $featureUsages = $this->featureUsageSummary($analyticsFilter);
+        $totalAiRequests = $this->aiRequestCount($analyticsFilter);
 
         $stats = [
-            'total_users' => $totalUsers,
+            'total_users' => User::count(),
             'active_users' => User::where('is_active', true)->count(),
             'total_documents' => Material::count(),
             'total_ai_requests' => $totalAiRequests,
@@ -32,182 +33,267 @@ class AdminController extends Controller
 
         $featureUsageChart = [
             'labels' => $featureUsages->pluck('feature_name')->values(),
-            'data' => $featureUsages->pluck('click_count')->map(fn ($count) => (int) $count)->values(),
+            'data' => $featureUsages->pluck('usage_count')->map(fn ($count) => (int) $count)->values(),
         ];
-        $recentActivities = $this->recentActivities();
+        $recentActivities = $this->recentActivities($analyticsFilter);
 
-        return view('pages.admin.dashboard', compact('featureUsages', 'featureUsageChart', 'recentActivities', 'stats'));
+        return view('pages.admin.dashboard', compact('featureUsages', 'featureUsageChart', 'recentActivities', 'stats', 'analyticsFilter'));
     }
 
-    public function monitoringAi()
+    public function monitoringAi(Request $request)
     {
-        $this->ensureFeatureUsageData();
-
-        $totalUsers = User::count();
-        $totalAiRequests = $this->aiRequestCount();
+        $analyticsFilter = $this->analyticsFilter($request);
+        $totalUsers = max(1, User::count());
+        $totalAiRequests = $this->aiRequestCount($analyticsFilter);
 
         $aiStats = [
             'total_requests' => $totalAiRequests,
-            'errors' => $this->aiErrorCount(),
-            'avg_response_time' => $this->averageAiResponseTime(),
-            'usage_per_user' => $totalUsers > 0 ? round($totalAiRequests / $totalUsers, 1) : 0,
+            'errors' => $this->aiErrorCount($analyticsFilter),
+            'avg_response_time' => $this->averageAiResponseTime($analyticsFilter),
+            'usage_per_user' => round($totalAiRequests / $totalUsers, 1),
         ];
-        $aiTrendChart = $this->aiTrendChart();
+        $aiTrendChart = $this->aiTrendChart($analyticsFilter);
 
-        return view('pages.admin.monitoring-ai', compact('aiStats', 'aiTrendChart'));
+        return view('pages.admin.monitoring-ai', compact('aiStats', 'aiTrendChart', 'analyticsFilter'));
     }
 
-    public function statistikPembelajaran()
+    public function statistikPembelajaran(Request $request)
     {
-        $this->ensureFeatureUsageData();
-
-        $quizReadiness = $this->quizReadinessScore();
+        $analyticsFilter = $this->analyticsFilter($request);
+        $quizScore = $this->averageQuizScore($analyticsFilter);
         $processedMaterials = Material::where('status', 'processed')->count();
         $totalMaterials = Material::count();
         $materialReadiness = $totalMaterials > 0 ? round(($processedMaterials / $totalMaterials) * 100) : 0;
         $activeUserRatio = User::count() > 0 ? round((User::where('is_active', true)->count() / User::count()) * 100) : 0;
-        $activityTotal = $this->learningActivityTotal();
+        $activityTotal = $this->learningActivityTotal($analyticsFilter);
         $activityScore = min(100, $activityTotal * 6);
 
         $learningStats = [
-            'avg_quiz_score' => $quizReadiness,
-            'most_used_feature' => FeatureUsage::orderBy('click_count', 'desc')->first()?->feature_name ?? 'N/A',
+            'avg_quiz_score' => $quizScore,
+            'most_used_feature' => $this->featureUsageSummary($analyticsFilter)->first()?->feature_name ?? 'N/A',
             'learning_activity' => $activityTotal,
-            'overall_score' => (int) round(($materialReadiness * 0.25) + ($quizReadiness * 0.3) + ($activeUserRatio * 0.2) + ($activityScore * 0.25)),
+            'overall_score' => (int) round(($materialReadiness * 0.25) + ($quizScore * 0.3) + ($activeUserRatio * 0.2) + ($activityScore * 0.25)),
         ];
-        $learningActivityChart = $this->learningActivityChart();
+        $learningActivityChart = $this->learningActivityChart($analyticsFilter);
 
-        return view('pages.admin.statistik-pembelajaran', compact('learningStats', 'learningActivityChart'));
+        return view('pages.admin.statistik-pembelajaran', compact('learningStats', 'learningActivityChart', 'analyticsFilter'));
     }
 
-    private function ensureFeatureUsageData(): void
+    private function analyticsFilter(Request $request): array
     {
-        if (FeatureUsage::exists()) {
-            return;
+        $range = (string) $request->query('range', '7d');
+        $allowedRanges = ['today', '7d', '30d', 'all', 'custom'];
+
+        if (! in_array($range, $allowedRanges, true)) {
+            $range = '7d';
         }
 
-        foreach ([
-            'Unggah Materi' => 18,
-            'Ringkasan Otomatis' => 14,
-            'AI Tutor Khusus' => 12,
-            'Smart Flashcard' => 11,
-            'Latihan Kuis' => 10,
-            'Group Chat Kelas' => 8,
-            'Study Matching' => 6,
-        ] as $featureName => $clickCount) {
-            FeatureUsage::create([
-                'feature_name' => $featureName,
-                'click_count' => $clickCount,
-            ]);
+        $now = now();
+        $start = null;
+        $end = null;
+        $label = '7 hari terakhir';
+
+        if ($range === 'today') {
+            $start = $now->copy()->startOfDay();
+            $end = $now->copy()->endOfDay();
+            $label = 'Hari ini';
+        } elseif ($range === '7d') {
+            $start = $now->copy()->subDays(6)->startOfDay();
+            $end = $now->copy()->endOfDay();
+            $label = '7 hari terakhir';
+        } elseif ($range === '30d') {
+            $start = $now->copy()->subDays(29)->startOfDay();
+            $end = $now->copy()->endOfDay();
+            $label = '30 hari terakhir';
+        } elseif ($range === 'custom') {
+            [$start, $end] = $this->customDateRange($request);
+            $label = $start && $end
+                ? $start->format('d M Y').' - '.$end->format('d M Y')
+                : 'Rentang custom';
+        } else {
+            $label = 'Semua waktu';
         }
+
+        return [
+            'range' => $range,
+            'start' => $start,
+            'end' => $end,
+            'start_date' => $start?->toDateString(),
+            'end_date' => $end?->toDateString(),
+            'label' => $label,
+        ];
     }
 
-    private function aiRequestCount(): int
+    private function customDateRange(Request $request): array
     {
-        return AiSummary::count()
-            + QuizSet::count()
-            + FlashcardDeck::count()
-            + ChatMessage::where('role', 'assistant')->count();
+        try {
+            $start = $request->filled('start_date')
+                ? Carbon::parse((string) $request->query('start_date'))->startOfDay()
+                : null;
+            $end = $request->filled('end_date')
+                ? Carbon::parse((string) $request->query('end_date'))->endOfDay()
+                : null;
+        } catch (\Throwable) {
+            return [null, null];
+        }
+
+        if ($start && $end && $start->greaterThan($end)) {
+            return [$end->copy()->startOfDay(), $start->copy()->endOfDay()];
+        }
+
+        return [$start, $end];
     }
 
-    private function aiErrorCount(): int
+    private function applyDateFilter(Builder $query, array $filter, string $column = 'created_at'): Builder
     {
-        return ChatThread::where('ai_status', 'failed')->count()
-            + Material::whereIn('status', ['failed', 'error'])->count()
-            + Material::where('ocr_status', 'failed')->count();
+        if ($filter['start']) {
+            $query->where($column, '>=', $filter['start']);
+        }
+
+        if ($filter['end']) {
+            $query->where($column, '<=', $filter['end']);
+        }
+
+        return $query;
     }
 
-    private function averageAiResponseTime(): string
+    private function featureUsageSummary(array $filter): Collection
     {
-        $threads = ChatThread::query()
-            ->whereHas('messages', fn ($query) => $query->where('role', 'assistant'))
-            ->get(['created_at', 'updated_at']);
+        return $this->applyDateFilter(
+            FeatureEvent::query()
+                ->selectRaw('feature_key, feature_name, COUNT(*) as usage_count')
+                ->groupBy('feature_key', 'feature_name')
+                ->orderByDesc('usage_count'),
+            $filter,
+            'occurred_at',
+        )->get();
+    }
 
-        if ($threads->isEmpty()) {
+    private function aiRequestCount(array $filter): int
+    {
+        return $this->applyDateFilter(AiRequest::query(), $filter)->count();
+    }
+
+    private function aiErrorCount(array $filter): int
+    {
+        return $this->applyDateFilter(AiRequest::query(), $filter)
+            ->where('status', AiRequest::STATUS_FAILED)
+            ->count();
+    }
+
+    private function averageAiResponseTime(array $filter): string
+    {
+        $averageMs = (int) round((float) $this->applyDateFilter(AiRequest::query(), $filter)
+            ->where('status', AiRequest::STATUS_SUCCESS)
+            ->whereNotNull('latency_ms')
+            ->avg('latency_ms'));
+
+        if ($averageMs <= 0) {
             return '0s';
         }
 
-        $averageSeconds = (int) round($threads->avg(fn (ChatThread $thread) => $thread->created_at->diffInSeconds($thread->updated_at, true)));
+        if ($averageMs >= 60000) {
+            return round($averageMs / 60000, 1).'m';
+        }
 
-        return $averageSeconds >= 60
-            ? round($averageSeconds / 60, 1) . 'm'
-            : $averageSeconds . 's';
+        return round($averageMs / 1000, 1).'s';
     }
 
-    private function recentActivities(): Collection
+    private function recentActivities(array $filter): Collection
     {
         return collect()
-            ->merge(User::latest()->take(4)->get()->map(fn (User $user) => [
+            ->merge($this->applyDateFilter(User::query()->latest(), $filter)->take(4)->get()->map(fn (User $user) => [
                 'title' => $user->name,
-                'description' => 'User baru terdaftar sebagai ' . $user->role,
+                'description' => 'User baru terdaftar sebagai '.$user->role,
                 'time' => $user->created_at,
                 'badge' => 'User',
             ]))
-            ->merge(Material::with('user')->latest()->take(4)->get()->map(fn (Material $material) => [
+            ->merge($this->applyDateFilter(Material::with('user')->latest(), $filter)->take(4)->get()->map(fn (Material $material) => [
                 'title' => $material->title,
-                'description' => 'Materi diunggah oleh ' . ($material->user?->name ?? 'User'),
+                'description' => 'Materi diunggah oleh '.($material->user?->name ?? 'User'),
                 'time' => $material->created_at,
                 'badge' => 'Materi',
             ]))
-            ->merge(AiSummary::with('user')->latest()->take(4)->get()->map(fn (AiSummary $summary) => [
+            ->merge($this->applyDateFilter(AiSummary::with('user')->latest(), $filter)->take(4)->get()->map(fn (AiSummary $summary) => [
                 'title' => $summary->title,
-                'description' => 'Ringkasan dibuat untuk ' . ($summary->user?->name ?? 'User'),
+                'description' => 'Ringkasan dibuat untuk '.($summary->user?->name ?? 'User'),
                 'time' => $summary->created_at,
                 'badge' => 'AI',
+            ]))
+            ->merge($this->applyDateFilter(FeatureEvent::with('user')->latest('occurred_at'), $filter, 'occurred_at')->take(4)->get()->map(fn (FeatureEvent $event) => [
+                'title' => $event->feature_name,
+                'description' => ucfirst(str_replace('_', ' ', $event->action)).' oleh '.($event->user?->name ?? 'pengunjung'),
+                'time' => $event->occurred_at,
+                'badge' => 'Event',
             ]))
             ->sortByDesc('time')
             ->take(6)
             ->values();
     }
 
-    private function aiTrendChart(): array
+    private function aiTrendChart(array $filter): array
     {
-        $days = collect(range(6, 1))->map(fn ($daysAgo) => now()->subDays($daysAgo)->startOfDay())->push(now()->startOfDay());
-        $events = collect()
-            ->merge(AiSummary::where('created_at', '>=', $days->first())->get(['created_at']))
-            ->merge(QuizSet::where('created_at', '>=', $days->first())->get(['created_at']))
-            ->merge(FlashcardDeck::where('created_at', '>=', $days->first())->get(['created_at']))
-            ->merge(ChatMessage::where('role', 'assistant')->where('created_at', '>=', $days->first())->get(['created_at']))
-            ->groupBy(fn ($item) => $item->created_at->format('Y-m-d'));
+        $days = $this->chartDays($filter);
+        $events = $this->applyDateFilter(AiRequest::query(), $filter)
+            ->where('created_at', '>=', $days->first())
+            ->get(['created_at'])
+            ->groupBy(fn (AiRequest $item) => $item->created_at->format('Y-m-d'));
 
         return [
-            'labels' => $days->map(fn ($day) => $day->format('d M'))->values(),
-            'data' => $days->map(fn ($day) => $events->get($day->format('Y-m-d'), collect())->count())->values(),
+            'labels' => $days->map(fn (Carbon $day) => $day->format('d M'))->values(),
+            'data' => $days->map(fn (Carbon $day) => $events->get($day->format('Y-m-d'), collect())->count())->values(),
         ];
     }
 
-    private function quizReadinessScore(): int
+    private function chartDays(array $filter): Collection
     {
-        $quizSets = QuizSet::withCount('questions')->get();
+        $end = ($filter['end'] ?? now())->copy()->startOfDay();
+        $start = $filter['start']
+            ? $filter['start']->copy()->startOfDay()
+            : $end->copy()->subDays(6);
 
-        if ($quizSets->isEmpty()) {
-            return 0;
+        if ($start->diffInDays($end) > 29) {
+            $start = $end->copy()->subDays(29);
         }
 
-        return (int) round($quizSets->avg(fn (QuizSet $quizSet) => min(100, ($quizSet->questions_count / max(1, $quizSet->question_count ?: 5)) * 100)));
+        return collect(range(0, max(0, $start->diffInDays($end))))
+            ->map(fn (int $offset) => $start->copy()->addDays($offset));
     }
 
-    private function learningActivityTotal(): int
+    private function averageQuizScore(array $filter): int
     {
-        return Material::count()
-            + AiSummary::count()
-            + QuizSet::count()
-            + QuizQuestion::count()
-            + FlashcardDeck::count()
-            + ChatMessage::count();
+        $average = $this->applyDateFilter(
+            QuizAttempt::query()->where('status', QuizAttempt::STATUS_COMPLETED),
+            $filter,
+            'completed_at',
+        )->avg('percentage');
+
+        return (int) round((float) $average);
     }
 
-    private function learningActivityChart(): array
+    private function learningActivityTotal(array $filter): int
+    {
+        return $this->applyDateFilter(Material::query(), $filter)->count()
+            + $this->applyDateFilter(AiSummary::query(), $filter)->count()
+            + $this->applyDateFilter(QuizAttempt::query()->where('status', QuizAttempt::STATUS_COMPLETED), $filter, 'completed_at')->count()
+            + $this->applyDateFilter(QuizQuestion::query(), $filter)->count()
+            + $this->applyDateFilter(FlashcardDeck::query(), $filter)->count()
+            + $this->applyDateFilter(ChatMessage::query(), $filter)->count()
+            + $this->applyDateFilter(FeatureEvent::query(), $filter, 'occurred_at')->count();
+    }
+
+    private function learningActivityChart(array $filter): array
     {
         return [
-            'labels' => ['Materi', 'Ringkasan', 'Quiz', 'Soal', 'Flashcard Deck', 'Chat'],
+            'labels' => ['Materi', 'Ringkasan', 'Quiz Selesai', 'Soal', 'Flashcard Deck', 'Chat', 'Event Fitur'],
             'data' => [
-                Material::count(),
-                AiSummary::count(),
-                QuizSet::count(),
-                QuizQuestion::count(),
-                FlashcardDeck::count(),
-                ChatMessage::count(),
+                $this->applyDateFilter(Material::query(), $filter)->count(),
+                $this->applyDateFilter(AiSummary::query(), $filter)->count(),
+                $this->applyDateFilter(QuizAttempt::query()->where('status', QuizAttempt::STATUS_COMPLETED), $filter, 'completed_at')->count(),
+                $this->applyDateFilter(QuizQuestion::query(), $filter)->count(),
+                $this->applyDateFilter(FlashcardDeck::query(), $filter)->count(),
+                $this->applyDateFilter(ChatMessage::query(), $filter)->count(),
+                $this->applyDateFilter(FeatureEvent::query(), $filter, 'occurred_at')->count(),
             ],
         ];
     }
