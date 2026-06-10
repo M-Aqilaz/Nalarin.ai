@@ -7,6 +7,7 @@ use App\Events\RoomTypingUpdated;
 use App\Models\User;
 use App\Notifications\RoomMessageNotification;
 use App\Models\StudyRoom;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Support\RealtimePayloads;
 use App\Support\TypingStateStore;
 use Illuminate\Http\JsonResponse;
@@ -46,7 +47,7 @@ class StudyRoomMessageController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    public function store(Request $request, StudyRoom $room): RedirectResponse|JsonResponse
+    public function store(Request $request, StudyRoom $room, AnalyticsTracker $analytics): RedirectResponse|JsonResponse
     {
         abort_unless($room->members()->where('user_id', $request->user()->id)->where('status', 'active')->exists(), 403);
 
@@ -61,6 +62,11 @@ class StudyRoomMessageController extends Controller
         ]);
 
         $message->load('user');
+        $analytics->trackFeature($request->user(), 'study_room_message', 'Group Chat Kelas', 'message_sent', [
+            'room_id' => $room->id,
+            'message_id' => $message->id,
+        ], $request);
+
         broadcast(new RoomMessageCreated($message));
         User::query()
             ->whereIn('id', $room->members()->where('status', 'active')->where('user_id', '!=', $request->user()->id)->pluck('user_id'))

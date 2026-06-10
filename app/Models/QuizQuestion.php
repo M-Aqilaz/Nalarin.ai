@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuizQuestion extends Model
 {
@@ -29,5 +30,10 @@ class QuizQuestion extends Model
     public function quizSet(): BelongsTo
     {
         return $this->belongsTo(QuizSet::class);
+    }
+
+    public function attemptAnswers(): HasMany
+    {
+        return $this->hasMany(QuizAttemptAnswer::class);
     }
 }
