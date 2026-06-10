@@ -4,8 +4,11 @@
             <h2 class="font-outfit font-bold text-2xl text-white leading-tight">
                 Selamat Datang, Admin
             </h2>
-            <p class="text-sm text-gray-400 mt-1">Ringkasan sistem hari ini.</p>
+            <p class="text-sm text-gray-400 mt-1">Ringkasan sistem untuk {{ $analyticsFilter['label'] }}.</p>
         </div>
+    </x-slot>
+    <x-slot name="headerActions">
+        @include('pages.admin.partials.analytics-filter')
     </x-slot>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -66,7 +69,7 @@
             <div class="glass-panel p-6 rounded-2xl border border-white/5 bg-gradient-to-b from-gray-800/80 to-gray-900/80 relative overflow-hidden h-full flex flex-col justify-between">
                 <div>
                     <h3 class="font-outfit font-bold text-xl text-white mb-2">Statistik Penggunaan Fitur</h3>
-                    <p class="text-sm text-gray-400 mb-6">Grafik fitur yang paling sering digunakan oleh user.</p>
+                    <p class="text-sm text-gray-400 mb-6">Grafik fitur yang paling sering digunakan oleh user untuk {{ $analyticsFilter['label'] }}.</p>
 
                     <div class="w-full relative h-64">
                         <canvas id="featureUsageChart"></canvas>
