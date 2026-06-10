@@ -8,6 +8,7 @@ use App\Events\ThreadMessageCreated;
 use App\Models\ChatThread;
 use App\Notifications\ThreadAiReplyNotification;
 use App\Services\Analytics\AiRequestLogger;
+use App\Support\SafeBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Throwable;
@@ -33,7 +34,7 @@ class GenerateThreadAiReply implements ShouldQueue
             'ai_error' => null,
         ])->save();
 
-        broadcast(new ThreadAiStatusUpdated($thread->fresh()));
+        SafeBroadcast::event(new ThreadAiStatusUpdated($thread->fresh()));
 
         $baseUrl = rtrim((string) config('services.openai.base_url', 'https://openrouter.ai/api/v1'), '/');
         $latestUserMessage = $thread->messages->where('role', 'user')->last();
@@ -68,8 +69,8 @@ class GenerateThreadAiReply implements ShouldQueue
             ]);
 
             $assistantMessage->refresh();
-            broadcast(new ThreadMessageCreated($assistantMessage));
-            broadcast(new ThreadAiStatusUpdated($thread->fresh()));
+            SafeBroadcast::event(new ThreadMessageCreated($assistantMessage));
+            SafeBroadcast::event(new ThreadAiStatusUpdated($thread->fresh()));
             $thread->user?->notify(new ThreadAiReplyNotification($thread->fresh(), $assistantMessage));
         } catch (Throwable $throwable) {
             $aiRequests->failed($aiRequest, $throwable);
@@ -79,7 +80,7 @@ class GenerateThreadAiReply implements ShouldQueue
                 'ai_error' => str($throwable->getMessage())->limit(1000)->toString(),
             ])->save();
 
-            broadcast(new ThreadAiStatusUpdated($thread->fresh()));
+            SafeBroadcast::event(new ThreadAiStatusUpdated($thread->fresh()));
 
             if (config('queue.default') === 'sync') {
                 return;
