@@ -7,6 +7,7 @@ use App\Jobs\GenerateThreadAiReply;
 use App\Http\Controllers\Controller;
 use App\Models\ChatThread;
 use App\Models\Material;
+use App\Support\SafeBroadcast;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
@@ -66,7 +67,7 @@ class ChatThreadController extends Controller
                 'ai_error' => null,
             ])->save();
 
-            broadcast(new ThreadAiStatusUpdated($thread->fresh()));
+            SafeBroadcast::event(new ThreadAiStatusUpdated($thread->fresh()));
             GenerateThreadAiReply::dispatch($thread->id);
         }
 

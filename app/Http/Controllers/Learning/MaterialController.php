@@ -8,6 +8,7 @@ use App\Models\Material;
 use App\Services\Analytics\AnalyticsTracker;
 use App\Services\Learning\AiMaterialCleaner;
 use App\Services\Learning\MaterialTextExtractor;
+use App\Services\Learning\OpenRouterMaterialReader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,12 +32,17 @@ class MaterialController extends Controller
         return view('pages.user.materials.create');
     }
 
-    public function store(Request $request, MaterialTextExtractor $textExtractor, AiMaterialCleaner $aiMaterialCleaner, AnalyticsTracker $analytics): RedirectResponse
+    public function store(Request $request, MaterialTextExtractor $textExtractor, AiMaterialCleaner $aiMaterialCleaner, OpenRouterMaterialReader $openRouterMaterialReader, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'material_file' => ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,doc,docx,ppt,pptx,xls,xlsx,txt', 'max:51200', 'required_without:raw_text'],
+            'material_file' => ['nullable', 'file', 'mimes:pdf,png,jpg,jpeg,webp,docx,pptx,xlsx,txt', 'max:51200', 'required_without:raw_text'],
             'raw_text' => ['nullable', 'string', 'required_without:material_file'],
+        ], [
+            'material_file.required_without' => 'Unggah file materi atau tempelkan teks materi terlebih dahulu.',
+            'raw_text.required_without' => 'Unggah file materi atau tempelkan teks materi terlebih dahulu.',
+            'material_file.mimes' => 'Format file belum didukung. Gunakan PDF, JPG, PNG, WEBP, DOCX, PPTX, XLSX, atau TXT. Untuk .doc/.ppt/.xls lama, simpan ulang sebagai DOCX/PPTX/XLSX atau PDF.',
+            'material_file.max' => 'Ukuran file maksimal 50 MB.',
         ]);
 
         $user = $request->user();
@@ -49,6 +55,19 @@ class MaterialController extends Controller
             ? $textExtractor->extractFromUpload($file, $maxOcrPages)
             : ['text' => '', 'warning' => null, 'used_ocr' => false, 'engine' => null];
         $fileText = trim((string) $extracted['text']);
+        $minimumTextLength = (int) config('services.ocr.min_text_length', 120);
+
+        if ($file && $providedText === '' && mb_strlen($fileText) < $minimumTextLength && $openRouterMaterialReader->supports($file)) {
+            $aiExtracted = $openRouterMaterialReader->read($file, $validated['title'], $user);
+
+            if ($aiExtracted && trim((string) $aiExtracted['text']) !== '') {
+                $extracted = $aiExtracted;
+                $fileText = trim((string) $aiExtracted['text']);
+            } elseif ($aiExtracted && ($aiExtracted['warning'] ?? null)) {
+                $extracted['warning'] = $aiExtracted['warning'];
+            }
+        }
+
         $usedManualFallback = $file && $fileText === '' && $providedText !== '';
         $rawText = $fileText !== '' ? $fileText : $providedText;
 
@@ -106,9 +125,12 @@ class MaterialController extends Controller
             'model' => $summary->model,
         ], $request);
 
+        $textLength = number_format(mb_strlen($rawText), 0, ',', '.');
+        $engineLabel = $this->formatExtractionEngine($material->ocr_engine, (bool) $file);
+
         $redirect = redirect()
             ->route('summaries.show', $summary)
-            ->with('status', 'Materi berhasil ditambahkan dan ringkasan sudah dibuat.');
+            ->with('status', "{$engineLabel} {$textLength} karakter teks terbaca dan ringkasan sudah dibuat.");
 
         if ($usedManualFallback || $extracted['warning']) {
             $redirect->with('warning', $usedManualFallback
@@ -134,5 +156,21 @@ class MaterialController extends Controller
         $excerpt = Str::limit($normalized, 500, '...');
 
         return "Ringkasan awal dari materi ini:\n\n" . $excerpt;
+    }
+
+    private function formatExtractionEngine(?string $engine, bool $hasFile): string
+    {
+        if (! $hasFile) {
+            return 'Teks materi berhasil disimpan.';
+        }
+
+        return match ($engine) {
+            'pdftotext' => 'PDF berhasil diunggah dan diekstrak lokal.',
+            'native' => 'File berhasil diunggah dan diekstrak lokal.',
+            'openrouter-pdf' => 'PDF berhasil diunggah dan dibaca dengan AI fallback.',
+            'openrouter-vision' => 'Gambar berhasil diunggah dan dibaca dengan AI vision.',
+            'tesseract' => 'File berhasil diunggah dan dibaca dengan OCR lokal.',
+            default => 'File berhasil diunggah dan teks berhasil dibaca.',
+        };
     }
 }
