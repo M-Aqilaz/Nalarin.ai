@@ -23,7 +23,7 @@ class EnsureUserCanCreateRoom
         if ($user->ownedRooms()->count() >= $user->room_limit) {
             return redirect()
                 ->route('rooms.index')
-                ->withErrors(['room' => 'Batas room untuk paket gratis sudah tercapai. Upgrade paket untuk membuat room tambahan.']);
+                ->withErrors(['room' => __('ui.room_limit_reached_error')]);
         }
 
         return $next($request);

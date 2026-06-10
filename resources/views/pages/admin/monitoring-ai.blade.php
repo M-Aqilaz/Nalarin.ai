@@ -18,19 +18,19 @@
             </div>
             <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                    <p class="text-xs text-purple-300/70 mb-1 font-medium uppercase tracking-wider">Total Request AI</p>
+                    <p class="text-xs text-purple-700 mb-1 font-medium uppercase tracking-wider">Total Request AI</p>
                     <p class="text-2xl font-bold font-outfit text-white">{{ $aiStats['total_requests'] }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-red-400/70 mb-1 font-medium uppercase tracking-wider">Error AI</p>
+                    <p class="text-xs text-red-700 mb-1 font-medium uppercase tracking-wider">Error AI</p>
                     <p class="text-2xl font-bold font-outfit text-white">{{ $aiStats['errors'] }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-blue-300/70 mb-1 font-medium uppercase tracking-wider">Response Time</p>
+                    <p class="text-xs text-blue-700 mb-1 font-medium uppercase tracking-wider">Response Time</p>
                     <p class="text-2xl font-bold font-outfit text-white">{{ $aiStats['avg_response_time'] }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-green-300/70 mb-1 font-medium uppercase tracking-wider">Usage per User</p>
+                    <p class="text-xs text-green-700 mb-1 font-medium uppercase tracking-wider">Usage per User</p>
                     <p class="text-2xl font-bold font-outfit text-white">{{ $aiStats['usage_per_user'] }}</p>
                 </div>
             </div>

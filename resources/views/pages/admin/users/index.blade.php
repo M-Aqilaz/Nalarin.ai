@@ -23,15 +23,15 @@
         <div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <a href="{{ route('admin.users.index') }}" class="rounded-2xl border p-4 transition {{ $selectedPlan === 'all' ? 'border-purple-500/40 bg-purple-500/10' : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-700' }}">
                 <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Semua User</p>
-                <p class="mt-2 font-outfit text-2xl font-bold text-white">{{ $planStats['all'] }}</p>
+                <p class="mt-2 font-outfit text-2xl font-bold text-purple-700">{{ $planStats['all'] }}</p>
             </a>
             <a href="{{ route('admin.users.index', ['plan' => 'free']) }}" class="rounded-2xl border p-4 transition {{ $selectedPlan === 'free' ? 'border-cyan-500/40 bg-cyan-500/10' : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-700' }}">
                 <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Freemium</p>
-                <p class="mt-2 font-outfit text-2xl font-bold text-cyan-100">{{ $planStats['free'] }}</p>
+                <p class="mt-2 font-outfit text-2xl font-bold text-cyan-700">{{ $planStats['free'] }}</p>
             </a>
             <a href="{{ route('admin.users.index', ['plan' => 'premium']) }}" class="rounded-2xl border p-4 transition {{ $selectedPlan === 'premium' ? 'border-amber-500/40 bg-amber-500/10' : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-700' }}">
                 <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Paid</p>
-                <p class="mt-2 font-outfit text-2xl font-bold text-amber-100">{{ $planStats['premium'] }}</p>
+                <p class="mt-2 font-outfit text-2xl font-bold text-amber-700">{{ $planStats['premium'] }}</p>
             </a>
         </div>
 
@@ -55,12 +55,12 @@
                             <td class="py-4 px-4 font-medium text-zinc-200">{{ $user->name }}</td>
                             <td class="py-4 px-4 text-zinc-400">{{ $user->email }}</td>
                             <td class="py-4 px-4">
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }}">
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-700 border border-purple-500/20' : 'bg-blue-500/10 text-blue-700 border border-blue-500/20' }}">
                                     {{ $user->role }}
                                 </span>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->plan === 'premium' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20' }}">
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->plan === 'premium' ? 'bg-amber-500/10 text-amber-700 border border-amber-500/20' : 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20' }}">
                                     {{ $user->plan === 'premium' ? 'Paid' : 'Freemium' }}
                                 </span>
                             </td>
@@ -69,7 +69,7 @@
                                 <div>Match: <span class="text-zinc-200">{{ $user->match_credits }}</span></div>
                             </td>
                             <td class="py-4 px-4">
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20' }}">
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->is_active ? 'bg-green-500/10 text-green-700 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20' }}">
                                     {{ $user->is_active ? 'active' : 'suspended' }}
                                 </span>
                             </td>
@@ -123,19 +123,19 @@
                             <p class="font-medium text-zinc-200">{{ $user->name }}</p>
                             <p class="text-sm text-zinc-400 mt-1 break-all">{{ $user->email }}</p>
                         </div>
-                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }}">
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->role === 'admin' ? 'bg-purple-500/10 text-purple-700 border border-purple-500/20' : 'bg-blue-500/10 text-blue-700 border border-blue-500/20' }}">
                             {{ $user->role }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between gap-3 text-sm">
                         <span class="text-zinc-500">Status</span>
-                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->is_active ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20' }}">
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->is_active ? 'bg-green-500/10 text-green-700 border border-green-500/20' : 'bg-red-500/10 text-red-600 border border-red-500/20' }}">
                             {{ $user->is_active ? 'active' : 'suspended' }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between gap-3 text-sm">
                         <span class="text-zinc-500">Paket</span>
-                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->plan === 'premium' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20' }}">
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wide {{ $user->plan === 'premium' ? 'bg-amber-500/10 text-amber-700 border border-amber-500/20' : 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20' }}">
                             {{ $user->plan === 'premium' ? 'Paid' : 'Freemium' }}
                         </span>
                     </div>

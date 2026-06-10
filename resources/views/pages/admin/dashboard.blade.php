@@ -12,22 +12,22 @@
         <div class="lg:col-span-2 space-y-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-panel p-4 rounded-2xl border border-white/5">
-                    <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Total User</p>
-                    <p class="text-2xl font-bold font-outfit text-white">{{ $stats['total_users'] }}</p>
+                    <p class="text-xs text-sky-700 mb-1 font-medium uppercase">Total User</p>
+                    <p class="text-2xl font-bold font-outfit text-sky-700">{{ $stats['total_users'] }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-2xl border border-white/5">
-                    <p class="text-xs text-green-400 mb-1 font-medium uppercase">User Aktif</p>
-                    <p class="text-2xl font-bold font-outfit text-white">{{ $stats['active_users'] }}</p>
+                    <p class="text-xs text-green-700 mb-1 font-medium uppercase">User Aktif</p>
+                    <p class="text-2xl font-bold font-outfit text-green-700">{{ $stats['active_users'] }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-2xl border border-white/5">
-                    <p class="text-xs text-gray-400 mb-1 font-medium uppercase">Jumlah Materi</p>
-                    <p class="text-2xl font-bold font-outfit text-white">{{ $stats['total_documents'] }}</p>
+                    <p class="text-xs text-amber-700 mb-1 font-medium uppercase">Jumlah Materi</p>
+                    <p class="text-2xl font-bold font-outfit text-amber-700">{{ $stats['total_documents'] }}</p>
                 </div>
                 <div class="glass-panel p-4 rounded-2xl border border-white/5 bg-gradient-to-br from-purple-900/40 to-transparent">
-                    <p class="text-xs text-purple-300 mb-1 font-medium uppercase">Request AI</p>
+                    <p class="text-xs text-purple-700 mb-1 font-medium uppercase">Request AI</p>
                     <div class="flex items-center gap-2">
-                        <p class="text-2xl font-bold font-outfit text-white">{{ $stats['total_ai_requests'] }}</p>
-                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <p class="text-2xl font-bold font-outfit text-purple-700">{{ $stats['total_ai_requests'] }}</p>
+                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                     <div class="space-y-3">
                         @forelse($recentActivities as $activity)
                             <div class="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4">
-                                <div class="mt-0.5 rounded-lg border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-purple-200">
+                                <div class="mt-0.5 rounded-lg border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-purple-700">
                                     {{ $activity['badge'] }}
                                 </div>
                                 <div class="min-w-0 flex-1">

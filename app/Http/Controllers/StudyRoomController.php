@@ -50,7 +50,7 @@ class StudyRoomController extends Controller
             'joined_at' => now(),
         ]);
 
-        return redirect()->route('rooms.show', $room)->with('status', 'Room belajar berhasil dibuat.');
+        return redirect()->route('rooms.show', $room)->with('status', __('ui.room_created_status'));
     }
 
     public function show(Request $request, StudyRoom $room): View
@@ -76,7 +76,7 @@ class StudyRoomController extends Controller
         $memberCount = $room->members()->where('status', 'active')->count();
 
         if ($memberCount >= $room->max_members) {
-            return redirect()->route('rooms.index')->withErrors(['room' => 'Room sudah penuh.']);
+            return redirect()->route('rooms.index')->withErrors(['room' => __('ui.room_full_error')]);
         }
 
         $membership = $room->members()->firstOrCreate(
@@ -88,14 +88,14 @@ class StudyRoomController extends Controller
             $membership->forceFill(['status' => 'active', 'joined_at' => now()])->save();
         }
 
-        return redirect()->route('rooms.show', $room)->with('status', 'Kamu sudah bergabung ke room ini.');
+        return redirect()->route('rooms.show', $room)->with('status', __('ui.room_joined_status'));
     }
 
     public function leave(Request $request, StudyRoom $room): RedirectResponse
     {
         $room->members()->where('user_id', $request->user()->id)->update(['status' => 'left']);
 
-        return redirect()->route('rooms.index')->with('status', 'Kamu keluar dari room.');
+        return redirect()->route('rooms.index')->with('status', __('ui.room_left_status'));
     }
 
     private function canAccess(int $userId, StudyRoom $room): bool

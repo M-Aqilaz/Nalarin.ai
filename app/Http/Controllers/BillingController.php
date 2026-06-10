@@ -32,7 +32,7 @@ class BillingController extends Controller
 
         if (! $pakasir->isConfigured()) {
             return back()->withErrors([
-                'billing' => 'Konfigurasi Pakasir belum lengkap. Isi PAKASIR_SLUG dan PAKASIR_API_KEY di environment.',
+                'billing' => __('ui.billing_configuration_incomplete'),
             ]);
         }
 
@@ -71,19 +71,19 @@ class BillingController extends Controller
             } catch (\Throwable) {
                 return redirect()
                     ->route('billing.index')
-                    ->with('billing_status', 'Pembayaran belum bisa diverifikasi otomatis. Status akan diperbarui lewat webhook Pakasir.');
+                    ->with('billing_status', __('ui.payment_verification_pending'));
             }
         }
 
         if ($payment->isCompleted()) {
             return redirect()
                 ->route('profile.edit')
-                ->with('billing_status', 'Pembayaran berhasil. Paket premium sudah aktif.');
+                ->with('billing_status', __('ui.payment_success'));
         }
 
         return redirect()
             ->route('billing.index')
-            ->with('billing_status', 'Pembayaran masih pending. Jika sudah membayar, tunggu webhook Pakasir memperbarui status.');
+            ->with('billing_status', __('ui.payment_still_pending'));
     }
 
     private function planConfig(string $plan): ?array

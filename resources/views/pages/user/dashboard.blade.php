@@ -71,8 +71,10 @@
                     <h3 class="mt-2 font-outfit text-2xl font-extrabold text-slate-950">{{ __('ui.where_to_start') }}</h3>
                     <p class="mt-2 text-sm leading-6 text-slate-600">{{ __('ui.launcher_description') }}</p>
                 </div>
-                <div class="hidden justify-center lg:flex">
-                    <img src="{{ asset('images/nala_dashboard_chibi.png') }}" class="h-40 w-40 rounded-full object-cover mix-blend-multiply drop-shadow-[0_18px_28px_rgba(14,116,144,0.18)]" alt="Nala">
+                <div class="flex justify-center lg:justify-end">
+                    <div class="flex h-72 w-56 items-end justify-center overflow-hidden rounded-[2rem] bg-white/75 shadow-inner ring-1 ring-sky-100">
+                        <x-nala-character variant="full" size="md" class="animate-nala-float" alt="Nala menyapa di dashboard" />
+                    </div>
                 </div>
             </div>
             <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
