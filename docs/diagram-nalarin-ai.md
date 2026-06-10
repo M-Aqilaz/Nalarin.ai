@@ -13,7 +13,7 @@ flowchart LR
     AI([AI Provider / OpenRouter])
     Scheduler([Scheduler])
 
-    subgraph Public["Public Area"]
+    subgraph Public_Area
         UC_Landing([Melihat Landing Page])
         UC_Pricing([Melihat Pricing])
         UC_Register([Register])
@@ -21,11 +21,11 @@ flowchart LR
         UC_Forgot([Forgot Password])
     end
 
-    subgraph Learning["Learning Workspace"]
+    subgraph Learning_Workspace
         UC_Dashboard([Melihat Dashboard])
         UC_Upload([Upload Materi])
         UC_Summary([Melihat Ringkasan AI])
-        UC_Chat([Chat dengan Nala / AI Tutor])
+        UC_Chat(["Chat dengan Nala / AI Tutor"])
         UC_ImageChat([Upload Gambar ke Chat AI])
         UC_Flashcard([Generate dan Review Flashcard])
         UC_Quiz([Generate dan Mengerjakan Quiz])
@@ -35,23 +35,23 @@ flowchart LR
         UC_Notif([Kelola Notifikasi])
     end
 
-    subgraph Social["Social Learning"]
-        UC_Room([Membuat / Join Room Kelas])
+    subgraph Social_Learning
+        UC_Room(["Membuat / Join Room Kelas"])
         UC_RoomChat([Chat Room Kelas])
         UC_ProfileMatch([Menyiapkan Study Profile])
-        UC_Match([Study Matching / Roulette])
+        UC_Match(["Study Matching / Roulette"])
         UC_MatchChat([Chat Partner Belajar])
-        UC_EndMatch([Stop / End / Block / Report Match])
+        UC_EndMatch(["Stop / End / Block / Report Match"])
     end
 
-    subgraph Billing["Billing"]
-        UC_Buy([Checkout Premium / Ultimate])
+    subgraph Billing_Area
+        UC_Buy(["Checkout Premium / Ultimate"])
         UC_Return([Payment Return])
         UC_Webhook([Webhook Pembayaran])
         UC_ResetCredit([Reset Credit Ultimate Bulanan])
     end
 
-    subgraph AdminArea["Admin Area"]
+    subgraph Admin_Area
         UC_AdminDashboard([Dashboard Admin])
         UC_MonitorAI([Monitoring AI])
         UC_Stats([Statistik Pembelajaran])
@@ -445,45 +445,51 @@ classDiagram
 
 ```mermaid
 flowchart LR
-    subgraph User["User"]
-        A([Mulai])
-        B[Buka halaman Upload Materi]
-        C[Isi judul dan upload file / paste teks]
-        Z[Lihat halaman ringkasan]
+    subgraph User
+        direction TB
+        A(["Mulai"])
+        B["Buka halaman Upload Materi"]
+        C["Isi judul dan upload file atau paste teks"]
+        Z["Lihat halaman ringkasan"]
     end
 
-    subgraph Frontend["Frontend / Blade"]
-        D[Kirim form upload]
-        Y[Tampilkan error validasi]
-        X[Redirect ke halaman ringkasan]
+    subgraph Frontend
+        direction TB
+        D["Kirim form upload"]
+        Y["Tampilkan error validasi"]
+        X["Redirect ke halaman ringkasan"]
     end
 
-    subgraph Backend["Backend Laravel"]
-        E[MaterialController@store]
+    subgraph Backend_Laravel
+        direction TB
+        E["MaterialController store"]
         F{Validasi input}
         G{Ada file?}
-        H[Pilih raw_text manual]
-        I[Atur batas OCR sesuai plan user]
-        J[MaterialTextExtractor ekstrak teks / OCR]
+        H["Pilih raw text manual"]
+        I["Atur batas OCR sesuai plan user"]
+        J["MaterialTextExtractor ekstrak teks atau OCR"]
         K{Teks tersedia?}
-        L[AiMaterialCleaner bersihkan materi]
-        M[Buat record Material]
-        N[Minta ringkasan AI]
-        O[Buat record AiSummary]
+        L["AiMaterialCleaner bersihkan materi"]
+        M["Buat record Material"]
+        N["Minta ringkasan AI"]
+        O["Buat record AiSummary"]
     end
 
-    subgraph Storage["File Storage"]
-        P[(Simpan file materi)]
+    subgraph File_Storage
+        direction TB
+        P[("Simpan file materi")]
     end
 
-    subgraph AIService["AI Service"]
-        Q[Clean material text]
-        R[Generate summary]
+    subgraph AI_Service
+        direction TB
+        Q["Clean material text"]
+        R["Generate summary"]
     end
 
-    subgraph Database["Database MySQL"]
-        S[(materials)]
-        T[(ai_summaries)]
+    subgraph Database_MySQL
+        direction TB
+        S[("materials")]
+        T[("ai_summaries")]
     end
 
     A --> B --> C --> D --> E --> F
@@ -504,54 +510,61 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph User["User"]
-        A([Mulai])
-        B[Buka chat thread]
-        C[Kirim pesan / paste gambar / upload gambar]
-        Z[Lihat balasan Nala]
+    subgraph User
+        direction TB
+        A(["Mulai"])
+        B["Buka chat thread"]
+        C["Kirim pesan, paste gambar, atau upload gambar"]
+        Z["Lihat balasan Nala"]
     end
 
-    subgraph Frontend["Frontend Chat"]
-        D[Render thread dan sidebar]
-        E[Kirim request AJAX / form]
-        F[Tampilkan pesan user dan loading AI]
-        Y[Tampilkan error limit / validasi]
-        X[Tampilkan balasan AI real-time / polling]
+    subgraph Frontend_Chat
+        direction TB
+        D["Render thread dan sidebar"]
+        E["Kirim request AJAX atau form"]
+        F["Tampilkan pesan user dan loading AI"]
+        Y["Tampilkan error limit atau validasi"]
+        X["Tampilkan balasan AI realtime atau polling"]
     end
 
-    subgraph Backend["Backend Laravel"]
-        G[ChatMessageController@store]
-        H{Validasi pesan/gambar}
-        I[AiUsageLimiter cek cooldown dan limit]
+    subgraph Backend_Laravel
+        direction TB
+        G["ChatMessageController store"]
+        H{Validasi pesan atau gambar}
+        I["AiUsageLimiter cek cooldown dan limit"]
         J{Allowed?}
-        K[Simpan ChatMessage role user]
+        K["Simpan ChatMessage role user"]
         L{Ada gambar?}
-        M[Simpan ChatMessageAttachment]
-        N[Update ChatThread ai_status=queued]
-        O[Broadcast ThreadMessageCreated]
-        P[Dispatch GenerateThreadAiReply]
-        Q[Update title thread otomatis jika Thread Baru]
+        M["Simpan ChatMessageAttachment"]
+        N["Update ChatThread status queued"]
+        O["Broadcast ThreadMessageCreated"]
+        P["Dispatch GenerateThreadAiReply"]
+        Q["Update title thread otomatis"]
     end
 
-    subgraph Queue["Queue Worker"]
-        R[GenerateThreadAiReply job]
-        S[Ambil konteks thread dan attachment]
-        T[Panggil AiThreadResponder]
+    subgraph Queue_Worker
+        direction TB
+        R["GenerateThreadAiReply job"]
+        S["Ambil konteks thread dan attachment"]
+        T["Panggil AiThreadResponder"]
     end
 
-    subgraph AIProvider["AI Provider / OpenRouter"]
-        U[Model teks/vision menghasilkan jawaban]
+    subgraph AI_Provider
+        direction TB
+        U["Model teks atau vision menghasilkan jawaban"]
     end
 
-    subgraph Database["Database MySQL"]
-        DB1[(chat_threads)]
-        DB2[(chat_messages)]
-        DB3[(chat_message_attachments)]
+    subgraph Database_MySQL
+        direction TB
+        DB1[("chat_threads")]
+        DB2[("chat_messages")]
+        DB3[("chat_message_attachments")]
     end
 
-    subgraph Realtime["Broadcast / Polling"]
-        V[ThreadAiStatusUpdated]
-        W[ThreadMessageCreated]
+    subgraph Broadcast_Polling
+        direction TB
+        V["ThreadAiStatusUpdated"]
+        W["ThreadMessageCreated"]
     end
 
     A --> B --> D --> C --> E --> G --> H
@@ -578,56 +591,62 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph UserA["User A"]
-        A([Mulai])
-        B[Buka Study Matching]
-        C[Isi Study Profile jika belum ada]
-        D[Klik Start Roulette / Search]
-        Z[Chat dengan partner]
+    subgraph User_A
+        direction TB
+        A(["Mulai"])
+        B["Buka Study Matching"]
+        C["Isi Study Profile jika belum ada"]
+        D["Klik Start Roulette atau Search"]
+        Z["Chat dengan partner"]
     end
 
-    subgraph Frontend["Frontend Matchmaking"]
-        E[Tampilkan form profil / roulette]
-        F[Kirim request start]
-        G[Polling status queue / match]
-        Y[Redirect ke match aktif]
-        X[Tampilkan kuota habis / error]
+    subgraph Frontend_Matchmaking
+        direction TB
+        E["Tampilkan form profil atau roulette"]
+        F["Kirim request start"]
+        G["Polling status queue atau match"]
+        Y["Redirect ke match aktif"]
+        X["Tampilkan kuota habis atau error"]
     end
 
-    subgraph Backend["Backend Laravel"]
-        H[StudyMatchingController]
+    subgraph Backend_Laravel
+        direction TB
+        H["StudyMatchingController"]
         I{StudyProfile aktif?}
-        J[Simpan / update StudyProfile]
+        J["Simpan atau update StudyProfile"]
         K{Match credit > 0?}
-        L[StudyMatchingService expire queue lama]
-        M[Cek active match]
+        L["StudyMatchingService expire queue lama"]
+        M["Cek active match"]
         N{Active match ada?}
-        O[Cari candidate waiting]
+        O["Cari candidate waiting"]
         P{Candidate ditemukan?}
-        Q[Buat MatchQueueEntry waiting]
-        R[Update queue candidate matched]
-        S[Buat StudyMatch active]
-        T[Kurangi credit kedua user]
-        U[End / block / report match]
+        Q["Buat MatchQueueEntry waiting"]
+        R["Update queue candidate matched"]
+        S["Buat StudyMatch active"]
+        T["Kurangi credit kedua user"]
+        U["End, block, atau report match"]
     end
 
-    subgraph UserB["User B"]
-        AA[Sudah berada di queue waiting]
-        AB[Menerima redirect / trigger match]
-        AC[Chat dengan User A]
+    subgraph User_B
+        direction TB
+        AA["Sudah berada di queue waiting"]
+        AB["Menerima redirect atau trigger match"]
+        AC["Chat dengan User A"]
     end
 
-    subgraph Database["Database MySQL"]
-        DB1[(study_profiles)]
-        DB2[(match_queue_entries)]
-        DB3[(study_matches)]
-        DB4[(study_match_messages)]
-        DB5[(user_blocks / user_reports)]
-        DB6[(users.match_credits)]
+    subgraph Database_MySQL
+        direction TB
+        DB1[("study_profiles")]
+        DB2[("match_queue_entries")]
+        DB3[("study_matches")]
+        DB4[("study_match_messages")]
+        DB5[("user_blocks dan user_reports")]
+        DB6[("users match_credits")]
     end
 
-    subgraph Realtime["Polling / Broadcast"]
-        RT[Status match tersedia]
+    subgraph Polling_Broadcast
+        direction TB
+        RT["Status match tersedia"]
     end
 
     A --> B --> E
@@ -662,50 +681,56 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph User["User"]
-        A([Mulai])
-        B[Buka Pricing]
-        C[Pilih Premium bulanan / Ultimate tahunan]
-        Z[Plan aktif di dashboard/profile]
+    subgraph User
+        direction TB
+        A(["Mulai"])
+        B["Buka Pricing"]
+        C["Pilih Premium bulanan atau Ultimate tahunan"]
+        Z["Plan aktif di dashboard atau profile"]
     end
 
-    subgraph Frontend["Frontend"]
-        D[Kirim checkout request]
-        E[Redirect ke URL pembayaran]
-        Y[Tampilkan status pembayaran]
+    subgraph Frontend
+        direction TB
+        D["Kirim checkout request"]
+        E["Redirect ke URL pembayaran"]
+        Y["Tampilkan status pembayaran"]
     end
 
-    subgraph Backend["Backend Laravel"]
-        F[BillingController@checkout]
-        G[Buat Payment pending]
-        H[PakasirClient buat transaction / payment URL]
-        I[BillingController@return]
-        J[PakasirWebhookController@store]
-        K[PakasirPaymentVerifier verifikasi]
+    subgraph Backend_Laravel
+        direction TB
+        F["BillingController checkout"]
+        G["Buat Payment pending"]
+        H["PakasirClient buat payment URL"]
+        I["BillingController return"]
+        J["PakasirWebhookController store"]
+        K["PakasirPaymentVerifier verifikasi"]
         L{Webhook valid?}
-        M[PaymentFulfillment complete]
-        N[Hitung masa aktif plan]
-        O[Update user plan dan limit]
+        M["PaymentFulfillment complete"]
+        N["Hitung masa aktif plan"]
+        O["Update user plan dan limit"]
         P{Plan Ultimate yearly?}
-        Q[Set reset credit bulanan]
-        R[Premium monthly tanpa reset bulanan]
+        Q["Set reset credit bulanan"]
+        R["Premium monthly tanpa reset bulanan"]
     end
 
-    subgraph Pakasir["Pakasir Payment Gateway"]
-        S[Halaman pembayaran]
+    subgraph Pakasir
+        direction TB
+        S["Halaman pembayaran"]
         T{Pembayaran sukses?}
-        U[Kirim webhook]
-        V[Redirect return]
+        U["Kirim webhook"]
+        V["Redirect return"]
     end
 
-    subgraph Database["Database MySQL"]
-        DB1[(payments)]
-        DB2[(users)]
+    subgraph Database_MySQL
+        direction TB
+        DB1[("payments")]
+        DB2[("users")]
     end
 
-    subgraph Scheduler["Laravel Scheduler"]
-        W[billing:reset-annual-credits]
-        X[Reset match credit Ultimate saat jatuh tempo]
+    subgraph Laravel_Scheduler
+        direction TB
+        W["billing reset annual credits"]
+        X["Reset match credit Ultimate saat jatuh tempo"]
     end
 
     A --> B --> C --> D --> F --> G --> DB1
@@ -729,43 +754,48 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph Admin["Admin"]
-        A([Mulai])
-        B[Login]
-        C[Buka Admin Dashboard]
-        D[Pilih menu Users / Documents]
-        E[Pilih aksi: update plan, suspend, activate, delete dokumen]
-        Z[Lihat hasil aksi]
+    subgraph Admin
+        direction TB
+        A(["Mulai"])
+        B["Login"]
+        C["Buka Admin Dashboard"]
+        D["Pilih menu Users atau Documents"]
+        E["Pilih aksi update plan, suspend, activate, atau delete dokumen"]
+        Z["Lihat hasil aksi"]
     end
 
-    subgraph Frontend["Admin UI"]
-        F[Kirim request admin]
-        G[Tampilkan daftar user / dokumen]
-        Y[Tampilkan status sukses/error]
+    subgraph Admin_UI
+        direction TB
+        F["Kirim request admin"]
+        G["Tampilkan daftar user atau dokumen"]
+        Y["Tampilkan status sukses atau error"]
     end
 
-    subgraph Middleware["Middleware"]
-        H[Authenticate]
-        I[AdminMiddleware cek role]
+    subgraph Middleware
+        direction TB
+        H["Authenticate"]
+        I["AdminMiddleware cek role"]
         J{Role admin?}
     end
 
-    subgraph Backend["Backend Laravel"]
-        K[AdminController / AdminUserController / AdminDocumentController]
+    subgraph Backend_Laravel
+        direction TB
+        K["AdminController, AdminUserController, AdminDocumentController"]
         L{Jenis aksi}
-        M[Update plan user]
-        N[Suspend user]
-        O[Activate user]
-        P[Delete material/dokumen]
-        Q[Load statistik / monitoring AI]
+        M["Update plan user"]
+        N["Suspend user"]
+        O["Activate user"]
+        P["Delete material atau dokumen"]
+        Q["Load statistik atau monitoring AI"]
     end
 
-    subgraph Database["Database MySQL"]
-        DB1[(users)]
-        DB2[(materials)]
-        DB3[(ai_summaries)]
-        DB4[(feature_usages)]
-        DB5[(payments)]
+    subgraph Database_MySQL
+        direction TB
+        DB1[("users")]
+        DB2[("materials")]
+        DB3[("ai_summaries")]
+        DB4[("feature_usages")]
+        DB5[("payments")]
     end
 
     A --> B --> H --> I --> J
