@@ -5,98 +5,98 @@ Dokumen ini berisi versi lengkap diagram utama untuk project Nalarin.ai. Format 
 ## 1. Use Case Diagram
 
 ```mermaid
-flowchart LR
-    Visitor([Visitor])
-    User([User])
-    Admin([Admin])
-    Pakasir([Pakasir])
-    AI([AI Provider / OpenRouter])
-    Scheduler([Scheduler])
+graph LR
+    actor_visitor["Visitor"]
+    actor_user["User"]
+    actor_admin["Admin"]
+    actor_pakasir["Pakasir"]
+    actor_ai["AI Provider"]
+    actor_scheduler["Scheduler"]
 
     subgraph Public_Area
-        UC_Landing([Melihat Landing Page])
-        UC_Pricing([Melihat Pricing])
-        UC_Register([Register])
-        UC_Login([Login])
-        UC_Forgot([Forgot Password])
+        UC_Landing["Melihat Landing Page"]
+        UC_Pricing["Melihat Pricing"]
+        UC_Register["Register"]
+        UC_Login["Login"]
+        UC_Forgot["Forgot Password"]
     end
 
     subgraph Learning_Workspace
-        UC_Dashboard([Melihat Dashboard])
-        UC_Upload([Upload Materi])
-        UC_Summary([Melihat Ringkasan AI])
-        UC_Chat(["Chat dengan Nala / AI Tutor"])
-        UC_ImageChat([Upload Gambar ke Chat AI])
-        UC_Flashcard([Generate dan Review Flashcard])
-        UC_Quiz([Generate dan Mengerjakan Quiz])
-        UC_Pomodoro([Pomodoro])
-        UC_Focus([Focus Planner dan Insights])
-        UC_Profile([Kelola Profil])
-        UC_Notif([Kelola Notifikasi])
+        UC_Dashboard["Melihat Dashboard"]
+        UC_Upload["Upload Materi"]
+        UC_Summary["Melihat Ringkasan AI"]
+        UC_Chat["Chat dengan Nala atau AI Tutor"]
+        UC_ImageChat["Upload Gambar ke Chat AI"]
+        UC_Flashcard["Generate dan Review Flashcard"]
+        UC_Quiz["Generate dan Mengerjakan Quiz"]
+        UC_Pomodoro["Pomodoro"]
+        UC_Focus["Focus Planner dan Insights"]
+        UC_Profile["Kelola Profil"]
+        UC_Notif["Kelola Notifikasi"]
     end
 
     subgraph Social_Learning
-        UC_Room(["Membuat / Join Room Kelas"])
-        UC_RoomChat([Chat Room Kelas])
-        UC_ProfileMatch([Menyiapkan Study Profile])
-        UC_Match(["Study Matching / Roulette"])
-        UC_MatchChat([Chat Partner Belajar])
-        UC_EndMatch(["Stop / End / Block / Report Match"])
+        UC_Room["Membuat atau Join Room Kelas"]
+        UC_RoomChat["Chat Room Kelas"]
+        UC_ProfileMatch["Menyiapkan Study Profile"]
+        UC_Match["Study Matching atau Roulette"]
+        UC_MatchChat["Chat Partner Belajar"]
+        UC_EndMatch["Stop, End, Block, atau Report Match"]
     end
 
     subgraph Billing_Area
-        UC_Buy(["Checkout Premium / Ultimate"])
-        UC_Return([Payment Return])
-        UC_Webhook([Webhook Pembayaran])
-        UC_ResetCredit([Reset Credit Ultimate Bulanan])
+        UC_Buy["Checkout Premium atau Ultimate"]
+        UC_Return["Payment Return"]
+        UC_Webhook["Webhook Pembayaran"]
+        UC_ResetCredit["Reset Credit Ultimate Bulanan"]
     end
 
     subgraph Admin_Area
-        UC_AdminDashboard([Dashboard Admin])
-        UC_MonitorAI([Monitoring AI])
-        UC_Stats([Statistik Pembelajaran])
-        UC_ManageUser([Kelola User dan Plan])
-        UC_ManageDocs([Kelola Dokumen])
+        UC_AdminDashboard["Dashboard Admin"]
+        UC_MonitorAI["Monitoring AI"]
+        UC_Stats["Statistik Pembelajaran"]
+        UC_ManageUser["Kelola User dan Plan"]
+        UC_ManageDocs["Kelola Dokumen"]
     end
 
-    Visitor --> UC_Landing
-    Visitor --> UC_Pricing
-    Visitor --> UC_Register
-    Visitor --> UC_Login
-    Visitor --> UC_Forgot
+    actor_visitor --> UC_Landing
+    actor_visitor --> UC_Pricing
+    actor_visitor --> UC_Register
+    actor_visitor --> UC_Login
+    actor_visitor --> UC_Forgot
 
-    User --> UC_Dashboard
-    User --> UC_Upload
-    User --> UC_Summary
-    User --> UC_Chat
-    User --> UC_ImageChat
-    User --> UC_Flashcard
-    User --> UC_Quiz
-    User --> UC_Pomodoro
-    User --> UC_Focus
-    User --> UC_Profile
-    User --> UC_Notif
-    User --> UC_Room
-    User --> UC_RoomChat
-    User --> UC_ProfileMatch
-    User --> UC_Match
-    User --> UC_MatchChat
-    User --> UC_EndMatch
-    User --> UC_Buy
-    User --> UC_Return
+    actor_user --> UC_Dashboard
+    actor_user --> UC_Upload
+    actor_user --> UC_Summary
+    actor_user --> UC_Chat
+    actor_user --> UC_ImageChat
+    actor_user --> UC_Flashcard
+    actor_user --> UC_Quiz
+    actor_user --> UC_Pomodoro
+    actor_user --> UC_Focus
+    actor_user --> UC_Profile
+    actor_user --> UC_Notif
+    actor_user --> UC_Room
+    actor_user --> UC_RoomChat
+    actor_user --> UC_ProfileMatch
+    actor_user --> UC_Match
+    actor_user --> UC_MatchChat
+    actor_user --> UC_EndMatch
+    actor_user --> UC_Buy
+    actor_user --> UC_Return
 
-    Admin --> UC_AdminDashboard
-    Admin --> UC_MonitorAI
-    Admin --> UC_Stats
-    Admin --> UC_ManageUser
-    Admin --> UC_ManageDocs
+    actor_admin --> UC_AdminDashboard
+    actor_admin --> UC_MonitorAI
+    actor_admin --> UC_Stats
+    actor_admin --> UC_ManageUser
+    actor_admin --> UC_ManageDocs
 
-    Pakasir --> UC_Webhook
-    AI --> UC_Summary
-    AI --> UC_Chat
-    AI --> UC_Flashcard
-    AI --> UC_Quiz
-    Scheduler --> UC_ResetCredit
+    actor_pakasir --> UC_Webhook
+    actor_ai --> UC_Summary
+    actor_ai --> UC_Chat
+    actor_ai --> UC_Flashcard
+    actor_ai --> UC_Quiz
+    actor_scheduler --> UC_ResetCredit
 ```
 
 ## 2. ERD
