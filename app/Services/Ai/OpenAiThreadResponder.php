@@ -329,6 +329,10 @@ class OpenAiThreadResponder implements AiThreadResponder
     private function buildInstructions(ChatThread $thread): string
     {
         $materialTitle = $thread->material?->title;
+        $summaryText = trim((string) ($thread->summary?->summary_text ?? ''));
+        $summaryContext = $summaryText !== ''
+            ? "Ringkasan materi yang harus dijadikan konteks utama:\n".$this->trimContext($summaryText, 4500)
+            : null;
 
         return trim(implode("\n", array_filter([
             'Anda adalah Nala, maskot sekaligus tutor belajar AI untuk Nalarin.ai.',
@@ -336,9 +340,20 @@ class OpenAiThreadResponder implements AiThreadResponder
             'Gunakan sudut pandang orang pertama sebagai Nala. Boleh menyelipkan gaya seperti "hmph", "jangan malas", atau "bukan berarti Nala khawatir", tetapi jangan berlebihan.',
             'Jawab dalam Bahasa Indonesia yang jelas, ringkas, mudah diikuti, dan fokus pada bantuan belajar.',
             'Jangan merendahkan user, jangan flirting berlebihan, jangan masuk roleplay dewasa, dan jangan mengorbankan kejelasan materi demi persona.',
-            'Kalau konteks materi kurang lengkap, katakan secara jujur dan minta klarifikasi.',
+            'Jika percakapan terhubung ke materi, gunakan ringkasan materi sebagai dasar jawaban sebelum meminta klarifikasi.',
+            'Kalau pertanyaan user tidak tercakup dalam ringkasan atau riwayat percakapan, katakan secara jujur bagian mana yang belum ada dan minta klarifikasi.',
             $materialTitle ? "Materi yang sedang dipelajari: {$materialTitle}." : null,
+            $summaryContext,
         ])));
+    }
+
+    private function trimContext(string $text, int $limit): string
+    {
+        return str($text)
+            ->replaceMatches('/\s+/', ' ')
+            ->trim()
+            ->limit($limit, '...')
+            ->toString();
     }
 
     private function extractMessageText(array $output): string
