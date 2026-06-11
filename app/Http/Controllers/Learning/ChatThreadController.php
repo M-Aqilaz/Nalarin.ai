@@ -131,13 +131,14 @@ class ChatThreadController extends Controller
         abort_unless($chatThread->user_id === auth()->id(), 403);
         $chatThread->load([
             'material',
+            'summary',
             'user',
             'messages' => fn ($query) => $query->with('attachments')->orderBy('id'),
         ]);
 
         $threads = ChatThread::query()
             ->where('user_id', auth()->id())
-            ->with(['material'])
+            ->with(['material', 'summary'])
             ->withCount('messages')
             ->latest()
             ->get();
