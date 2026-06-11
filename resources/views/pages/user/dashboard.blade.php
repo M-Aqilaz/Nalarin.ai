@@ -73,7 +73,7 @@
                 </div>
                 <div class="flex justify-center lg:justify-end">
                     <div class="flex h-72 w-56 items-end justify-center overflow-hidden rounded-[2rem] bg-white/75 shadow-inner ring-1 ring-sky-100">
-                        <x-nala-character variant="full" size="md" class="animate-nala-float" alt="Nala menyapa di dashboard" />
+                        <img src="{{ asset('images/nala_teacher.png') }}" class="animate-nala-float h-full w-full object-cover object-top drop-shadow-[0_18px_28px_rgba(14,116,144,0.18)]" alt="Nala menyapa di beranda belajar">
                     </div>
                 </div>
             </div>

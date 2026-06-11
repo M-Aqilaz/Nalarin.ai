@@ -27,11 +27,11 @@
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="summary" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.summary') }}</span>
                 </a>
-                <a href="{{ route('feature.chat') }}" title="AI Tutor" data-feature="AI Tutor Khusus" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.chat') }}" title="{{ __('ui.ai_tutor') }}" data-feature="{{ __('ui.ai_tutor') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="tutor" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.ai_tutor') }}</span>
                 </a>
-                <a href="{{ route('feature.flashcards') }}" title="Flashcard" data-feature="Smart Flashcard" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.flashcards') }}" title="{{ __('ui.flashcards') }}" data-feature="{{ __('ui.flashcards') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="flashcards" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.flashcards') }}</span>
                 </a>
@@ -42,25 +42,18 @@
             </div>
         </div>
 
-        <div class="mt-2 space-y-1">
-            <a href="{{ route('billing.index') }}" title="Billing" class="flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('billing.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
-                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="billing" class="h-4 w-4" /></span>
-                <span x-show="!sidebarCollapsed">{{ __('ui.billing') }}</span>
-            </a>
-        </div>
-
         <div class="mt-8">
             <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">{{ __('ui.focus_section') }}</p>
             <div class="mt-4 space-y-2">
-                <a href="{{ route('feature.pomodoro') }}" title="Pomodoro" data-feature="Pomodoro Timer" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.pomodoro') }}" title="{{ __('ui.pomodoro_title') }}" data-feature="{{ __('ui.pomodoro_title') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-orange-500"><x-feature-icon name="pomodoro" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Pomodoro</span>
                 </a>
-                <a href="{{ route('feature.focus-planner') }}" title="Focus Planner" data-feature="Focus Planner" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.focus-planner') }}" title="{{ __('ui.focus_planner') }}" data-feature="{{ __('ui.focus_planner') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-amber-500"><x-feature-icon name="planner" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.focus_planner') }}</span>
                 </a>
-                <a href="{{ route('feature.focus-insights') }}" title="Focus Insights" data-feature="Focus Insights" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.focus-insights') }}" title="{{ __('ui.focus_insights') }}" data-feature="{{ __('ui.focus_insights') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-indigo-500"><x-feature-icon name="insights" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.focus_insights') }}</span>
                 </a>
@@ -93,7 +86,7 @@
         $planKey ??= 'free';
         $planMeta = match ($planKey) {
             'ultimate_yearly' => [
-                'label' => 'Ultimate',
+                'label' => 'Unggulan',
                 'short' => 'U',
                 'tone' => 'border-teal-200 bg-teal-50 text-teal-800',
                 'description' => __('ui.monthly_credits', ['count' => 999]),
@@ -105,7 +98,7 @@
                 'description' => __('ui.monthly_credits', ['count' => 99]),
             ],
             default => [
-                'label' => 'Free',
+                'label' => 'Gratis',
                 'short' => 'F',
                 'tone' => 'border-sky-200 bg-sky-50 text-sky-800',
                 'description' => __('ui.initial_credits', ['count' => 3]),
@@ -118,7 +111,7 @@
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border text-xs font-extrabold {{ $planMeta['tone'] }}" title="{{ $planMeta['label'] }}">{{ $planMeta['short'] }}</span>
         </div>
 
-        @if ($planKey === 'free')
+        @unless ($authUser->isPremium())
             <a href="{{ route('pricing') }}" x-show="!sidebarCollapsed" class="mb-2 block rounded-[18px] border border-cyan-200 bg-gradient-to-br from-white via-sky-50 to-cyan-50 p-3 shadow-sm transition duration-200 hover:bg-white hover:shadow-md">
                 <div class="flex items-center justify-between gap-3">
                     <div class="min-w-0">
@@ -136,26 +129,7 @@
                 </div>
                 <span class="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-sky-500 px-3 py-2 text-xs font-bold text-white shadow-sm shadow-sky-500/20">{{ __('ui.upgrade') }}</span>
             </a>
-        @else
-            <div x-show="!sidebarCollapsed" class="mb-2 rounded-[18px] border p-3 shadow-sm {{ $planMeta['tone'] }}">
-                <div class="flex items-center justify-between gap-3">
-                    <div class="min-w-0">
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em]">{{ $planMeta['label'] }}</p>
-                        <p class="mt-1 truncate text-xs font-bold">{{ $planMeta['description'] }}</p>
-                    </div>
-                    <span class="rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-extrabold">{{ $planMeta['short'] }}</span>
-                </div>
-                <div class="mt-2 space-y-1 text-[11px] font-semibold opacity-80">
-                    <p>{{ __('ui.match') }} {{ $authUser->match_credits }}</p>
-                    @if ($authUser->plan_expires_at)
-                        <p>{{ __('ui.plan_active_until', ['date' => $authUser->plan_expires_at->translatedFormat('d M Y')]) }}</p>
-                    @endif
-                    @if ($planKey === 'ultimate_yearly' && $authUser->match_credits_reset_at)
-                        <p>{{ __('ui.credits_reset_on', ['date' => $authUser->match_credits_reset_at->translatedFormat('d M Y')]) }}</p>
-                    @endif
-                </div>
-            </div>
-        @endif
+        @endunless
         <details class="group relative z-40 mt-2 flex flex-col-reverse">
             <summary title="{{ __('ui.profile') }}" style="list-style: none;" class="flex w-full cursor-pointer items-center gap-3 rounded-[18px] border border-sky-200/80 bg-sky-50/80 p-3 text-left shadow-sm transition duration-200 hover:bg-sky-100/80 [&::-webkit-details-marker]:hidden" :class="sidebarCollapsed ? 'justify-center p-2.5' : ''">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500 text-sm font-extrabold text-white shadow-sm">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>

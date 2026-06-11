@@ -129,57 +129,104 @@
                         </div>
                     </div>
 
-                    @if ($currentCard)
-                        @php($isDue = $currentCard->next_review_at === null || $currentCard->next_review_at->isPast())
-                        <div class="mx-auto flex max-w-3xl flex-col items-center py-4 sm:py-6">
-                            <div x-data="{ flipped: false }" class="flashcard-perspective h-72 w-full max-w-xl cursor-pointer sm:h-80" @click="flipped = !flipped">
+                    @if ($currentCard && $dueCount > 0)
+                        @php
+                            $flashcardCards = $deck->cards->map(fn ($card) => [
+                                'id' => $card->id,
+                                'front' => $card->front,
+                                'back' => $card->back,
+                                'example' => $card->example,
+                                'difficulty' => $card->difficulty,
+                                'sort_order' => $card->sort_order,
+                                'is_due' => $card->next_review_at === null || $card->next_review_at->isPast(),
+                                'next_review_label' => $card->next_review_at ? $card->next_review_at->locale(app()->getLocale())->diffForHumans() : __('ui.ready_now'),
+                            ])->values();
+                            $currentCardIndex = $flashcardCards->search(fn ($card) => $card['id'] === $currentCard->id);
+                            $currentCardIndex = $currentCardIndex === false ? 0 : $currentCardIndex;
+                        @endphp
+                        <div
+                            x-data="{
+                                cards: @js($flashcardCards),
+                                currentIndex: {{ $currentCardIndex }},
+                                flipped: false,
+                                get card() { return this.cards[this.currentIndex] || this.cards[0]; },
+                                previous() {
+                                    if (this.currentIndex > 0) {
+                                        this.currentIndex--;
+                                        this.flipped = false;
+                                    }
+                                },
+                                next() {
+                                    if (this.currentIndex < this.cards.length - 1) {
+                                        this.currentIndex++;
+                                        this.flipped = false;
+                                    }
+                                },
+                            }"
+                            class="mx-auto flex max-w-3xl flex-col items-center py-4 sm:py-6"
+                        >
+                            <div class="flashcard-perspective h-72 w-full max-w-xl cursor-pointer sm:h-80" @click="flipped = !flipped">
                                 <div class="flashcard-stack w-full h-full relative transition-transform duration-700 shadow-2xl" :class="flipped ? 'flashcard-rotated' : ''">
                                     <div class="flashcard-face absolute inset-0 w-full h-full glass-panel rounded-3xl border border-white/10 flex flex-col items-center justify-center p-8">
                                         <p class="absolute top-6 left-6 text-xs font-bold tracking-wider text-pink-400 uppercase">{{ __('ui.term_front') }}</p>
                                         <svg class="absolute top-6 right-6 w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
                                         <div class="text-center">
-                                            <p class="text-xs uppercase tracking-[0.3em] text-pink-300">{{ $currentCard->difficulty }}</p>
-                                            <h2 class="mt-5 text-center font-outfit text-3xl font-bold text-white sm:text-4xl md:text-5xl">{{ $currentCard->front }}</h2>
+                                            <p class="text-xs uppercase tracking-[0.3em] text-pink-300" x-text="card.difficulty"></p>
+                                            <h2 class="mt-5 text-center font-outfit text-3xl font-bold text-white sm:text-4xl md:text-5xl" x-text="card.front"></h2>
                                         </div>
                                     </div>
 
                                     <div class="flashcard-face flashcard-rotated absolute inset-0 w-full h-full bg-gradient-to-br from-pink-600 to-purple-700 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-8 shadow-[0_0_30px_rgba(219,39,119,0.3)]">
                                         <p class="absolute top-6 left-6 text-xs font-bold tracking-wider text-pink-200 uppercase">{{ __('ui.definition_back') }}</p>
                                         <div class="text-center">
-                                            <h3 class="mb-4 font-outfit text-xl font-bold italic text-white sm:text-2xl">"{{ $currentCard->back }}"</h3>
-                                            @if ($currentCard->example)
-                                                <p class="text-pink-100/80 text-sm">{{ $currentCard->example }}</p>
-                                            @endif
+                                            <h3 class="mb-4 font-outfit text-xl font-bold italic text-white sm:text-2xl" x-text="`&quot;${card.back}&quot;`"></h3>
+                                            <p x-show="card.example" class="text-pink-100/80 text-sm" x-text="card.example"></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mt-8 flex items-center gap-4 sm:gap-6">
-                                <div class="w-12 h-12 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center shadow-lg">
+                                <button type="button" @click.stop="previous()" :disabled="currentIndex === 0" class="w-12 h-12 rounded-full border border-white/10 bg-white/5 text-white flex items-center justify-center shadow-lg transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                                </div>
-                                <span class="text-gray-400 font-medium font-outfit text-lg w-20 text-center">{{ $currentCard->sort_order }} / {{ $deck->card_count }}</span>
-                                <div class="w-12 h-12 rounded-full bg-pink-600 text-white flex items-center justify-center shadow-[0_0_15px_rgba(219,39,119,0.4)]">
+                                </button>
+                                <span class="text-gray-200 font-semibold font-outfit text-lg w-24 text-center"><span x-text="card.sort_order"></span> / {{ $deck->card_count }}</span>
+                                <button type="button" @click.stop="next()" :disabled="currentIndex === cards.length - 1" class="w-12 h-12 rounded-full bg-pink-600 text-white flex items-center justify-center shadow-[0_0_15px_rgba(219,39,119,0.4)] transition hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-35">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </div>
+                                </button>
+                            </div>
+
+                            <form x-show="card.is_due" method="POST" action="{{ route('flashcards.review', $deck) }}" class="mx-auto mt-8 grid w-full max-w-lg grid-cols-2 gap-3 lg:grid-cols-4">
+                                @csrf
+                                <input type="hidden" name="flashcard_id" :value="card.id">
+                                <button type="submit" name="rating" value="again" class="min-h-14 rounded-xl border border-red-200 bg-red-600 px-4 py-3 text-sm font-extrabold uppercase tracking-wide !text-white shadow-lg shadow-red-950/30 ring-1 ring-white/20 transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 sm:text-base">{{ __('ui.rating_again') }}</button>
+                                <button type="submit" name="rating" value="hard" class="min-h-14 rounded-xl border border-orange-100 bg-orange-500 px-4 py-3 text-sm font-extrabold uppercase tracking-wide !text-white shadow-lg shadow-orange-950/30 ring-1 ring-white/20 transition hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-100 sm:text-base">{{ __('ui.rating_hard') }}</button>
+                                <button type="submit" name="rating" value="good" class="min-h-14 rounded-xl border border-sky-100 bg-sky-600 px-4 py-3 text-sm font-extrabold uppercase tracking-wide !text-white shadow-lg shadow-sky-950/30 ring-1 ring-white/20 transition hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100 sm:text-base">{{ __('ui.rating_good') }}</button>
+                                <button type="submit" name="rating" value="easy" class="min-h-14 rounded-xl border border-emerald-100 bg-emerald-600 px-4 py-3 text-sm font-extrabold uppercase tracking-wide !text-white shadow-lg shadow-emerald-950/30 ring-1 ring-white/20 transition hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100 sm:text-base">{{ __('ui.rating_easy') }}</button>
+                            </form>
+
+                            <div x-show="!card.is_due" class="mt-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-100" x-text="@js(__('ui.cards_safe', ['time' => '__TIME__'])).replace('__TIME__', card.next_review_label)">
                             </div>
                         </div>
-
-                        @if ($isDue)
-                            <form method="POST" action="{{ route('flashcards.review', $deck) }}" class="mx-auto mt-8 grid max-w-lg grid-cols-2 gap-3 lg:grid-cols-4">
-                                @csrf
-                                <input type="hidden" name="flashcard_id" value="{{ $currentCard->id }}">
-                                <button type="submit" name="rating" value="again" class="py-3 px-4 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-200 font-semibold text-xs tracking-wide transition">{{ __('ui.rating_again') }}</button>
-                                <button type="submit" name="rating" value="hard" class="py-3 px-4 rounded-xl border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 text-orange-200 font-semibold text-xs tracking-wide transition">{{ __('ui.rating_hard') }}</button>
-                                <button type="submit" name="rating" value="good" class="py-3 px-4 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-200 font-semibold text-xs tracking-wide transition">{{ __('ui.rating_good') }}</button>
-                                <button type="submit" name="rating" value="easy" class="py-3 px-4 rounded-xl border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 text-green-200 font-semibold text-xs tracking-wide transition">{{ __('ui.rating_easy') }}</button>
-                            </form>
-                        @else
-                            <div class="mt-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
-                                {{ __('ui.cards_safe', ['time' => optional($currentCard->next_review_at)->locale(app()->getLocale())->diffForHumans() ?? __('ui.later')]) }}
-                            </div>
-                        @endif
+                    @elseif ($deck)
+                        @php
+                            $reviewedCount = $deck->cards->whereNotNull('last_reviewed_at')->count();
+                            $nextReviewAt = $deck->cards
+                                ->filter(fn ($card) => $card->next_review_at !== null)
+                                ->sortBy('next_review_at')
+                                ->first()?->next_review_at;
+                        @endphp
+                        <div class="mx-auto max-w-2xl rounded-3xl border border-emerald-400/25 bg-emerald-500/10 p-6 text-center shadow-xl shadow-emerald-950/10 sm:p-8">
+                            <p class="user-kicker text-[11px] text-emerald-100/90">{{ __('ui.flashcard_review_complete_kicker') }}</p>
+                            <h3 class="mt-3 font-outfit text-2xl font-bold text-white">{{ __('ui.flashcard_review_complete_title') }}</h3>
+                            <p class="mt-3 text-sm leading-6 text-emerald-50/85">
+                                {{ __('ui.flashcard_review_complete_summary', [
+                                    'reviewed' => $reviewedCount,
+                                    'total' => $deck->card_count,
+                                    'time' => $nextReviewAt ? $nextReviewAt->locale(app()->getLocale())->diffForHumans() : __('ui.later'),
+                                ]) }}
+                            </p>
+                        </div>
                     @endif
                 </section>
 

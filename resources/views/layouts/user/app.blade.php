@@ -79,7 +79,7 @@
                     <a href="{{ route('feature.chat') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.chat') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.ai_tutor') }}</a>
                     <a href="{{ route('feature.flashcards') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.flashcards') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.flashcards') }}</a>
                     <a href="{{ route('feature.quiz') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.quiz') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.quiz') }}</a>
-                    <a href="{{ route('feature.pomodoro') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.pomodoro') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">Pomodoro</a>
+                    <a href="{{ route('feature.pomodoro') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('feature.pomodoro') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.pomodoro_title') }}</a>
                     <div class="pt-4 pb-2"><p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ __('ui.social_learning') }}</p></div>
                     <a href="{{ route('rooms.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('rooms.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.class_room') }}</a>
                     <a href="{{ route('matchmaking.index') }}" class="block px-3 py-3 rounded-xl {{ request()->routeIs('matchmaking.*', 'matches.*') ? 'border border-sky-300 bg-white text-sky-800 shadow-sm' : 'text-slate-700 hover:bg-white/70 hover:text-sky-800' }}">{{ __('ui.study_matching') }}</a>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <a href="{{ route('profile.edit') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800">{{ __('ui.profile') }}</a>
-                        <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800 {{ Auth::user()->role === 'admin' ? '' : 'hidden' }}">Admin</a>
+                        <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-sky-200 bg-white/60 px-3 py-2.5 text-center text-xs text-slate-800 {{ Auth::user()->role === 'admin' ? '' : 'hidden' }}">Pengelola</a>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
