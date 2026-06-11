@@ -446,10 +446,9 @@ classDiagram
 Diagram ini menyederhanakan activity diagram utama menjadi tiga pool vertikal yang sejajar. Detail teknis seperti controller, tabel, queue, dan service tetap direpresentasikan di dalam pool **Sistem Nalarin.ai** agar alurnya tidak berubah makna.
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph USER_POOL["Pool 1 - Pengguna dan Admin"]
         direction TB
-        U0[" "]
         U1(["Mulai"])
         U2["Buka landing page atau pricing"]
         U3["Register atau login"]
@@ -467,38 +466,34 @@ flowchart TB
 
     subgraph SYSTEM_POOL["Pool 2 - Sistem Nalarin.ai"]
         direction TB
-        S0[" "]
         S1["Tampilkan halaman publik"]
         S2{"Validasi akun dan role"}
         S3["Tampilkan dashboard dan menu fitur"]
-        S4{"Validasi request"}
-        S5["Simpan file dan ekstrak teks"]
-        S6{"Teks berhasil dibaca?"}
-        S7["Simpan material"]
-        S8["Generate dan simpan ringkasan"]
-        S9["Simpan pesan chat dan attachment"]
-        S10["Jalankan job balasan AI"]
-        S11["Simpan balasan Nala"]
+        S4{"Validasi upload"}
+        S5["Ekstrak teks materi"]
+        S6{"Teks terbaca?"}
+        S7["Simpan material dan ringkasan"]
+        S8{"Validasi chat"}
+        S9["Simpan pesan dan attachment"]
+        S10["Jalankan job balasan Nala"]
+        S11["Simpan balasan AI"]
         S12["Generate flashcard atau quiz"]
-        S13["Cari partner, room, atau queue match"]
+        S13["Proses matching atau room kelas"]
         S14["Buat invoice pembayaran"]
-        S15["Verifikasi pembayaran dan update plan"]
-        S16["Load analytics dan proses aksi admin"]
+        S15["Update plan dan credit user"]
+        S16["Proses dashboard dan aksi admin"]
         S17["Kirim notifikasi atau realtime update"]
-        S18["Tampilkan error validasi atau proses"]
+        S18["Tampilkan error"]
     end
 
     subgraph EXTERNAL_POOL["Pool 3 - Layanan Eksternal"]
         direction TB
-        X0[" "]
         X1["AI Provider OpenRouter"]
         X2["Payment Gateway Pakasir"]
         X3["SMTP Email"]
         X4["Realtime Server Reverb"]
         X5["Scheduler Laravel"]
     end
-
-    U0 ~~~ S0 ~~~ X0
 
     U1 --> U2 --> S1 --> U3 --> S2
     S2 -- "Tidak valid" --> S18 --> U3
@@ -508,10 +503,11 @@ flowchart TB
     S4 -- "Tidak valid" --> S18 --> U12
     S4 -- "Valid" --> S5 --> S6
     S6 -- "Tidak" --> S18 --> U12
-    S6 -- "Ya" --> S7 --> S8 --> X1 --> S17 --> U12
+    S6 -- "Ya" --> S7 --> X1 --> S17 --> U12
 
-    U5 -- "Chat Nala" --> U7 --> S4
-    S4 -- "Chat valid" --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
+    U5 -- "Chat Nala" --> U7 --> S8
+    S8 -- "Tidak valid" --> S18 --> U12
+    S8 -- "Valid" --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
 
     U5 -- "Flashcard atau quiz" --> U8 --> S12 --> X1 --> S17 --> U12
 
@@ -524,10 +520,6 @@ flowchart TB
     S2 -- "Admin valid" --> S16 --> U12
 
     U12 --> U13
-
-    style U0 fill:transparent,stroke:transparent,color:transparent
-    style S0 fill:transparent,stroke:transparent,color:transparent
-    style X0 fill:transparent,stroke:transparent,color:transparent
 ```
 
 ## 5. Catatan Implementasi Diagram
