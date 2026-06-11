@@ -46,6 +46,7 @@ Route::post('/track-feature', [FeatureUsageController::class, 'track'])
         PreventRequestForgery::class,
         StartSession::class,
         ShareErrorsFromSession::class,
+        \App\Http\Middleware\SetLocale::class,
     ])
     ->name('feature.track');
 Route::post('/webhooks/pakasir', [PakasirWebhookController::class, 'store'])
@@ -53,6 +54,7 @@ Route::post('/webhooks/pakasir', [PakasirWebhookController::class, 'store'])
         PreventRequestForgery::class,
         StartSession::class,
         ShareErrorsFromSession::class,
+        \App\Http\Middleware\SetLocale::class,
     ])
     ->name('webhooks.pakasir');
 

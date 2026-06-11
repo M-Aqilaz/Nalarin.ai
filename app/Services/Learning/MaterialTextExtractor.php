@@ -79,20 +79,32 @@ class MaterialTextExtractor
 
     private function extractDocxText(string $path): string
     {
-        return $this->extractZipXmlText($path, 'word/document.xml');
+        return $this->extractZipXmlText($path, [
+            'word/document.xml',
+            'word/header*.xml',
+            'word/footer*.xml',
+            'word/footnotes.xml',
+            'word/endnotes.xml',
+        ], ['w:t']);
     }
 
     private function extractPptxText(string $path): string
     {
-        return $this->extractZipXmlText($path, 'ppt/slides/slide*.xml');
+        return $this->extractZipXmlText($path, [
+            'ppt/slides/slide*.xml',
+            'ppt/notesSlides/notesSlide*.xml',
+        ], ['a:t']);
     }
 
     private function extractXlsxText(string $path): string
     {
-        return $this->extractZipXmlText($path, 'xl/sharedStrings.xml');
+        return $this->extractZipXmlText($path, [
+            'xl/sharedStrings.xml',
+            'xl/worksheets/sheet*.xml',
+        ], ['t', 'v']);
     }
 
-    private function extractZipXmlText(string $path, string $pattern): string
+    private function extractZipXmlText(string $path, array $patterns, array $textTags): string
     {
         if (! class_exists(\ZipArchive::class)) {
             return '';
@@ -107,16 +119,16 @@ class MaterialTextExtractor
         $chunks = [];
 
         for ($index = 0; $index < $zip->numFiles; $index++) {
-            $name = $zip->getNameIndex($index);
+            $name = str_replace('\\', '/', (string) $zip->getNameIndex($index));
 
-            if (! Str::is($pattern, $name)) {
+            if (! collect($patterns)->contains(fn (string $pattern): bool => Str::is($pattern, $name))) {
                 continue;
             }
 
             $xml = $zip->getFromIndex($index) ?: '';
 
             if ($xml !== '') {
-                $chunks[] = html_entity_decode(strip_tags(str_replace(['</w:p>', '</a:p>', '</si>', '</row>'], "\n", $xml)), ENT_QUOTES | ENT_XML1, 'UTF-8');
+                $chunks[] = $this->extractTextFromOfficeXml($xml, $textTags);
             }
         }
 
@@ -125,11 +137,50 @@ class MaterialTextExtractor
         return implode("\n", $chunks);
     }
 
+    private function extractTextFromOfficeXml(string $xml, array $textTags): string
+    {
+        $xml = str_replace([
+            '</w:p>',
+            '</w:tr>',
+            '</a:p>',
+            '</a:tr>',
+            '</si>',
+            '</row>',
+            '</c>',
+        ], "\n", $xml);
+
+        $segments = [];
+
+        foreach ($textTags as $tag) {
+            $escapedTag = str_contains($tag, ':')
+                ? preg_quote($tag, '/')
+                : '(?:[A-Za-z0-9_]+:)?'.preg_quote($tag, '/');
+
+            if (preg_match_all('/<'.$escapedTag.'(?:\s[^>]*)?>(.*?)<\/'.$escapedTag.'>/s', $xml, $matches)) {
+                foreach ($matches[1] as $match) {
+                    $value = trim(html_entity_decode(strip_tags($match), ENT_QUOTES | ENT_XML1, 'UTF-8'));
+
+                    if ($value !== '') {
+                        $segments[] = $value;
+                    }
+                }
+            }
+        }
+
+        if ($segments !== []) {
+            return implode(' ', $segments);
+        }
+
+        return html_entity_decode(strip_tags($xml), ENT_QUOTES | ENT_XML1, 'UTF-8');
+    }
+
     private function extractPdfText(string $path): string
     {
         $binaryText = $this->runCommand([
             (string) config('services.ocr.pdftotext_path', 'pdftotext'),
             '-layout',
+            '-enc',
+            'UTF-8',
             $path,
             '-',
         ]);
@@ -296,11 +347,37 @@ class MaterialTextExtractor
 
     private function normalize(string $text): string
     {
+        $text = $this->ensureUtf8($text);
         $text = str_replace(["\r\n", "\r"], "\n", $text);
         $text = preg_replace("/[ \t]+/", ' ', $text) ?? $text;
         $text = preg_replace("/\n{3,}/", "\n\n", $text) ?? $text;
         $text = preg_replace('/[^\S\n]+/', ' ', $text) ?? $text;
 
         return trim($text);
+    }
+
+    private function ensureUtf8(string $text): string
+    {
+        if ($text === '') {
+            return '';
+        }
+
+        if (function_exists('mb_check_encoding') && ! mb_check_encoding($text, 'UTF-8')) {
+            $converted = @mb_convert_encoding($text, 'UTF-8', 'UTF-8, Windows-1252, ISO-8859-1');
+
+            if (is_string($converted) && $converted !== '') {
+                $text = $converted;
+            }
+        }
+
+        if (function_exists('iconv')) {
+            $cleaned = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+
+            if (is_string($cleaned)) {
+                $text = $cleaned;
+            }
+        }
+
+        return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $text) ?? $text;
     }
 }

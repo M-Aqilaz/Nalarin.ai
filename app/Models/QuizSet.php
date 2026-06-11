@@ -27,4 +27,9 @@ class QuizSet extends Model
     {
         return $this->hasMany(QuizQuestion::class)->orderBy('sort_order');
     }
+
+    public function attempts(): HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
 }

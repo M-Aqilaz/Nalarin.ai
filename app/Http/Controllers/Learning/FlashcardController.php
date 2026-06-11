@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Flashcard;
 use App\Models\FlashcardDeck;
 use App\Models\Material;
+use App\Services\Analytics\AnalyticsTracker;
 use App\Services\Learning\FlashcardReviewScheduler;
 use App\Services\Learning\StudyContentGenerator;
 use App\Support\AiContentGenerationLimiter;
@@ -43,7 +44,7 @@ class FlashcardController extends Controller
         ]);
     }
 
-    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter): RedirectResponse
+    public function generate(Request $request, StudyContentGenerator $generator, AiContentGenerationLimiter $limiter, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'material_id' => ['required', 'exists:materials,id'],
@@ -83,12 +84,18 @@ class FlashcardController extends Controller
         $deck->cards()->delete();
         $deck->cards()->createMany($cards);
 
+        $analytics->trackFeature($request->user(), 'flashcards_generate', 'Smart Flashcard', 'generated', [
+            'material_id' => $material->id,
+            'deck_id' => $deck->id,
+            'card_count' => count($cards),
+        ], $request);
+
         return redirect()
             ->route('feature.flashcards', ['material_id' => $material->id])
             ->with('status', 'Flashcard berhasil dibuat dari materi terpilih.');
     }
 
-    public function review(Request $request, FlashcardDeck $deck, FlashcardReviewScheduler $scheduler): RedirectResponse
+    public function review(Request $request, FlashcardDeck $deck, FlashcardReviewScheduler $scheduler, AnalyticsTracker $analytics): RedirectResponse
     {
         $validated = $request->validate([
             'flashcard_id' => ['required', 'exists:flashcards,id'],
@@ -98,6 +105,12 @@ class FlashcardController extends Controller
         abort_unless($deck->material->user_id === $request->user()->id, 403);
         $card = $deck->cards()->findOrFail($validated['flashcard_id']);
         $scheduler->apply($card, $validated['rating']);
+
+        $analytics->trackFeature($request->user(), 'flashcards_review', 'Smart Flashcard', 'reviewed', [
+            'deck_id' => $deck->id,
+            'flashcard_id' => $card->id,
+            'rating' => $validated['rating'],
+        ], $request);
 
         return redirect()
             ->route('feature.flashcards', ['material_id' => $deck->material_id])
