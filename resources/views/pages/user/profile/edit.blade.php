@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <p class="user-kicker text-[11px] text-cyan-100/90">{{ __('Account Settings') }}</p>
+            <p class="user-kicker text-[11px] text-cyan-100/90">Pengaturan Akun</p>
             <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">
-                {{ __('Profile') }}
+                Profil
             </h2>
-            <p class="mt-2 text-sm text-slate-300/80">Kelola identitas akun, keamanan, dan kontrol akses dari satu halaman yang lebih konsisten dengan tema workspace.</p>
+            <p class="mt-2 text-sm text-slate-300/80">Kelola identitas akun, keamanan, dan kontrol akses dari satu halaman yang rapi.</p>
         </div>
     </x-slot>
 
@@ -23,16 +23,16 @@
                 <article class="overflow-hidden rounded-[1.75rem] border border-sky-200 bg-white/85 p-5 text-slate-950 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Room Limit</p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Batas Ruang Kelas</p>
                             <h3 class="mt-3 font-outfit text-2xl font-extrabold text-slate-950">{{ $limitStats['room_remaining'] }} tersisa</h3>
-                            <p class="mt-1 text-sm text-slate-600">{{ $limitStats['owned_room_count'] }} dari {{ $limitStats['room_limit'] }} room sudah dibuat.</p>
+                            <p class="mt-1 text-sm text-slate-600">{{ $limitStats['owned_room_count'] }} dari {{ $limitStats['room_limit'] }} ruang kelas sudah dibuat.</p>
                             <p class="mt-2 text-xs font-semibold text-slate-500">
                                 @if ($user->plan_expires_at)
                                     Aktif sampai {{ $user->plan_expires_at->format('d M Y') }}
                                 @elseif ($user->isPremium())
-                                    Premium tanpa tanggal kedaluwarsa
+                                    Paket premium tanpa tanggal kedaluwarsa
                                 @else
-                                    Upgrade untuk membuka limit tambahan
+                                    Tingkatkan paket untuk membuka batas tambahan
                                 @endif
                             </p>
                         </div>
@@ -50,9 +50,9 @@
                 <article class="overflow-hidden rounded-[1.75rem] border border-cyan-200 bg-white/85 p-5 text-slate-950 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-cyan-700">Match Credit</p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-cyan-700">Kredit Pencarian Teman</p>
                             <h3 class="mt-3 font-outfit text-2xl font-extrabold text-slate-950">{{ $limitStats['match_remaining'] }} tersisa</h3>
-                            <p class="mt-1 text-sm text-slate-600">Kuota study matching dari paket {{ $user->plan }}.</p>
+                            <p class="mt-1 text-sm text-slate-600">Kuota pencarian teman belajar dari paket {{ $user->plan }}.</p>
                         </div>
                         <span class="rounded-2xl bg-cyan-100 px-4 py-2 text-sm font-extrabold text-cyan-700">{{ $limitStats['match_remaining'] }} / {{ $limitStats['match_allowance'] }}</span>
                     </div>
@@ -69,7 +69,7 @@
             <section class="overflow-hidden rounded-[1.75rem] border border-sky-200 bg-white/85 text-slate-950 shadow-[0_18px_38px_rgba(14,116,144,0.12)]">
                 <div class="flex items-center justify-between border-b border-sky-100 p-5">
                     <div>
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Billing</p>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Tagihan</p>
                         <h3 class="mt-2 font-outfit text-xl font-extrabold text-slate-950">Pembayaran Pakasir</h3>
                     </div>
                     <a href="{{ route('billing.index') }}" class="rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-bold text-sky-700 transition hover:bg-sky-100">Lihat Riwayat</a>
@@ -87,7 +87,7 @@
                             </span>
                         </div>
                     @empty
-                        <div class="p-5 text-sm text-slate-600">Belum ada pembayaran. Pilih paket premium dari halaman pricing.</div>
+                        <div class="p-5 text-sm text-slate-600">Belum ada pembayaran. Pilih paket premium dari halaman harga.</div>
                     @endforelse
                 </div>
             </section>

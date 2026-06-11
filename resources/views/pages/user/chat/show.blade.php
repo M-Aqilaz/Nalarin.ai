@@ -128,8 +128,8 @@
                     <div class="border-b border-sky-100 p-4">
                         <div class="flex items-center justify-between gap-3">
                             <div>
-                                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Nala Chat</p>
-                                <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">Thread</h3>
+                                <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-sky-700">Percakapan Nala</p>
+                                <h3 class="mt-1 font-outfit text-xl font-extrabold text-slate-950">Daftar Percakapan</h3>
                             </div>
                             <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600">{{ $threads->count() }}</span>
                         </div>
@@ -201,7 +201,7 @@
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div class="min-w-0">
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <span class="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-sky-700">Nala Chat</span>
+                                    <span class="rounded-full bg-sky-100 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-sky-700">Percakapan Nala</span>
                                     <span class="rounded-full border border-sky-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600" x-text="connectionState"></span>
                                 </div>
                                 <h3 class="mt-2 truncate font-outfit text-lg font-extrabold text-slate-950 md:text-xl" x-text="threadTitle">{{ $thread->title }}</h3>

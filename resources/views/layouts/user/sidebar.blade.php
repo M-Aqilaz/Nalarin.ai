@@ -27,11 +27,11 @@
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="summary" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.summary') }}</span>
                 </a>
-                <a href="{{ route('feature.chat') }}" title="AI Tutor" data-feature="AI Tutor Khusus" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.chat') }}" title="{{ __('ui.ai_tutor') }}" data-feature="{{ __('ui.ai_tutor') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.chat', 'chat.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="tutor" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.ai_tutor') }}</span>
                 </a>
-                <a href="{{ route('feature.flashcards') }}" title="Flashcard" data-feature="Smart Flashcard" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.flashcards') }}" title="{{ __('ui.flashcards') }}" data-feature="{{ __('ui.flashcards') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.flashcards', 'flashcards.*') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sky-700 shadow-sm"><x-feature-icon name="flashcards" class="h-4 w-4" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.flashcards') }}</span>
                 </a>
@@ -45,15 +45,15 @@
         <div class="mt-8">
             <p x-show="!sidebarCollapsed" class="px-3 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700">{{ __('ui.focus_section') }}</p>
             <div class="mt-4 space-y-2">
-                <a href="{{ route('feature.pomodoro') }}" title="Pomodoro" data-feature="Pomodoro Timer" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.pomodoro') }}" title="{{ __('ui.pomodoro_title') }}" data-feature="{{ __('ui.pomodoro_title') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.pomodoro') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-orange-500"><x-feature-icon name="pomodoro" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">Pomodoro</span>
                 </a>
-                <a href="{{ route('feature.focus-planner') }}" title="Focus Planner" data-feature="Focus Planner" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.focus-planner') }}" title="{{ __('ui.focus_planner') }}" data-feature="{{ __('ui.focus_planner') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-planner') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-amber-500"><x-feature-icon name="planner" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.focus_planner') }}</span>
                 </a>
-                <a href="{{ route('feature.focus-insights') }}" title="Focus Insights" data-feature="Focus Insights" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <a href="{{ route('feature.focus-insights') }}" title="{{ __('ui.focus_insights') }}" data-feature="{{ __('ui.focus_insights') }}" class="track-feature flex items-center gap-3 rounded-2xl px-3 py-3 text-slate-950 transition hover:bg-white/60 {{ request()->routeIs('feature.focus-insights') ? 'bg-white/70 shadow-sm' : '' }}" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
                     <span class="flex h-6 w-6 items-center justify-center text-indigo-500"><x-feature-icon name="insights" class="h-5 w-5" /></span>
                     <span x-show="!sidebarCollapsed">{{ __('ui.focus_insights') }}</span>
                 </a>
@@ -86,7 +86,7 @@
         $planKey ??= 'free';
         $planMeta = match ($planKey) {
             'ultimate_yearly' => [
-                'label' => 'Ultimate',
+                'label' => 'Unggulan',
                 'short' => 'U',
                 'tone' => 'border-teal-200 bg-teal-50 text-teal-800',
                 'description' => __('ui.monthly_credits', ['count' => 999]),
@@ -98,7 +98,7 @@
                 'description' => __('ui.monthly_credits', ['count' => 99]),
             ],
             default => [
-                'label' => 'Free',
+                'label' => 'Gratis',
                 'short' => 'F',
                 'tone' => 'border-sky-200 bg-sky-50 text-sky-800',
                 'description' => __('ui.initial_credits', ['count' => 3]),
