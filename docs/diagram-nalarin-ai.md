@@ -441,388 +441,100 @@ classDiagram
     PakasirPaymentVerifier --> PaymentFulfillment
 ```
 
-## 4. Activity Diagram - Upload Materi dan Ringkasan
+## 4. Activity Diagram Sederhana - 3 Pool Utama
+
+Diagram ini menyederhanakan activity diagram utama menjadi tiga pool vertikal yang sejajar. Detail teknis seperti controller, tabel, queue, dan service tetap direpresentasikan di dalam pool **Sistem Nalarin.ai** agar alurnya tidak berubah makna.
 
 ```mermaid
-flowchart LR
-    subgraph User
+flowchart TB
+    subgraph USER_POOL["Pool 1 - Pengguna dan Admin"]
         direction TB
-        A(["Mulai"])
-        B["Buka halaman Upload Materi"]
-        C["Isi judul dan upload file atau paste teks"]
-        Z["Lihat halaman ringkasan"]
+        U0[" "]
+        U1(["Mulai"])
+        U2["Buka landing page atau pricing"]
+        U3["Register atau login"]
+        U4["Masuk dashboard"]
+        U5{"Pilih kebutuhan"}
+        U6["Upload materi"]
+        U7["Chat dengan Nala"]
+        U8["Buat flashcard atau quiz"]
+        U9["Study matching atau room kelas"]
+        U10["Checkout plan premium atau ultimate"]
+        U11["Admin kelola data"]
+        U12["Lihat hasil, status, dan notifikasi"]
+        U13(["Selesai"])
     end
 
-    subgraph Frontend
+    subgraph SYSTEM_POOL["Pool 2 - Sistem Nalarin.ai"]
         direction TB
-        D["Kirim form upload"]
-        Y["Tampilkan error validasi"]
-        X["Redirect ke halaman ringkasan"]
+        S0[" "]
+        S1["Tampilkan halaman publik"]
+        S2{"Validasi akun dan role"}
+        S3["Tampilkan dashboard dan menu fitur"]
+        S4{"Validasi request"}
+        S5["Simpan file dan ekstrak teks"]
+        S6{"Teks berhasil dibaca?"}
+        S7["Simpan material"]
+        S8["Generate dan simpan ringkasan"]
+        S9["Simpan pesan chat dan attachment"]
+        S10["Jalankan job balasan AI"]
+        S11["Simpan balasan Nala"]
+        S12["Generate flashcard atau quiz"]
+        S13["Cari partner, room, atau queue match"]
+        S14["Buat invoice pembayaran"]
+        S15["Verifikasi pembayaran dan update plan"]
+        S16["Load analytics dan proses aksi admin"]
+        S17["Kirim notifikasi atau realtime update"]
+        S18["Tampilkan error validasi atau proses"]
     end
 
-    subgraph Backend_Laravel
+    subgraph EXTERNAL_POOL["Pool 3 - Layanan Eksternal"]
         direction TB
-        E["MaterialController store"]
-        F{Validasi input}
-        G{Ada file?}
-        H["Pilih raw text manual"]
-        I["Atur batas OCR sesuai plan user"]
-        J["MaterialTextExtractor ekstrak teks atau OCR"]
-        K{Teks tersedia?}
-        L["AiMaterialCleaner bersihkan materi"]
-        M["Buat record Material"]
-        N["Minta ringkasan AI"]
-        O["Buat record AiSummary"]
+        X0[" "]
+        X1["AI Provider OpenRouter"]
+        X2["Payment Gateway Pakasir"]
+        X3["SMTP Email"]
+        X4["Realtime Server Reverb"]
+        X5["Scheduler Laravel"]
     end
 
-    subgraph File_Storage
-        direction TB
-        P[("Simpan file materi")]
-    end
+    U0 ~~~ S0 ~~~ X0
 
-    subgraph AI_Service
-        direction TB
-        Q["Clean material text"]
-        R["Generate summary"]
-    end
+    U1 --> U2 --> S1 --> U3 --> S2
+    S2 -- "Tidak valid" --> S18 --> U3
+    S2 -- "Valid" --> U4 --> S3 --> U5
 
-    subgraph Database_MySQL
-        direction TB
-        S[("materials")]
-        T[("ai_summaries")]
-    end
+    U5 -- "Materi dan ringkasan" --> U6 --> S4
+    S4 -- "Tidak valid" --> S18 --> U12
+    S4 -- "Valid" --> S5 --> S6
+    S6 -- "Tidak" --> S18 --> U12
+    S6 -- "Ya" --> S7 --> S8 --> X1 --> S17 --> U12
 
-    A --> B --> C --> D --> E --> F
-    F -- Tidak valid --> Y --> C
-    F -- Valid --> G
-    G -- Tidak --> H --> K
-    G -- Ya --> I --> J --> K
-    J --> P
-    K -- Tidak --> Y
-    K -- Ya --> L --> Q --> M
-    M --> S
-    M --> N --> R --> O
-    O --> T
-    O --> X --> Z
+    U5 -- "Chat Nala" --> U7 --> S4
+    S4 -- "Chat valid" --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
+
+    U5 -- "Flashcard atau quiz" --> U8 --> S12 --> X1 --> S17 --> U12
+
+    U5 -- "Study matching atau room" --> U9 --> S13 --> S17 --> X4 --> U12
+
+    U5 -- "Billing" --> U10 --> S14 --> X2 --> S15 --> S17 --> X3 --> U12
+    X5 --> S15
+
+    U5 -- "Admin" --> U11 --> S2
+    S2 -- "Admin valid" --> S16 --> U12
+
+    U12 --> U13
+
+    style U0 fill:transparent,stroke:transparent,color:transparent
+    style S0 fill:transparent,stroke:transparent,color:transparent
+    style X0 fill:transparent,stroke:transparent,color:transparent
 ```
 
-## 5. Activity Diagram - Chat AI / Nala
-
-```mermaid
-flowchart LR
-    subgraph User
-        direction TB
-        A(["Mulai"])
-        B["Buka chat thread"]
-        C["Kirim pesan, paste gambar, atau upload gambar"]
-        Z["Lihat balasan Nala"]
-    end
-
-    subgraph Frontend_Chat
-        direction TB
-        D["Render thread dan sidebar"]
-        E["Kirim request AJAX atau form"]
-        F["Tampilkan pesan user dan loading AI"]
-        Y["Tampilkan error limit atau validasi"]
-        X["Tampilkan balasan AI realtime atau polling"]
-    end
-
-    subgraph Backend_Laravel
-        direction TB
-        G["ChatMessageController store"]
-        H{Validasi pesan atau gambar}
-        I["AiUsageLimiter cek cooldown dan limit"]
-        J{Allowed?}
-        K["Simpan ChatMessage role user"]
-        L{Ada gambar?}
-        M["Simpan ChatMessageAttachment"]
-        N["Update ChatThread status queued"]
-        O["Broadcast ThreadMessageCreated"]
-        P["Dispatch GenerateThreadAiReply"]
-        Q["Update title thread otomatis"]
-    end
-
-    subgraph Queue_Worker
-        direction TB
-        R["GenerateThreadAiReply job"]
-        S["Ambil konteks thread dan attachment"]
-        T["Panggil AiThreadResponder"]
-    end
-
-    subgraph AI_Provider
-        direction TB
-        U["Model teks atau vision menghasilkan jawaban"]
-    end
-
-    subgraph Database_MySQL
-        direction TB
-        DB1[("chat_threads")]
-        DB2[("chat_messages")]
-        DB3[("chat_message_attachments")]
-    end
-
-    subgraph Broadcast_Polling
-        direction TB
-        V["ThreadAiStatusUpdated"]
-        W["ThreadMessageCreated"]
-    end
-
-    A --> B --> D --> C --> E --> G --> H
-    H -- Tidak valid --> Y --> C
-    H -- Valid --> I --> J
-    J -- Tidak --> Y
-    J -- Ya --> K --> DB2
-    K --> L
-    L -- Ya --> M --> DB3
-    L -- Tidak --> N
-    M --> N
-    N --> DB1
-    N --> Q --> DB1
-    N --> O --> W --> F
-    N --> V --> F
-    O --> P --> R --> S --> T --> U
-    U --> R
-    R --> DB2
-    R --> DB1
-    R --> W --> X --> Z
-```
-
-## 6. Activity Diagram - Study Matching / Roulette
-
-```mermaid
-flowchart LR
-    subgraph User_A
-        direction TB
-        A(["Mulai"])
-        B["Buka Study Matching"]
-        C["Isi Study Profile jika belum ada"]
-        D["Klik Start Roulette atau Search"]
-        Z["Chat dengan partner"]
-    end
-
-    subgraph Frontend_Matchmaking
-        direction TB
-        E["Tampilkan form profil atau roulette"]
-        F["Kirim request start"]
-        G["Polling status queue atau match"]
-        Y["Redirect ke match aktif"]
-        X["Tampilkan kuota habis atau error"]
-    end
-
-    subgraph Backend_Laravel
-        direction TB
-        H["StudyMatchingController"]
-        I{StudyProfile aktif?}
-        J["Simpan atau update StudyProfile"]
-        K{Match credit > 0?}
-        L["StudyMatchingService expire queue lama"]
-        M["Cek active match"]
-        N{Active match ada?}
-        O["Cari candidate waiting"]
-        P{Candidate ditemukan?}
-        Q["Buat MatchQueueEntry waiting"]
-        R["Update queue candidate matched"]
-        S["Buat StudyMatch active"]
-        T["Kurangi credit kedua user"]
-        U["End, block, atau report match"]
-    end
-
-    subgraph User_B
-        direction TB
-        AA["Sudah berada di queue waiting"]
-        AB["Menerima redirect atau trigger match"]
-        AC["Chat dengan User A"]
-    end
-
-    subgraph Database_MySQL
-        direction TB
-        DB1[("study_profiles")]
-        DB2[("match_queue_entries")]
-        DB3[("study_matches")]
-        DB4[("study_match_messages")]
-        DB5[("user_blocks dan user_reports")]
-        DB6[("users match_credits")]
-    end
-
-    subgraph Polling_Broadcast
-        direction TB
-        RT["Status match tersedia"]
-    end
-
-    A --> B --> E
-    E --> C --> J --> DB1
-    E --> D --> F --> H --> I
-    I -- Tidak --> X
-    I -- Ya --> K
-    K -- Tidak --> X
-    K -- Ya --> L --> M --> N
-    N -- Ya --> Y
-    N -- Tidak --> O
-    AA --> DB2
-    O --> DB2
-    O --> P
-    P -- Tidak --> Q --> DB2 --> G
-    G --> H
-    P -- Ya --> R --> DB2
-    R --> S --> DB3
-    S --> T --> DB6
-    T --> RT --> Y
-    RT --> AB
-    Y --> Z
-    AB --> AC
-    Z --> DB4
-    AC --> DB4
-    Z --> U
-    U --> DB3
-    U --> DB5
-```
-
-## 7. Activity Diagram - Billing Premium / Ultimate
-
-```mermaid
-flowchart LR
-    subgraph User
-        direction TB
-        A(["Mulai"])
-        B["Buka Pricing"]
-        C["Pilih Premium bulanan atau Ultimate tahunan"]
-        Z["Plan aktif di dashboard atau profile"]
-    end
-
-    subgraph Frontend
-        direction TB
-        D["Kirim checkout request"]
-        E["Redirect ke URL pembayaran"]
-        Y["Tampilkan status pembayaran"]
-    end
-
-    subgraph Backend_Laravel
-        direction TB
-        F["BillingController checkout"]
-        G["Buat Payment pending"]
-        H["PakasirClient buat payment URL"]
-        I["BillingController return"]
-        J["PakasirWebhookController store"]
-        K["PakasirPaymentVerifier verifikasi"]
-        L{Webhook valid?}
-        M["PaymentFulfillment complete"]
-        N["Hitung masa aktif plan"]
-        O["Update user plan dan limit"]
-        P{Plan Ultimate yearly?}
-        Q["Set reset credit bulanan"]
-        R["Premium monthly tanpa reset bulanan"]
-    end
-
-    subgraph Pakasir
-        direction TB
-        S["Halaman pembayaran"]
-        T{Pembayaran sukses?}
-        U["Kirim webhook"]
-        V["Redirect return"]
-    end
-
-    subgraph Database_MySQL
-        direction TB
-        DB1[("payments")]
-        DB2[("users")]
-    end
-
-    subgraph Laravel_Scheduler
-        direction TB
-        W["billing reset annual credits"]
-        X["Reset match credit Ultimate saat jatuh tempo"]
-    end
-
-    A --> B --> C --> D --> F --> G --> DB1
-    G --> H --> E --> S --> T
-    T -- Tidak --> V --> I --> Y
-    T -- Ya --> U --> J --> K --> L
-    L -- Tidak --> Y
-    L -- Ya --> M --> N
-    M --> DB1
-    N --> O --> DB2
-    O --> P
-    P -- Ya --> Q --> DB2
-    P -- Tidak --> R --> DB2
-    Q --> Y --> Z
-    R --> Y --> Z
-    V --> I --> Y
-    W --> X --> DB2
-```
-
-## 8. Activity Diagram - Admin Kelola User
-
-```mermaid
-flowchart LR
-    subgraph Admin
-        direction TB
-        A(["Mulai"])
-        B["Login"]
-        C["Buka Admin Dashboard"]
-        D["Pilih menu Users atau Documents"]
-        E["Pilih aksi update plan, suspend, activate, atau delete dokumen"]
-        Z["Lihat hasil aksi"]
-    end
-
-    subgraph Admin_UI
-        direction TB
-        F["Kirim request admin"]
-        G["Tampilkan daftar user atau dokumen"]
-        Y["Tampilkan status sukses atau error"]
-    end
-
-    subgraph Middleware
-        direction TB
-        H["Authenticate"]
-        I["AdminMiddleware cek role"]
-        J{Role admin?}
-    end
-
-    subgraph Backend_Laravel
-        direction TB
-        K["AdminController, AdminUserController, AdminDocumentController"]
-        L{Jenis aksi}
-        M["Update plan user"]
-        N["Suspend user"]
-        O["Activate user"]
-        P["Delete material atau dokumen"]
-        Q["Load statistik atau monitoring AI"]
-    end
-
-    subgraph Database_MySQL
-        direction TB
-        DB1[("users")]
-        DB2[("materials")]
-        DB3[("ai_summaries")]
-        DB4[("feature_usages")]
-        DB5[("payments")]
-    end
-
-    A --> B --> H --> I --> J
-    J -- Tidak --> Y
-    J -- Ya --> C --> D --> F --> K
-    K --> Q
-    Q --> DB1
-    Q --> DB2
-    Q --> DB3
-    Q --> DB4
-    Q --> DB5
-    Q --> G
-    G --> E --> L
-    L -- Update plan --> M --> DB1
-    L -- Suspend --> N --> DB1
-    L -- Activate --> O --> DB1
-    L -- Delete dokumen --> P --> DB2
-    M --> Y --> Z
-    N --> Y --> Z
-    O --> Y --> Z
-    P --> Y --> Z
-```
-
-## 9. Catatan Implementasi Diagram
+## 5. Catatan Implementasi Diagram
 
 - Untuk laporan akademik, gunakan **Use Case Diagram** untuk menjelaskan fitur dari sisi aktor.
-- Gunakan **Activity Diagram** per proses utama, bukan satu diagram besar.
+- Gunakan **Activity Diagram Sederhana - 3 Pool Utama** jika laporan membutuhkan gambaran alur end-to-end yang ringkas.
+- Jika butuh detail teknis lebih dalam, pecah lagi activity diagram berdasarkan fitur: upload materi, chat AI, study matching, billing, dan admin.
 - Gunakan **ERD** untuk menjelaskan struktur database MySQL.
 - Gunakan **Class Diagram** untuk menjelaskan arsitektur Laravel: Controller, Model, Service, Job, Event, dan Support class.
 - Diagram di atas mengikuti struktur project saat ini: Laravel, MySQL, OpenRouter/AI provider, Pakasir payment, queue job, dan realtime event.
