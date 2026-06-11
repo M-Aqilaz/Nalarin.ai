@@ -59,6 +59,7 @@
                             <option value="{{ $material->id }}">{{ $material->title }}</option>
                         @endforeach
                     </select>
+                    <p class="mt-2 text-xs leading-5 text-slate-300/75">{{ __('ui.chat_summary_context_hint') }}</p>
                 </div>
                 <div>
                     <label class="mb-2 block text-sm text-slate-200">{{ __('ui.opening_message') }}</label>

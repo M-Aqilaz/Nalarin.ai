@@ -83,6 +83,7 @@
                                     <option value="{{ $material->id }}">{{ $material->title }}</option>
                                 @endforeach
                             </select>
+                            <p class="text-xs leading-5 text-slate-500">{{ __('ui.chat_summary_context_hint') }}</p>
                             <textarea name="opening_message" rows="3" class="w-full rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200" placeholder="{{ __('ui.optional_opening_message') }}"></textarea>
                             <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-sky-500 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">{{ __('ui.create_thread') }}</button>
                         </form>
@@ -107,6 +108,7 @@
                                                         <option value="{{ $material->id }}" @selected($item->material_id === $material->id)>{{ $material->title }}</option>
                                                     @endforeach
                                                 </select>
+                                                <p class="text-[11px] leading-4 text-slate-500">{{ __('ui.chat_summary_context_hint') }}</p>
                                                 <button type="submit" class="w-full rounded-xl bg-sky-500 px-3 py-2 text-xs font-extrabold text-white">{{ __('ui.save') }}</button>
                                             </form>
                                         </details>
@@ -157,6 +159,7 @@
                                                         <option value="{{ $material->id }}" @selected($item->material_id === $material->id)>{{ $material->title }}</option>
                                                     @endforeach
                                                 </select>
+                                                <p class="text-[11px] leading-4 text-slate-500">{{ __('ui.chat_summary_context_hint') }}</p>
                                                 <button type="submit" class="w-full rounded-xl bg-sky-500 px-3 py-2 text-xs font-extrabold text-white transition hover:bg-sky-600">{{ __('ui.save') }}</button>
                                             </form>
                                         </details>
@@ -188,6 +191,7 @@
                                             <option value="{{ $material->id }}">{{ $material->title }}</option>
                                         @endforeach
                                     </select>
+                                    <p class="text-xs leading-5 text-slate-500">{{ __('ui.chat_summary_context_hint') }}</p>
                                     <textarea name="opening_message" rows="3" class="w-full rounded-2xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-950 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-200" placeholder="{{ __('ui.opening_message') }}"></textarea>
                                     <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-sky-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-sky-500/25 transition hover:bg-sky-600">{{ __('ui.create') }}</button>
                                 </form>
