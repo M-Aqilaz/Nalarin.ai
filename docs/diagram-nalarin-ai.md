@@ -447,77 +447,85 @@ Diagram ini menyederhanakan activity diagram utama menjadi tiga pool vertikal ya
 
 ```mermaid
 flowchart LR
-    subgraph USER_POOL["Pool 1 - Pengguna dan Admin"]
+    subgraph USER_POOL[Pool 1 - Pengguna dan Admin]
         direction TB
-        U1(["Mulai"])
-        U2["Buka landing page atau pricing"]
-        U3["Register atau login"]
-        U4["Masuk dashboard"]
-        U5{"Pilih kebutuhan"}
-        U6["Upload materi"]
-        U7["Chat dengan Nala"]
-        U8["Buat flashcard atau quiz"]
-        U9["Study matching atau room kelas"]
-        U10["Checkout plan premium atau ultimate"]
-        U11["Admin kelola data"]
-        U12["Lihat hasil, status, dan notifikasi"]
-        U13(["Selesai"])
+        U1[Mulai]
+        U2[Buka landing page atau pricing]
+        U3[Register atau login]
+        U4[Masuk dashboard]
+        U5[Pilih kebutuhan]
+        U6[Upload materi]
+        U7[Chat dengan Nala]
+        U8[Buat flashcard atau quiz]
+        U9[Study matching atau room kelas]
+        U10[Checkout plan premium atau ultimate]
+        U11[Admin kelola data]
+        U12[Lihat hasil status dan notifikasi]
+        U13[Selesai]
     end
 
-    subgraph SYSTEM_POOL["Pool 2 - Sistem Nalarin.ai"]
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
         direction TB
-        S1["Tampilkan halaman publik"]
-        S2{"Validasi akun dan role"}
-        S3["Tampilkan dashboard dan menu fitur"]
-        S4{"Validasi upload"}
-        S5["Ekstrak teks materi"]
-        S6{"Teks terbaca?"}
-        S7["Simpan material dan ringkasan"]
-        S8{"Validasi chat"}
-        S9["Simpan pesan dan attachment"]
-        S10["Jalankan job balasan Nala"]
-        S11["Simpan balasan AI"]
-        S12["Generate flashcard atau quiz"]
-        S13["Proses matching atau room kelas"]
-        S14["Buat invoice pembayaran"]
-        S15["Update plan dan credit user"]
-        S16["Proses dashboard dan aksi admin"]
-        S17["Kirim notifikasi atau realtime update"]
-        S18["Tampilkan error"]
+        S1[Tampilkan halaman publik]
+        S2[Validasi akun dan role]
+        S2A[Akun atau role tidak valid]
+        S2B[Akun dan role valid]
+        S3[Tampilkan dashboard dan menu fitur]
+        S4[Validasi upload]
+        S4A[Upload tidak valid]
+        S4B[Upload valid]
+        S5[Ekstrak teks materi]
+        S6[Cek teks terbaca]
+        S6A[Teks tidak terbaca]
+        S6B[Teks terbaca]
+        S7[Simpan material dan ringkasan]
+        S8[Validasi chat]
+        S8A[Chat tidak valid atau limit habis]
+        S8B[Chat valid]
+        S9[Simpan pesan dan attachment]
+        S10[Jalankan job balasan Nala]
+        S11[Simpan balasan AI]
+        S12[Generate flashcard atau quiz]
+        S13[Proses matching atau room kelas]
+        S14[Buat invoice pembayaran]
+        S15[Update plan dan credit user]
+        S16[Proses dashboard dan aksi admin]
+        S17[Kirim notifikasi atau realtime update]
+        S18[Tampilkan error]
     end
 
-    subgraph EXTERNAL_POOL["Pool 3 - Layanan Eksternal"]
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
         direction TB
-        X1["AI Provider OpenRouter"]
-        X2["Payment Gateway Pakasir"]
-        X3["SMTP Email"]
-        X4["Realtime Server Reverb"]
-        X5["Scheduler Laravel"]
+        X1[AI Provider OpenRouter]
+        X2[Payment Gateway Pakasir]
+        X3[SMTP Email]
+        X4[Realtime Server Reverb]
+        X5[Scheduler Laravel]
     end
 
     U1 --> U2 --> S1 --> U3 --> S2
-    S2 -- "Tidak valid" --> S18 --> U3
-    S2 -- "Valid" --> U4 --> S3 --> U5
+    S2 --> S2A --> S18
+    S2 --> S2B --> U4 --> S3 --> U5
 
-    U5 -- "Materi dan ringkasan" --> U6 --> S4
-    S4 -- "Tidak valid" --> S18 --> U12
-    S4 -- "Valid" --> S5 --> S6
-    S6 -- "Tidak" --> S18 --> U12
-    S6 -- "Ya" --> S7 --> X1 --> S17 --> U12
+    U5 --> U6 --> S4
+    S4 --> S4A --> S18
+    S4 --> S4B --> S5 --> S6
+    S6 --> S6A --> S18
+    S6 --> S6B --> S7 --> X1 --> S17 --> U12
 
-    U5 -- "Chat Nala" --> U7 --> S8
-    S8 -- "Tidak valid" --> S18 --> U12
-    S8 -- "Valid" --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
+    U5 --> U7 --> S8
+    S8 --> S8A --> S18
+    S8 --> S8B --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
 
-    U5 -- "Flashcard atau quiz" --> U8 --> S12 --> X1 --> S17 --> U12
+    U5 --> U8 --> S12 --> X1 --> S17 --> U12
 
-    U5 -- "Study matching atau room" --> U9 --> S13 --> S17 --> X4 --> U12
+    U5 --> U9 --> S13 --> S17 --> X4 --> U12
 
-    U5 -- "Billing" --> U10 --> S14 --> X2 --> S15 --> S17 --> X3 --> U12
+    U5 --> U10 --> S14 --> X2 --> S15 --> S17 --> X3 --> U12
     X5 --> S15
 
-    U5 -- "Admin" --> U11 --> S2
-    S2 -- "Admin valid" --> S16 --> U12
+    U5 --> U11 --> S2
+    S2 --> S16 --> U12
 
     U12 --> U13
 ```
