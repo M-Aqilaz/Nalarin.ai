@@ -441,100 +441,305 @@ classDiagram
     PakasirPaymentVerifier --> PaymentFulfillment
 ```
 
-## 4. Activity Diagram Sederhana - 3 Pool Utama
+## 4. Activity Diagram Per Fitur - 3 Pool
 
-Diagram ini menyederhanakan activity diagram utama menjadi tiga pool vertikal yang sejajar. Detail teknis seperti controller, tabel, queue, dan service tetap direpresentasikan di dalam pool **Sistem Nalarin.ai** agar alurnya tidak berubah makna.
+Activity diagram dibuat terpisah per fitur agar alurnya lebih mudah dibaca. Setiap diagram tetap menggunakan tiga pool utama: **Pengguna atau Admin**, **Sistem Nalarin.ai**, dan **Layanan Eksternal**.
+
+### 4.1 Activity Diagram - Register, Login, dan Dashboard
 
 ```mermaid
 flowchart LR
-    subgraph USER_POOL[Pool 1 - Pengguna dan Admin]
+    subgraph USER_POOL[Pool 1 - Pengguna]
         direction TB
         U1[Mulai]
         U2[Buka landing page atau pricing]
-        U3[Register atau login]
-        U4[Masuk dashboard]
-        U5[Pilih kebutuhan]
-        U6[Upload materi]
-        U7[Chat dengan Nala]
-        U8[Buat flashcard atau quiz]
-        U9[Study matching atau room kelas]
-        U10[Checkout plan premium atau ultimate]
-        U11[Admin kelola data]
-        U12[Lihat hasil status dan notifikasi]
-        U13[Selesai]
+        U3[Pilih register atau login]
+        U4[Isi data akun]
+        U5[Masuk dashboard]
+        U6[Lihat pesan error]
+        U7[Selesai]
     end
 
     subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
         direction TB
         S1[Tampilkan halaman publik]
-        S2[Validasi akun dan role]
-        S2A[Akun atau role tidak valid]
-        S2B[Akun dan role valid]
-        S3[Tampilkan dashboard dan menu fitur]
-        S4[Validasi upload]
-        S4A[Upload tidak valid]
-        S4B[Upload valid]
-        S5[Ekstrak teks materi]
-        S6[Cek teks terbaca]
-        S6A[Teks tidak terbaca]
-        S6B[Teks terbaca]
-        S7[Simpan material dan ringkasan]
-        S8[Validasi chat]
-        S8A[Chat tidak valid atau limit habis]
-        S8B[Chat valid]
-        S9[Simpan pesan dan attachment]
-        S10[Jalankan job balasan Nala]
-        S11[Simpan balasan AI]
-        S12[Generate flashcard atau quiz]
-        S13[Proses matching atau room kelas]
-        S14[Buat invoice pembayaran]
-        S15[Update plan dan credit user]
-        S16[Proses dashboard dan aksi admin]
-        S17[Kirim notifikasi atau realtime update]
-        S18[Tampilkan error]
+        S2[Validasi data akun]
+        S3{Data valid?}
+        S4[Buat session user]
+        S5[Ambil data profil, plan, dan fitur]
+        S6[Tampilkan dashboard]
+        S7[Tampilkan error autentikasi]
+    end
+
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[SMTP Email]
+    end
+
+    U1 --> U2 --> S1 --> U3 --> U4 --> S2 --> S3
+    S3 -->|Tidak| S7 --> U6 --> U7
+    S3 -->|Ya| S4 --> S5 --> S6 --> U5 --> U7
+    S4 -. kirim verifikasi atau reset password .-> X1
+```
+
+### 4.2 Activity Diagram - Upload Materi dan Ringkasan AI
+
+```mermaid
+flowchart LR
+    subgraph USER_POOL[Pool 1 - Pengguna]
+        direction TB
+        U1[Mulai dari dashboard]
+        U2[Pilih upload materi]
+        U3[Pilih file materi]
+        U4[Kirim upload]
+        U5[Lihat ringkasan AI]
+        U6[Lihat pesan error]
+        U7[Selesai]
+    end
+
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Tampilkan form upload]
+        S2[Validasi file dan akses user]
+        S3{Upload valid?}
+        S4[Simpan file materi]
+        S5[Ekstrak teks dari file]
+        S6{Teks terbaca?}
+        S7[Kirim teks ke generator ringkasan]
+        S8[Simpan material dan ringkasan]
+        S9[Kirim status selesai]
+        S10[Tampilkan error upload atau ekstraksi]
     end
 
     subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
         direction TB
         X1[AI Provider OpenRouter]
-        X2[Payment Gateway Pakasir]
-        X3[SMTP Email]
-        X4[Realtime Server Reverb]
-        X5[Scheduler Laravel]
+        X2[Realtime Server Reverb]
     end
 
-    U1 --> U2 --> S1 --> U3 --> S2
-    S2 --> S2A --> S18
-    S2 --> S2B --> U4 --> S3 --> U5
+    U1 --> U2 --> S1 --> U3 --> U4 --> S2 --> S3
+    S3 -->|Tidak| S10 --> U6 --> U7
+    S3 -->|Ya| S4 --> S5 --> S6
+    S6 -->|Tidak| S10 --> U6
+    S6 -->|Ya| S7 --> X1 --> S8 --> S9 --> X2 --> U5 --> U7
+```
 
-    U5 --> U6 --> S4
-    S4 --> S4A --> S18
-    S4 --> S4B --> S5 --> S6
-    S6 --> S6A --> S18
-    S6 --> S6B --> S7 --> X1 --> S17 --> U12
+### 4.3 Activity Diagram - Chat dengan Nala
 
-    U5 --> U7 --> S8
-    S8 --> S8A --> S18
-    S8 --> S8B --> S9 --> S10 --> X1 --> S11 --> S17 --> X4 --> U12
+```mermaid
+flowchart LR
+    subgraph USER_POOL[Pool 1 - Pengguna]
+        direction TB
+        U1[Mulai dari dashboard]
+        U2[Buka chat Nala]
+        U3[Pilih thread atau materi]
+        U4[Tulis pesan atau upload gambar]
+        U5[Kirim pesan]
+        U6[Lihat balasan Nala]
+        U7[Lihat pesan error]
+        U8[Selesai]
+    end
 
-    U5 --> U8 --> S12 --> X1 --> S17 --> U12
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Tampilkan halaman chat]
+        S2[Validasi thread, attachment, dan limit AI]
+        S3{Chat valid?}
+        S4[Simpan pesan dan attachment]
+        S5[Jalankan job balasan AI]
+        S6[Bangun konteks chat dan materi]
+        S7[Kirim prompt ke AI]
+        S8[Simpan balasan AI]
+        S9[Broadcast balasan realtime]
+        S10[Tampilkan error chat]
+    end
 
-    U5 --> U9 --> S13 --> S17 --> X4 --> U12
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[AI Provider OpenRouter]
+        X2[Realtime Server Reverb]
+    end
 
-    U5 --> U10 --> S14 --> X2 --> S15 --> S17 --> X3 --> U12
-    X5 --> S15
+    U1 --> U2 --> S1 --> U3 --> U4 --> U5 --> S2 --> S3
+    S3 -->|Tidak| S10 --> U7 --> U8
+    S3 -->|Ya| S4 --> S5 --> S6 --> S7 --> X1 --> S8 --> S9 --> X2 --> U6 --> U8
+```
 
-    U5 --> U11 --> S2
-    S2 --> S16 --> U12
+### 4.4 Activity Diagram - Generate Flashcard dan Quiz
 
-    U12 --> U13
+```mermaid
+flowchart LR
+    subgraph USER_POOL[Pool 1 - Pengguna]
+        direction TB
+        U1[Mulai dari dashboard]
+        U2[Buka materi]
+        U3[Pilih generate flashcard atau quiz]
+        U4[Review flashcard atau kerjakan quiz]
+        U5[Lihat pesan error]
+        U6[Selesai]
+    end
+
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Ambil data materi]
+        S2[Validasi kepemilikan, teks materi, dan limit]
+        S3{Bisa generate?}
+        S4[Siapkan prompt belajar]
+        S5[Kirim permintaan generate]
+        S6[Parsing hasil AI]
+        S7[Simpan deck flashcard atau quiz set]
+        S8[Tampilkan flashcard atau quiz]
+        S9[Tampilkan error generate]
+    end
+
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[AI Provider OpenRouter]
+    end
+
+    U1 --> U2 --> S1 --> U3 --> S2 --> S3
+    S3 -->|Tidak| S9 --> U5 --> U6
+    S3 -->|Ya| S4 --> S5 --> X1 --> S6 --> S7 --> S8 --> U4 --> U6
+```
+
+### 4.5 Activity Diagram - Study Matching dan Room Kelas
+
+```mermaid
+flowchart LR
+    subgraph USER_POOL[Pool 1 - Pengguna]
+        direction TB
+        U1[Mulai dari dashboard]
+        U2[Buka fitur belajar sosial]
+        U3[Pilih matching atau room kelas]
+        U4[Isi topik dan preferensi]
+        U5[Mulai chat partner atau room]
+        U6[Lihat pesan error]
+        U7[Selesai]
+    end
+
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Tampilkan halaman belajar sosial]
+        S2[Validasi study profile, topik, dan limit]
+        S3{Permintaan valid?}
+        S4[Proses antrian matching atau pembuatan room]
+        S5{Partner atau room tersedia?}
+        S6[Buat study match atau membership room]
+        S7[Simpan pesan room atau match]
+        S8[Broadcast update realtime]
+        S9[Tampilkan status menunggu]
+        S10[Tampilkan error sosial]
+    end
+
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[Realtime Server Reverb]
+        X2[Scheduler Laravel]
+    end
+
+    U1 --> U2 --> S1 --> U3 --> U4 --> S2 --> S3
+    S3 -->|Tidak| S10 --> U6 --> U7
+    S3 -->|Ya| S4 --> S5
+    S5 -->|Tidak| S9 --> U7
+    S5 -->|Ya| S6 --> S8 --> X1 --> U5
+    U5 --> S7 --> S8 --> X1 --> U5
+    X2 -. expire antrian matching .-> S9
+```
+
+### 4.6 Activity Diagram - Checkout Plan Premium atau Ultimate
+
+```mermaid
+flowchart LR
+    subgraph USER_POOL[Pool 1 - Pengguna]
+        direction TB
+        U1[Mulai dari pricing]
+        U2[Pilih plan premium atau ultimate]
+        U3[Klik checkout]
+        U4[Lakukan pembayaran]
+        U5[Lihat plan aktif]
+        U6[Lihat status gagal atau pending]
+        U7[Selesai]
+    end
+
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Validasi user dan plan]
+        S2{Checkout valid?}
+        S3[Buat order dan invoice]
+        S4[Arahkan user ke pembayaran]
+        S5[Terima return atau webhook pembayaran]
+        S6[Verifikasi status pembayaran]
+        S7{Pembayaran berhasil?}
+        S8[Update plan, expired date, dan credit]
+        S9[Kirim notifikasi pembayaran]
+        S10[Tampilkan status gagal atau pending]
+    end
+
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[Payment Gateway Pakasir]
+        X2[SMTP Email]
+        X3[Scheduler Laravel]
+    end
+
+    U1 --> U2 --> U3 --> S1 --> S2
+    S2 -->|Tidak| S10 --> U6 --> U7
+    S2 -->|Ya| S3 --> S4 --> X1 --> U4
+    U4 --> X1 --> S5 --> S6 --> S7
+    S7 -->|Tidak| S10 --> U6 --> U7
+    S7 -->|Ya| S8 --> S9 --> X2 --> U5 --> U7
+    X3 -. reset credit bulanan ultimate .-> S8
+```
+
+### 4.7 Activity Diagram - Admin Kelola Data
+
+```mermaid
+flowchart LR
+    subgraph ADMIN_POOL[Pool 1 - Admin]
+        direction TB
+        A1[Mulai]
+        A2[Login sebagai admin]
+        A3[Buka dashboard admin]
+        A4[Pilih kelola user, dokumen, atau monitoring AI]
+        A5[Jalankan aksi admin]
+        A6[Lihat hasil perubahan]
+        A7[Lihat pesan error]
+        A8[Selesai]
+    end
+
+    subgraph SYSTEM_POOL[Pool 2 - Sistem Nalarin.ai]
+        direction TB
+        S1[Validasi akun dan role admin]
+        S2{Admin valid?}
+        S3[Ambil data statistik dan daftar resource]
+        S4[Validasi aksi admin]
+        S5{Aksi valid?}
+        S6[Update user, plan, dokumen, atau status]
+        S7[Catat hasil aksi]
+        S8[Tampilkan data terbaru]
+        S9[Tampilkan error admin]
+    end
+
+    subgraph EXTERNAL_POOL[Pool 3 - Layanan Eksternal]
+        direction TB
+        X1[AI Provider OpenRouter]
+        X2[SMTP Email]
+    end
+
+    A1 --> A2 --> S1 --> S2
+    S2 -->|Tidak| S9 --> A7 --> A8
+    S2 -->|Ya| S3 --> A3 --> A4 --> A5 --> S4 --> S5
+    S5 -->|Tidak| S9 --> A7 --> A8
+    S5 -->|Ya| S6 --> S7 --> S8 --> A6 --> A8
+    S3 -. ambil statistik penggunaan AI .-> X1
+    S7 -. kirim notifikasi perubahan penting .-> X2
 ```
 
 ## 5. Catatan Implementasi Diagram
 
 - Untuk laporan akademik, gunakan **Use Case Diagram** untuk menjelaskan fitur dari sisi aktor.
-- Gunakan **Activity Diagram Sederhana - 3 Pool Utama** jika laporan membutuhkan gambaran alur end-to-end yang ringkas.
-- Jika butuh detail teknis lebih dalam, pecah lagi activity diagram berdasarkan fitur: upload materi, chat AI, study matching, billing, dan admin.
+- Gunakan **Activity Diagram Per Fitur - 3 Pool** agar laporan lebih mudah dibaca dan setiap fitur memiliki alur yang fokus.
+- Jika butuh gambaran end-to-end, gabungkan ringkasan dari activity diagram register/login, upload materi, chat AI, study matching, billing, dan admin.
 - Gunakan **ERD** untuk menjelaskan struktur database MySQL.
 - Gunakan **Class Diagram** untuk menjelaskan arsitektur Laravel: Controller, Model, Service, Job, Event, dan Support class.
 - Diagram di atas mengikuti struktur project saat ini: Laravel, MySQL, OpenRouter/AI provider, Pakasir payment, queue job, dan realtime event.
