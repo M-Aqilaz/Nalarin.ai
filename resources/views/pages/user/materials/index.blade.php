@@ -3,7 +3,7 @@
         <div>
             <p class="user-kicker text-[11px] text-cyan-100/90">Materials Library</p>
             <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">Daftar Materi</h2>
-            <p class="mt-2 max-w-2xl text-sm text-slate-300/80">Semua materi belajarmu yang sudah tersimpan dan siap dipakai ulang untuk ringkasan, kuis, flashcard, dan AI tutor.</p>
+            <p class="mt-2 max-w-2xl text-sm text-slate-300/80">Semua materi belajarmu yang sudah tersimpan dan siap dipakai ulang untuk ringkasan, kuis, kartu belajar, dan tutor AI.</p>
         </div>
     </x-slot>
 
@@ -20,7 +20,7 @@
                 </div>
                 <div class="mt-5 flex flex-wrap gap-2 text-xs text-slate-300/75">
                     <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1">{{ $material->summaries_count }} ringkasan</span>
-                    <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1">{{ $material->chat_threads_count }} thread</span>
+                    <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1">{{ $material->chat_threads_count }} percakapan</span>
                 </div>
             </a>
         @empty

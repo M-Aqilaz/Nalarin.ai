@@ -3,7 +3,7 @@
         <div>
             <p class="user-kicker text-[11px] text-cyan-100/90">Detail Materi</p>
             <h2 class="mt-2 font-outfit text-2xl font-bold leading-tight soft-gradient-text md:text-3xl">{{ $material->title }}</h2>
-            <p class="mt-2 text-sm text-slate-300/80">Lihat isi materi dan lanjutkan belajar melalui ringkasan, Flashcard, kuis, atau Tutor AI.</p>
+            <p class="mt-2 text-sm text-slate-300/80">Lihat isi materi dan lanjutkan belajar melalui ringkasan, kartu belajar, kuis, atau tutor AI.</p>
         </div>
     </x-slot>
 
@@ -32,14 +32,14 @@
                 </div>
                 <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Pemilik</span>{{ $material->user->name }}</div>
                 <div class="glass-panel rounded-2xl break-all p-4"><span class="mb-1 block text-slate-400">File</span>{{ $material->original_filename ?? 'Tidak ada file' }}</div>
-                <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Ukuran</span>{{ $material->file_size ? number_format($material->file_size) . ' bytes' : '-' }}</div>
+                <div class="glass-panel rounded-2xl p-4"><span class="mb-1 block text-slate-400">Ukuran</span>{{ $material->file_size ? number_format($material->file_size) . ' byte' : '-' }}</div>
             </div>
             @if ($material->ocr_warning)
                 <div class="mt-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">{{ $material->ocr_warning }}</div>
             @endif
             <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <a href="{{ route('feature.flashcards', ['material_id' => $material->id]) }}" class="accent-card-pink rounded-2xl border border-pink-500/20 p-4 transition hover:bg-pink-500/15">
-                    <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Smart Flashcard</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-pink-200">Kartu Belajar Pintar</p>
                     <p class="text-white font-semibold mt-2">{{ $material->flashcardDeck ? $material->flashcardDeck->card_count . ' kartu siap dipakai' : 'Belum dibuat' }}</p>
                     <p class="text-sm text-pink-100/70 mt-1">Klik kartu ini untuk membuat latihan dari materi tersebut.</p>
                 </a>
@@ -75,8 +75,8 @@
 
             <section class="glass-panel accent-card-pink overflow-hidden rounded-[1.75rem]">
                 <div class="flex items-center justify-between gap-3 border-b border-white/10 p-5">
-                    <h3 class="font-outfit text-lg font-semibold text-white">Thread Chat</h3>
-                    <a href="{{ route('feature.chat') }}" class="text-sm text-cyan-100">Buka chat</a>
+                    <h3 class="font-outfit text-lg font-semibold text-white">Percakapan Tutor</h3>
+                    <a href="{{ route('feature.chat') }}" class="text-sm text-cyan-100">Buka percakapan</a>
                 </div>
                 <div class="divide-y divide-white/10">
                     @forelse ($material->chatThreads as $thread)
@@ -85,7 +85,7 @@
                             <p class="mt-1 text-sm text-slate-300/70">{{ $thread->messages->count() }} pesan</p>
                         </a>
                     @empty
-                        <div class="p-4 text-sm text-slate-300/70">Belum ada thread untuk materi ini.</div>
+                        <div class="p-4 text-sm text-slate-300/70">Belum ada percakapan untuk materi ini.</div>
                     @endforelse
                 </div>
             </section>
