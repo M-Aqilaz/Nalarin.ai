@@ -27,7 +27,7 @@
                 <h3 class="mt-3 font-outfit text-2xl font-semibold text-white">{{ __('ui.match_prepare_profile_title') }}</h3>
                 <p class="mt-3 text-sm text-slate-100/80">{{ __('ui.match_prepare_profile_description') }}</p>
             </div>
-            <a href="{{ route('matchmaking.roulette') }}" class="user-primary-button inline-flex items-center justify-center px-5 py-3 text-sm sm:w-auto">Study Roulette</a>
+            <a href="{{ route('matchmaking.roulette') }}" class="user-primary-button inline-flex items-center justify-center px-5 py-3 text-sm sm:w-auto">{{ __('ui.match_roulette') }}</a>
             </div>
         </section>
 
@@ -59,7 +59,7 @@
         <section class="glass-panel accent-card-pink rounded-[1.75rem] p-5 md:p-6 space-y-6">
             <div class="flex flex-col gap-4">
                 <div>
-                    <h3 class="font-outfit text-lg font-semibold text-white">Study Roulette</h3>
+                    <h3 class="font-outfit text-lg font-semibold text-white">{{ __('ui.match_roulette') }}</h3>
                     <p class="mt-1 text-sm text-slate-300/70">{{ __('ui.match_queue_description', ['count' => auth()->user()->match_credits]) }}</p>
                 </div>
                 @if ($activeMatch)

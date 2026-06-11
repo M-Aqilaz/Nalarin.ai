@@ -242,7 +242,7 @@
                             </svg>
                         </div>
                         <div class="absolute bottom-0 left-1/2 -translate-x-1/2">
-                            <img src="{{ asset('images/nala_body.png') }}" class="animate-nala-float h-[360px] w-auto max-w-none object-contain sm:h-[400px] lg:h-[500px]" alt="Nala, AI assistant Nalarin.ai">
+                            <img src="{{ asset('images/nala_teacher.png') }}" class="animate-nala-float h-[360px] w-auto max-w-none object-contain sm:h-[400px] lg:h-[500px]" alt="Nala, AI assistant Nalarin.ai">
                         </div>
                     </section>
                 </div>

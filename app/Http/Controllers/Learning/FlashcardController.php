@@ -20,14 +20,23 @@ class FlashcardController extends Controller
     {
         $materials = Material::query()->where('user_id', $request->user()->id)->latest()->get(['id', 'title', 'status']);
         $selectedMaterial = $request->integer('material_id')
-            ? Material::query()->where('user_id', $request->user()->id)->with(['flashcardDeck.cards'])->find($request->integer('material_id'))
+            ? Material::query()
+                ->where('user_id', $request->user()->id)
+                ->select(['id', 'user_id', 'title', 'status'])
+                ->with([
+                    'flashcardDeck:id,material_id,title,description,card_count',
+                    'flashcardDeck.cards:id,flashcard_deck_id,front,back,example,difficulty,sort_order,review_count,streak,last_reviewed_at,next_review_at',
+                ])
+                ->find($request->integer('material_id'))
             : null;
 
-        $deck = $selectedMaterial?->flashcardDeck?->load('cards');
+        $deck = $selectedMaterial?->flashcardDeck;
         $dueCards = collect();
         $currentCard = null;
 
         if ($deck) {
+            $deck->setRelation('cards', $deck->cards->sortBy('sort_order')->values());
+
             $dueCards = $deck->cards->filter(function (Flashcard $card): bool {
                 return $card->next_review_at === null || $card->next_review_at->isPast();
             })->values();
@@ -102,7 +111,7 @@ class FlashcardController extends Controller
             'rating' => ['required', 'in:again,hard,good,easy'],
         ]);
 
-        abort_unless($deck->material->user_id === $request->user()->id, 403);
+        abort_unless($deck->material()->where('user_id', $request->user()->id)->exists(), 403);
         $card = $deck->cards()->findOrFail($validated['flashcard_id']);
         $scheduler->apply($card, $validated['rating']);
 
